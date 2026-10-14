@@ -18,9 +18,13 @@ import useDeleteCategory from '@/app/category/service/useDeleteCategory';
 import useReadCategoryList from '@/app/category/service/useReadCategoryList';
 import useReadCategoryUsage from '@/app/category/service/useReadCategoryUsage';
 import useUpdateCategory from '@/app/category/service/useUpdateCategory';
+import { getLevelConfig } from '@/app/category/utils/CategoryUtils';
 import EmptyView from '@/app/common/component/EmptyView';
 import ErrorView from '@/app/common/component/ErrorView';
 import LoadingOverlay from '@/app/common/component/loading/LoadingOverlay';
+import type { ThumbnailChange } from '@/app/common/interface/ThumbnailChange';
+import useDeleteThumbnail from '@/app/common/service/useDeleteThumbnail';
+import useUploadThumbnail from '@/app/common/service/useUploadThumbnail';
 import { PageContainer, PageHeader, PageTitle } from '@/app/common/style/CommonPage.style';
 import { showConfirmAlert } from '@/app/common/utils/AlertUtils';
 import { useUiStore } from '@/store/uiStore';
@@ -44,6 +48,8 @@ const CategoryPage = () => {
   const { updateCategoryLoading, fetchUpdateCategory } = useUpdateCategory();
   const { deleteCategoryLoading, fetchDeleteCategory } = useDeleteCategory();
   const { categoryUsageLoading, fetchReadCategoryUsage } = useReadCategoryUsage();
+  const { uploadThumbnailLoading, fetchUploadThumbnail } = useUploadThumbnail();
+  const { deleteThumbnailLoading, fetchDeleteThumbnail } = useDeleteThumbnail();
 
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
   const [dialog, setDialog] = useState<CategoryDialogState | null>(null);
@@ -53,7 +59,14 @@ const CategoryPage = () => {
   /* 상위 이름: 하위가 없는 축(제조사)은 상위가 곧 분류라서 축 이름을 쓰고, 나머지는 "그룹" */
   const groupLabel = CATEGORY_AXES[axis].child === null ? CATEGORY_AXES[axis].nameKr : '그룹';
   const groups = categoryList?.data ?? [];
-  const isBusy = categoryListLoading || createCategoryLoading || updateCategoryLoading || deleteCategoryLoading || categoryUsageLoading;
+  const isBusy =
+    categoryListLoading ||
+    createCategoryLoading ||
+    updateCategoryLoading ||
+    deleteCategoryLoading ||
+    categoryUsageLoading ||
+    uploadThumbnailLoading ||
+    deleteThumbnailLoading;
 
   useEffect(() => {
     fetchReadCategoryList(axis);
@@ -65,7 +78,7 @@ const CategoryPage = () => {
     setSearchParams({ axis: nextAxis });
   };
 
-  const handleSave = async (body: CategorySaveRequestBody) => {
+  const handleSave = async (body: CategorySaveRequestBody, thumbnail: ThumbnailChange) => {
     if (dialog === null) return;
 
     const res =
@@ -78,7 +91,15 @@ const CategoryPage = () => {
       return;
     }
 
-    showSnackbar(res.message, 'success');
+    /* 썸네일은 분류를 저장해 id 를 받은 뒤에 올린다(추가는 응답의 새 id, 수정은 원래 id) */
+    const targetId = dialog.mode === 'insert' ? res.data?.id : dialog.target.id;
+    const thumbnailRes = await saveThumbnail(dialog.level, targetId, thumbnail);
+
+    if (thumbnailRes !== null && thumbnailRes.code !== 'OK') {
+      showSnackbar(`저장했지만 이미지는 처리하지 못했어요. ${thumbnailRes.message}`, 'warning');
+    } else {
+      showSnackbar(res.message, 'success');
+    }
     setDialog(null);
 
     /* 새로 만든 상위는 바로 오른쪽에 펼쳐 보여 준다 */
@@ -86,6 +107,16 @@ const CategoryPage = () => {
       setSelectedGroupId(res.data.id);
     }
     await fetchReadCategoryList(axis);
+  };
+
+  /* 고른 썸네일 변경 사항을 서버에 보낸다. 보낼 것이 없으면 null */
+  const saveThumbnail = async (level: CategoryLevel, targetId: number | undefined, thumbnail: ThumbnailChange) => {
+    if (targetId === undefined || thumbnail.type === 'none') return null;
+
+    const { thumbnailTarget } = getLevelConfig(axis, level);
+    return thumbnail.type === 'upload'
+      ? fetchUploadThumbnail(thumbnailTarget, targetId, thumbnail.file)
+      : fetchDeleteThumbnail(thumbnailTarget, targetId);
   };
 
   const handleDelete = async (level: CategoryLevel, target: CategoryItem) => {
@@ -161,7 +192,7 @@ const CategoryPage = () => {
           mode={dialog.mode}
           levelName={dialog.level === 'group' ? groupLabel : '하위'}
           target={dialog.mode === 'edit' ? dialog.target : undefined}
-          loading={createCategoryLoading || updateCategoryLoading}
+          loading={createCategoryLoading || updateCategoryLoading || uploadThumbnailLoading || deleteThumbnailLoading}
           onSubmit={handleSave}
           onClose={() => setDialog(null)}
         />

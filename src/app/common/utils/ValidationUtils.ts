@@ -1,4 +1,5 @@
 import type { SignupFormValues } from '@/app/auth/interface/SignupFormValues';
+import { THUMBNAIL_EXTENSIONS, THUMBNAIL_MAX_BYTES } from '@/app/common/constant/thumbnailFile';
 
 /*
 * 입력 검증. 통과하면 undefined, 틀리면 사용자에게 보여 줄 문구를 돌려준다.
@@ -103,5 +104,21 @@ export const validateCategoryName = (value: string): string | undefined => {
  */
 export const validateCategoryDescription = (value: string): string | undefined => {
   if (value.length > 1000) return '설명은 1000자 이하로 입력해 주세요.';
+  return undefined;
+};
+
+/**
+ * [카테고리 페이지, 상품 폼]
+ *
+ * 썸네일 파일: 한 장, 확장자(jpg, jpeg, png, gif, webp), 5MB 이하
+ * 고른 파일이나 끌어다 놓은 파일 목록을 그대로 받는다. 파일 내용(실제 이미지인지)은 서버만 검사한다.
+ */
+export const validateThumbnailFiles = (files: ArrayLike<File>): string | undefined => {
+  if (files.length > 1) return '이미지는 한 장만 올릴 수 있어요.';
+
+  const file = files[0];
+  const extension = file.name.includes('.') ? (file.name.split('.').pop() ?? '').toLowerCase() : '';
+  if (!(THUMBNAIL_EXTENSIONS as readonly string[]).includes(extension)) return 'jpg, png, gif, webp 파일만 올릴 수 있어요.';
+  if (file.size > THUMBNAIL_MAX_BYTES) return '5MB 이하의 이미지만 올릴 수 있어요.';
   return undefined;
 };

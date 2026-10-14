@@ -1,3 +1,5 @@
+import type { ThumbnailTarget } from '@/app/common/constant/thumbnailTarget';
+
 /** 분류 축 (화면 탭 하나). 주소의 ?axis= 값으로도 쓴다 */
 export type CategoryAxisKey = 'shop' | 'figure-type' | 'series' | 'genre-character' | 'maker';
 
@@ -11,6 +13,9 @@ export interface CategoryLevelConfig {
 
   /** 응답과 요청에서 이 단계의 id 를 담는 필드 이름 (예: "shopGroupId") */
   idKey: string;
+
+  /** 썸네일 올리기와 지우기 주소에 들어가는 대상 종류 */
+  thumbnailTarget: ThumbnailTarget;
 }
 
 /** 분류 축 하나의 설정 */
@@ -32,27 +37,27 @@ export interface CategoryAxisConfig {
 export const CATEGORY_AXES: Record<CategoryAxisKey, CategoryAxisConfig> = {
   shop: {
     nameKr: '판매처',
-    group: { path: '/api/shop-group', idKey: 'shopGroupId' },
-    child: { path: '/api/shop', idKey: 'shopId' },
+    group: { path: '/api/shop-group', idKey: 'shopGroupId', thumbnailTarget: 'shop-group' },
+    child: { path: '/api/shop', idKey: 'shopId', thumbnailTarget: 'shop' },
   },
   'figure-type': {
     nameKr: '형태',
-    group: { path: '/api/figure-type-group', idKey: 'figureTypeGroupId' },
-    child: { path: '/api/figure-type', idKey: 'figureTypeId' },
+    group: { path: '/api/figure-type-group', idKey: 'figureTypeGroupId', thumbnailTarget: 'figure-type-group' },
+    child: { path: '/api/figure-type', idKey: 'figureTypeId', thumbnailTarget: 'figure-type' },
   },
   series: {
     nameKr: '시리즈',
-    group: { path: '/api/series-group', idKey: 'seriesGroupId' },
-    child: { path: '/api/series', idKey: 'seriesId' },
+    group: { path: '/api/series-group', idKey: 'seriesGroupId', thumbnailTarget: 'series-group' },
+    child: { path: '/api/series', idKey: 'seriesId', thumbnailTarget: 'series' },
   },
   'genre-character': {
     nameKr: '장르·캐릭터',
-    group: { path: '/api/genre-character-group', idKey: 'genreCharacterGroupId' },
-    child: { path: '/api/genre-character', idKey: 'genreCharacterId' },
+    group: { path: '/api/genre-character-group', idKey: 'genreCharacterGroupId', thumbnailTarget: 'genre-character-group' },
+    child: { path: '/api/genre-character', idKey: 'genreCharacterId', thumbnailTarget: 'genre-character' },
   },
   maker: {
     nameKr: '제조사',
-    group: { path: '/api/maker', idKey: 'makerId' },
+    group: { path: '/api/maker', idKey: 'makerId', thumbnailTarget: 'maker' },
     child: null,
   },
 };
