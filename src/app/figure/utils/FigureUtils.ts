@@ -4,6 +4,7 @@ import { FIGURE_TABS } from '@/app/figure/constant/figureStatus';
 import type { FigureCategoryRef } from '@/app/figure/interface/FigureCategoryRef';
 import type { FigureFilterOptionGroup } from '@/app/figure/interface/FigureFilterOptionGroup';
 import type { FigureFilterOptionItem } from '@/app/figure/interface/FigureFilterOptionItem';
+import type { FigureMakerRef } from '@/app/figure/interface/FigureMakerRef';
 import type { FigureFilterOptions } from '@/app/figure/interface/FigureFilterOptions';
 import type { FigureFilterValue } from '@/app/figure/interface/FigureFilterValue';
 import type { FigureFilters } from '@/app/figure/interface/FigureFilters';
@@ -44,7 +45,6 @@ const collectGroups = (refs: FigureCategoryRef[]): FigureFilterOptionGroup[] => 
   const groups = new Map<number, FigureFilterOptionGroup>();
 
   refs.forEach((ref) => {
-    if (ref.groupId === null) return;
     const group = groups.get(ref.groupId) ?? { groupId: ref.groupId, groupName: ref.groupName, items: [] };
     if (!group.items.some((item) => item.id === ref.id)) group.items.push({ id: ref.id, name: ref.name });
     groups.set(ref.groupId, group);
@@ -55,22 +55,20 @@ const collectGroups = (refs: FigureCategoryRef[]): FigureFilterOptionGroup[] => 
     .sort((a, b) => a.groupName.localeCompare(b.groupName, 'ko'));
 };
 
-const collectItems = (refs: FigureCategoryRef[]): FigureFilterOptionItem[] => {
+const collectItems = (refs: FigureMakerRef[]): FigureFilterOptionItem[] => {
   const items = new Map<number, FigureFilterOptionItem>();
   refs.forEach((ref) => items.set(ref.id, { id: ref.id, name: ref.name }));
   return [...items.values()].sort((a, b) => a.name.localeCompare(b.name, 'ko'));
 };
 
-const notNull = <T>(value: T | null): value is T => value !== null;
-
 /** 지금 탭의 상품에 쓰인 분류만 모아 필터 선택지를 만든다 */
 export const buildFilterOptions = (figures: FigureSummary[]): FigureFilterOptions => {
   return {
-    figureType: collectGroups(figures.map((figure) => figure.figureType).filter(notNull)),
-    shop: collectGroups(figures.map((figure) => figure.shop).filter(notNull)),
+    figureType: collectGroups(figures.map((figure) => figure.figureType)),
+    shop: collectGroups(figures.map((figure) => figure.shop)),
     series: collectGroups(figures.flatMap((figure) => figure.series)),
     character: collectGroups(figures.flatMap((figure) => figure.characters)),
-    maker: collectItems(figures.map((figure) => figure.maker).filter(notNull)),
+    maker: collectItems(figures.map((figure) => figure.maker)),
     months: [...new Set(figures.map((figure) => toMonthKey(figure.deliveryMonth)).filter((month) => month !== ''))].sort(),
   };
 };
@@ -109,8 +107,7 @@ export const pruneFilters = (
 };
 
 /* 상위만 골랐으면 그 상위에 속하는지, 하위를 골랐으면 그 하위인지 */
-const matchesRef = (ref: FigureCategoryRef | null, value: FigureFilterValue): boolean => {
-  if (ref === null) return false;
+const matchesRef = (ref: FigureCategoryRef, value: FigureFilterValue): boolean => {
   return value.itemId !== null ? ref.id === value.itemId : ref.groupId === value.groupId;
 };
 
@@ -119,7 +116,7 @@ export const applyFilters = (figures: FigureSummary[], filters: FigureFilters, m
   return figures.filter((figure) => {
     if (filters.figureType !== null && !matchesRef(figure.figureType, filters.figureType)) return false;
     if (filters.shop !== null && !matchesRef(figure.shop, filters.shop)) return false;
-    if (filters.maker !== null && !matchesRef(figure.maker, filters.maker)) return false;
+    if (filters.maker !== null && figure.maker.id !== filters.maker.itemId) return false;
     if (filters.series !== null && !figure.series.some((ref) => matchesRef(ref, filters.series as FigureFilterValue))) return false;
     if (filters.character !== null && !figure.characters.some((ref) => matchesRef(ref, filters.character as FigureFilterValue)))
       return false;

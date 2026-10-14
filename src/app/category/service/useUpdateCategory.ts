@@ -23,7 +23,7 @@ const useUpdateCategory = () => {
 
     setLoading(true);
     try {
-      const res = await api.put<ApiResponse<null>>(`${levelConfig.path}/${id}`, toSaveRequest(axis, level, body));
+      const res = await api.put<ApiResponse<null>>(`${levelConfig.path}/${id}`, toSaveRequest(level, body));
       return res.data;
     } catch (err) {
       return toApiResponse<null>(err);

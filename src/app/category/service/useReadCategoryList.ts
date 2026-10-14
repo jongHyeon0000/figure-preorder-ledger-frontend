@@ -4,13 +4,12 @@ import type { ApiResponse } from '@/config/axios/interface/ApiResponse';
 import { toApiResponse } from '@/config/axios/utils/toApiResponse';
 import { CATEGORY_AXES, type CategoryAxisKey } from '@/app/category/constant/categoryAxes';
 import type { CategoryGroup } from '@/app/category/interface/CategoryGroup';
-import { toCategoryGroup, type CategoryRaw } from '@/app/category/utils/CategoryUtils';
 
 /**
  * 분류 목록 조회 훅 (5개 축 공용)
  *
  * 상위 목록을 조회하면 하위가 중첩돼 오므로 축마다 요청은 한 번이다.
- * 서버 응답은 축마다 id 필드 이름이 달라서 공통 모양(CategoryGroup)으로 바꿔 담는다.
+ * 서버 응답을 그대로 담는다.
  */
 const useReadCategoryList = () => {
   const [categoryList, setCategoryList] = useState<ApiResponse<CategoryGroup[] | null> | undefined>(undefined);
@@ -25,11 +24,10 @@ const useReadCategoryList = () => {
 
     setLoading(true);
     try {
-      const res = await api.get<ApiResponse<CategoryRaw[] | null>>(CATEGORY_AXES[axis].group.path);
+      const res = await api.get<ApiResponse<CategoryGroup[] | null>>(CATEGORY_AXES[axis].group.path);
       if (requestId !== lastRequestId.current) return;
 
-      const list = (res.data.data ?? []).map((raw) => toCategoryGroup(raw, axis));
-      setCategoryList({ ...res.data, data: list });
+      setCategoryList(res.data);
     } catch (err) {
       if (requestId !== lastRequestId.current) return;
       setCategoryList(toApiResponse<CategoryGroup[]>(err));

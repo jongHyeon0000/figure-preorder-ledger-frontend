@@ -90,7 +90,7 @@ const CategoryTree = ({ axis, groups, selectedGroupId, onSelectGroup, onInsert, 
           <PanelHeader sx={{ pr: 1 }}>
             <Typography variant="h6">
               {selectedGroup.name}
-              {selectedGroup.description !== '' && (
+              {selectedGroup.description && (
                 <Tooltip title={<TooltipText>{selectedGroup.description}</TooltipText>} placement="right-start">
                   <InfoIcon fontSize="inherit" />
                 </Tooltip>

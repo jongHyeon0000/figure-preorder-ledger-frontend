@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { api } from '@/config/axios/AxiosConfig';
 import type { ApiResponse } from '@/config/axios/interface/ApiResponse';
 import { toApiResponse } from '@/config/axios/utils/toApiResponse';
-import { CATEGORY_AXES, type CategoryAxisKey, type CategoryLevel } from '@/app/category/constant/categoryAxes';
+import type { CategoryAxisKey, CategoryLevel } from '@/app/category/constant/categoryAxes';
 import type { CategoryItem } from '@/app/category/interface/CategoryItem';
 import type { CategorySaveRequestBody } from '@/app/category/interface/CategorySaveRequestBody';
-import { getLevelConfig, toCategoryItem, toSaveRequest, type CategoryRaw } from '@/app/category/utils/CategoryUtils';
+import { getLevelConfig, toSaveRequest } from '@/app/category/utils/CategoryUtils';
 
 /**
  * 분류 추가 훅 (5개 축, 상위/하위 공용)
@@ -27,14 +27,11 @@ const useCreateCategory = () => {
 
     setLoading(true);
     try {
-      const res = await api.post<ApiResponse<CategoryRaw | null>>(
+      const res = await api.post<ApiResponse<CategoryItem | null>>(
         levelConfig.path,
-        toSaveRequest(axis, level, body, parentId),
+        toSaveRequest(level, body, parentId),
       );
-      const parentIdKey = level === 'child' ? CATEGORY_AXES[axis].group.idKey : null;
-      const created = res.data.data === null ? null : toCategoryItem(res.data.data, levelConfig.idKey, parentIdKey);
-
-      return { ...res.data, data: created };
+      return res.data;
     } catch (err) {
       return toApiResponse<CategoryItem>(err);
     } finally {

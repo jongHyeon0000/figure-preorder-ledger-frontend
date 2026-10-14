@@ -11,9 +11,6 @@ export interface CategoryLevelConfig {
   /** 목록, 추가 주소 (수정, 삭제, 영향 상품 수는 뒤에 /{id} 를 붙인다) */
   path: string;
 
-  /** 응답과 요청에서 이 단계의 id 를 담는 필드 이름 (예: "shopGroupId") */
-  idKey: string;
-
   /** 썸네일 올리기와 지우기 주소에 들어가는 대상 종류 */
   thumbnailTarget: ThumbnailTarget;
 }
@@ -37,27 +34,27 @@ export interface CategoryAxisConfig {
 export const CATEGORY_AXES: Record<CategoryAxisKey, CategoryAxisConfig> = {
   shop: {
     nameKr: '판매처',
-    group: { path: '/api/shop-group', idKey: 'shopGroupId', thumbnailTarget: 'shop-group' },
-    child: { path: '/api/shop', idKey: 'shopId', thumbnailTarget: 'shop' },
+    group: { path: '/api/shop-group', thumbnailTarget: 'shop-group' },
+    child: { path: '/api/shop', thumbnailTarget: 'shop' },
   },
   'figure-type': {
     nameKr: '형태',
-    group: { path: '/api/figure-type-group', idKey: 'figureTypeGroupId', thumbnailTarget: 'figure-type-group' },
-    child: { path: '/api/figure-type', idKey: 'figureTypeId', thumbnailTarget: 'figure-type' },
+    group: { path: '/api/figure-type-group', thumbnailTarget: 'figure-type-group' },
+    child: { path: '/api/figure-type', thumbnailTarget: 'figure-type' },
   },
   series: {
     nameKr: '시리즈',
-    group: { path: '/api/series-group', idKey: 'seriesGroupId', thumbnailTarget: 'series-group' },
-    child: { path: '/api/series', idKey: 'seriesId', thumbnailTarget: 'series' },
+    group: { path: '/api/series-group', thumbnailTarget: 'series-group' },
+    child: { path: '/api/series', thumbnailTarget: 'series' },
   },
   'genre-character': {
     nameKr: '장르·캐릭터',
-    group: { path: '/api/genre-character-group', idKey: 'genreCharacterGroupId', thumbnailTarget: 'genre-character-group' },
-    child: { path: '/api/genre-character', idKey: 'genreCharacterId', thumbnailTarget: 'genre-character' },
+    group: { path: '/api/genre-character-group', thumbnailTarget: 'genre-character-group' },
+    child: { path: '/api/genre-character', thumbnailTarget: 'genre-character' },
   },
   maker: {
     nameKr: '제조사',
-    group: { path: '/api/maker', idKey: 'makerId', thumbnailTarget: 'maker' },
+    group: { path: '/api/maker', thumbnailTarget: 'maker' },
     child: null,
   },
 };

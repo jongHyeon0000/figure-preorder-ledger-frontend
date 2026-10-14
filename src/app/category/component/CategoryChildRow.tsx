@@ -28,13 +28,13 @@ const CategoryChildRow = ({ item, onEdit, onDelete }: CategoryChildRowProps) => 
       <TextBox>
         <Typography sx={{ fontWeight: 700 }}>
           {item.name}
-          {item.description !== '' && (
+          {item.description && (
             <Tooltip title={<TooltipText>{item.description}</TooltipText>} placement="right-start">
               <InfoIcon fontSize="inherit" />
             </Tooltip>
           )}
         </Typography>
-        {item.description !== '' && (
+        {item.description && (
           <Description variant="caption" color="text.secondary">
             {item.description}
           </Description>

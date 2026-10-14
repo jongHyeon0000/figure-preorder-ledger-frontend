@@ -1,11 +1,12 @@
 import type { FigureStatus } from '@/app/figure/constant/figureStatus';
 import type { PaymentType } from '@/app/figure/constant/paymentType';
 import type { FigureCategoryRef } from '@/app/figure/interface/FigureCategoryRef';
+import type { FigureMakerRef } from '@/app/figure/interface/FigureMakerRef';
 
 /** 상품 목록의 한 건 (설명 HTML은 상세에서만 받는다) */
 export interface FigureSummary {
   /** 상품 id */
-  id: number;
+  figureId: number;
 
   /** 상태 */
   status: FigureStatus;
@@ -41,13 +42,13 @@ export interface FigureSummary {
   purchaseLink: string;
 
   /** 형태 */
-  figureType: FigureCategoryRef | null;
+  figureType: FigureCategoryRef;
 
   /** 판매처 */
-  shop: FigureCategoryRef | null;
+  shop: FigureCategoryRef;
 
   /** 제조사 */
-  maker: FigureCategoryRef | null;
+  maker: FigureMakerRef;
 
   /** 시리즈 (여러 개) */
   series: FigureCategoryRef[];

@@ -35,17 +35,17 @@ const FigureListComponent = ({ figures, showStatus, onSelect }: FigureListCompon
   return (
     <ListBox>
       {figures.map((figure) => {
-        const genre = figure.characters[0]?.groupName ?? '';
+        const genre = figure.characters[0].groupName;
         const seriesLine = [...figure.series, ...figure.characters].map((ref) => ref.name).join(' · ');
-        const makerLine = [figure.maker?.name, figure.shop?.name].filter(Boolean).join(' · ');
+        const makerLine = `${figure.maker.name} · ${figure.shop.name}`;
 
         return (
           <Ticket
-            key={figure.id}
+            key={figure.figureId}
             role="button"
             tabIndex={0}
-            onClick={() => onSelect(figure.id)}
-            onKeyDown={(e) => handleKeyDown(e, figure.id)}
+            onClick={() => onSelect(figure.figureId)}
+            onKeyDown={(e) => handleKeyDown(e, figure.figureId)}
           >
             <Thumb>
               {figure.thumbnailUrl ? (
@@ -57,8 +57,8 @@ const FigureListComponent = ({ figures, showStatus, onSelect }: FigureListCompon
 
             <Main>
               <Tags>
-                {genre !== '' && <GoldTag>{genre}</GoldTag>}
-                {figure.figureType && <PinkTag>{figure.figureType.name}</PinkTag>}
+                <GoldTag>{genre}</GoldTag>
+                <PinkTag>{figure.figureType.name}</PinkTag>
               </Tags>
               <Names>
                 <NameRow>
@@ -67,16 +67,12 @@ const FigureListComponent = ({ figures, showStatus, onSelect }: FigureListCompon
                   </FigureName>
                   {showStatus && <FigureStatusChip status={figure.status} />}
                 </NameRow>
-                {seriesLine !== '' && (
-                  <Typography variant="body2" color="text.secondary" noWrap>
-                    {seriesLine}
-                  </Typography>
-                )}
-                {makerLine !== '' && (
-                  <Typography variant="mono" color="text.secondary" noWrap>
-                    {makerLine}
-                  </Typography>
-                )}
+                <Typography variant="body2" color="text.secondary" noWrap>
+                  {seriesLine}
+                </Typography>
+                <Typography variant="mono" color="text.secondary" noWrap>
+                  {makerLine}
+                </Typography>
               </Names>
             </Main>
 
