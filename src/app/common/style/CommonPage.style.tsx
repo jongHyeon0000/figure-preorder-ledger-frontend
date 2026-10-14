@@ -6,7 +6,7 @@ import { styled } from '@mui/material/styles';
 * */
 export const PageContainer = styled(Box)(({ theme }) => ({
   width: '100%',
-  maxWidth: 1200,
+  maxWidth: 1400,
   margin: '0 auto',
   padding: theme.spacing(3, 2, 8),
   [theme.breakpoints.up('md')]: {

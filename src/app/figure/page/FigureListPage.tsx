@@ -1,0 +1,108 @@
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@mui/material';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import EmptyView from '@/app/common/component/EmptyView';
+import ErrorView from '@/app/common/component/ErrorView';
+import LoadingOverlay from '@/app/common/component/loading/LoadingOverlay';
+import { PageContainer, PageHeader, PageTitle } from '@/app/common/style/CommonPage.style';
+import FigureFilterBar from '@/app/figure/component/FigureFilterBar';
+import FigureListComponent from '@/app/figure/component/FigureListComponent';
+import FigureResultSummary from '@/app/figure/component/FigureResultSummary';
+import FigureStatusTabs from '@/app/figure/component/FigureStatusTabs';
+import useReadFigureList from '@/app/figure/service/useReadFigureList';
+import {
+  applyFilters,
+  buildFilterOptions,
+  countByTab,
+  filterByTab,
+  pruneFilters,
+  sortFigures,
+  sumPaidAmount,
+  sumTotalPrice,
+} from '@/app/figure/utils/FigureUtils';
+import { useFigureViewStore } from '@/store/figureViewStore';
+
+/**
+ * 상품 목록 화면 (/figures)
+ * 서버에서 전체를 한 번 받아 오고, 탭, 필터, 정렬은 화면에서 한다. 조건은 figureViewStore 에 담겨 상세에 갔다 와도 유지된다.
+ */
+const FigureListPage = () => {
+  const navigate = useNavigate();
+  const { figureList, figureListLoading, fetchReadFigureList } = useReadFigureList();
+  const { tab, filters, month, sort, setTab, setFilter, setMonth, setSort, resetFilters } = useFigureViewStore();
+
+  useEffect(() => {
+    fetchReadFigureList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const figures = figureList?.data ?? [];
+  const tabFigures = filterByTab(figures, tab);
+  const options = buildFilterOptions(tabFigures);
+  /* 탭을 바꿔 선택지에 없어진 필터 값은 적용에서 뺀다 */
+  const active = pruneFilters(filters, month, options);
+  const shownFigures = sortFigures(applyFilters(tabFigures, active.filters, active.month), sort);
+
+  const handleSelect = (figureId: number) => navigate(`/figures/${figureId}`);
+
+  return (
+    <PageContainer>
+      <PageHeader>
+        <PageTitle variant="h4" component="h1">
+          상품
+        </PageTitle>
+        <Button variant="contained" startIcon={<AddOutlinedIcon />} onClick={() => navigate('/figures/new')}>
+          상품 등록
+        </Button>
+      </PageHeader>
+
+      {figureList && figureList.code !== 'OK' && <ErrorView message={figureList.message} onRetry={fetchReadFigureList} />}
+
+      {figureList?.code === 'OK' && (
+        <>
+          <FigureStatusTabs tab={tab} counts={countByTab(figures)} onChange={setTab} />
+          <FigureFilterBar
+            options={options}
+            filters={active.filters}
+            month={active.month}
+            sort={sort}
+            onFilterChange={setFilter}
+            onMonthChange={setMonth}
+            onSortChange={setSort}
+            onReset={resetFilters}
+          />
+          <FigureResultSummary
+            count={shownFigures.length}
+            totalPrice={sumTotalPrice(shownFigures)}
+            paidAmount={sumPaidAmount(shownFigures)}
+          />
+
+          {figures.length === 0 && (
+            <EmptyView
+              message="등록한 상품이 없어요"
+              action={
+                <Button variant="contained" onClick={() => navigate('/figures/new')}>
+                  상품 등록
+                </Button>
+              }
+            />
+          )}
+          {figures.length > 0 && shownFigures.length === 0 && (
+            <EmptyView
+              message="조건에 맞는 상품이 없어요"
+              action={<Button onClick={resetFilters}>필터 초기화</Button>}
+            />
+          )}
+          {shownFigures.length > 0 && (
+            <FigureListComponent figures={shownFigures} showStatus={tab === 'ALL'} onSelect={handleSelect} />
+          )}
+        </>
+      )}
+
+      <LoadingOverlay open={figureListLoading} />
+    </PageContainer>
+  );
+};
+
+export default FigureListPage;

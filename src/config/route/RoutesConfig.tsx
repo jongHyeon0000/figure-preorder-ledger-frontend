@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom';
 import LoginPage from '@/app/auth/page/LoginPage';
 import SignupPage from '@/app/auth/page/SignupPage';
 import CategoryPage from '@/app/category/page/CategoryPage';
+import FigureListPage from '@/app/figure/page/FigureListPage';
 import ComingSoonPage from '@/app/common/page/ComingSoonPage';
 import NotFoundPage from '@/app/common/page/NotFoundPage';
 
@@ -29,7 +30,7 @@ export const APP_ROUTES: readonly RouteType[] = [
   { path: '/login', nameKr: '로그인', element: <LoginPage />, type: 'login', requireAuth: false },
   { path: '/signup', nameKr: '회원가입', element: <SignupPage />, type: 'signup', requireAuth: false },
 
-  { path: '/figures', nameKr: '상품', element: <ComingSoonPage title="상품 목록" />, type: 'gnb', requireAuth: true },
+  { path: '/figures', nameKr: '상품', element: <FigureListPage />, type: 'gnb', requireAuth: true },
   { path: '/figures/new', nameKr: '상품 등록', element: <ComingSoonPage title="상품 등록" />, type: 'figure', requireAuth: true },
   { path: '/figures/:figureId', nameKr: '상품 상세', element: <ComingSoonPage title="상품 상세" />, type: 'figure', requireAuth: true },
   { path: '/figures/:figureId/edit', nameKr: '상품 수정', element: <ComingSoonPage title="상품 수정" />, type: 'figure', requireAuth: true },
