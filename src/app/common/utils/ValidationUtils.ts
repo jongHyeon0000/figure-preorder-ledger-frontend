@@ -83,3 +83,25 @@ export const validateEmail = (value: string): string | undefined => {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return '이메일 형식이 올바르지 않아요.';
   return undefined;
 };
+
+/**
+ * [카테고리 페이지]
+ *
+ * 분류 이름: 앞뒤 공백을 뺀 1~100자
+ */
+export const validateCategoryName = (value: string): string | undefined => {
+  const trimmed = value.trim();
+  if (trimmed === '') return '이름을 입력해 주세요.';
+  if (trimmed.length > 100) return '이름은 100자 이하로 입력해 주세요.';
+  return undefined;
+};
+
+/**
+ * [카테고리 페이지]
+ *
+ * 분류 설명: 선택 입력, 1000자 이하
+ */
+export const validateCategoryDescription = (value: string): string | undefined => {
+  if (value.length > 1000) return '설명은 1000자 이하로 입력해 주세요.';
+  return undefined;
+};
