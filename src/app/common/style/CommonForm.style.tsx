@@ -39,3 +39,12 @@ export const FormActions = styled(Box)(({ theme }) => ({
   gap: theme.spacing(1.5),
   marginTop: theme.spacing(1),
 }));
+
+/*
+* <form> 본체 (입력칸을 세로로 쌓는다)
+* */
+export const FormBody = styled('form')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: theme.spacing(2),
+}));

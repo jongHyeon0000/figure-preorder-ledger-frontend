@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
+import LoginPage from '@/app/auth/page/LoginPage';
+import SignupPage from '@/app/auth/page/SignupPage';
 import ComingSoonPage from '@/app/common/page/ComingSoonPage';
 import NotFoundPage from '@/app/common/page/NotFoundPage';
 
@@ -23,8 +25,8 @@ export type RouteType = {
 export const APP_ROUTES: readonly RouteType[] = [
   { path: '/', nameKr: '홈', element: <Navigate to="/figures" replace />, type: 'root', requireAuth: false },
 
-  { path: '/login', nameKr: '로그인', element: <ComingSoonPage title="로그인" />, type: 'login', requireAuth: false },
-  { path: '/signup', nameKr: '회원가입', element: <ComingSoonPage title="회원가입" />, type: 'signup', requireAuth: false },
+  { path: '/login', nameKr: '로그인', element: <LoginPage />, type: 'login', requireAuth: false },
+  { path: '/signup', nameKr: '회원가입', element: <SignupPage />, type: 'signup', requireAuth: false },
 
   { path: '/figures', nameKr: '상품', element: <ComingSoonPage title="상품 목록" />, type: 'gnb', requireAuth: true },
   { path: '/figures/new', nameKr: '상품 등록', element: <ComingSoonPage title="상품 등록" />, type: 'figure', requireAuth: true },
