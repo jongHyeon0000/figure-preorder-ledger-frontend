@@ -1,16 +1,34 @@
+import type { SignupFormValues } from '@/app/auth/interface/SignupFormValues';
+
 /*
 * 입력 검증. 통과하면 undefined, 틀리면 사용자에게 보여 줄 문구를 돌려준다.
 * 제약 값은 백엔드 swagger 기준이고, 서버가 같은 검사를 다시 하므로 여기서는 빠른 안내가 목적이다.
+* 함수마다 첫 줄에 [사용하는 페이지]를 적는다. 페이지별로 파일을 나눌 때 이 표시를 기준으로 옮긴다.
 * */
 
 /**
- * 비어 있는지 검사한다 (공백만 있어도 빈 값)
+ * [로그인 페이지]
+ *
+ * 로그인 아이디 입력 확인: 비었는지만 본다 (서버가 로그인 때는 형식을 검사하지 않는다)
  */
-export const validateRequired = (value: string, message: string): string | undefined => {
-  return value.trim() === '' ? message : undefined;
+export const validateLoginIdRequired = (value: string): string | undefined => {
+  if (value.trim() === '') return '아이디를 입력해 주세요.';
+  return undefined;
 };
 
 /**
+ * [로그인 페이지]
+ *
+ * 로그인 비밀번호 입력 확인: 비었는지만 본다
+ */
+export const validatePasswordRequired = (value: string): string | undefined => {
+  if (value.trim() === '') return '비밀번호를 입력해 주세요.';
+  return undefined;
+};
+
+/**
+ * [회원가입 페이지]
+ *
  * 로그인 아이디: 영문, 숫자 4~30자
  */
 export const validateLoginId = (value: string): string | undefined => {
@@ -20,6 +38,8 @@ export const validateLoginId = (value: string): string | undefined => {
 };
 
 /**
+ * [회원가입 페이지]
+ *
  * 비밀번호: 8~20자
  */
 export const validatePassword = (value: string): string | undefined => {
@@ -29,15 +49,20 @@ export const validatePassword = (value: string): string | undefined => {
 };
 
 /**
- * 비밀번호 확인: 비밀번호와 같은지 (화면에서만 쓰고 서버에는 보내지 않는다)
+ * [회원가입 페이지]
+ *
+ * 비밀번호 확인: 폼의 비밀번호와 같은지 (화면에서만 쓰고 서버에는 보내지 않는다)
+ * react-hook-form 의 validate 규칙(값, 폼 전체 값)에 그대로 넘길 수 있다.
  */
-export const validatePasswordConfirm = (password: string, confirm: string): string | undefined => {
+export const validatePasswordConfirm = (confirm: string, formValues: SignupFormValues): string | undefined => {
   if (confirm === '') return '비밀번호를 한 번 더 입력해 주세요.';
-  if (password !== confirm) return '비밀번호가 일치하지 않아요.';
+  if (formValues.password !== confirm) return '비밀번호가 일치하지 않아요.';
   return undefined;
 };
 
 /**
+ * [회원가입 페이지]
+ *
  * 닉네임: 앞뒤 공백을 뺀 1~20자
  */
 export const validateName = (value: string): string | undefined => {
@@ -48,6 +73,8 @@ export const validateName = (value: string): string | undefined => {
 };
 
 /**
+ * [회원가입 페이지]
+ *
  * 이메일: 이메일 형식, 100자 이하
  */
 export const validateEmail = (value: string): string | undefined => {
