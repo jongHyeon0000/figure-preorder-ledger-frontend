@@ -1,4 +1,4 @@
-import { Box, Button, List, Typography } from '@mui/material';
+import { Box, Button, List, Tooltip, Typography } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import CategoryChildRow from '@/app/category/component/CategoryChildRow';
@@ -6,6 +6,8 @@ import CategoryGroupItem from '@/app/category/component/CategoryGroupItem';
 import { CATEGORY_AXES, PROTECTED_CATEGORY_NAME, type CategoryAxisKey, type CategoryLevel } from '@/app/category/constant/categoryAxes';
 import type { CategoryGroup } from '@/app/category/interface/CategoryGroup';
 import type { CategoryItem } from '@/app/category/interface/CategoryItem';
+import { TonalButton, TonalDangerButton } from '@/app/common/style/CommonButton.style';
+import { InfoIcon, TooltipText } from '@/app/common/style/CommonTooltip.style';
 
 interface CategoryTreeProps {
   /** 지금 보고 있는 축 */
@@ -40,15 +42,19 @@ const CategoryTree = ({ axis, groups, selectedGroupId, onSelectGroup, onInsert, 
   if (childConfig === null) {
     return (
       <Panel>
-        <PanelHeader>
-          <Typography variant="h6">{nameKr} 목록</Typography>
-          <Button variant="contained" onClick={() => onInsert('group')}>
-            {nameKr} 추가
-          </Button>
-        </PanelHeader>
-        {groups.map((group) => (
-          <CategoryChildRow key={group.id} item={group} onEdit={() => onEdit('group', group)} onDelete={() => onDelete('group', group)} />
-        ))}
+        <PanelTop>
+          <PanelHeader sx={{ pr: 1 }}>
+            <Typography variant="h6">{nameKr} 목록</Typography>
+            <TonalButton size="small" variant="contained" disableElevation onClick={() => onInsert('group')}>
+              {nameKr} 추가
+            </TonalButton>
+          </PanelHeader>
+        </PanelTop>
+        <Box>
+          {groups.map((group) => (
+            <CategoryChildRow key={group.id} item={group} onEdit={() => onEdit('group', group)} onDelete={() => onDelete('group', group)} />
+          ))}
+        </Box>
       </Panel>
     );
   }
@@ -59,12 +65,14 @@ const CategoryTree = ({ axis, groups, selectedGroupId, onSelectGroup, onInsert, 
   return (
     <TreeLayout>
       <Panel>
-        <PanelHeader>
-          <Typography variant="h6">그룹</Typography>
-          <TonalButton size="small" variant="contained" disableElevation onClick={() => onInsert('group')}>
-            추가
-          </TonalButton>
-        </PanelHeader>
+        <PanelTop>
+          <PanelHeader sx={{ pr: 1 }}>
+            <Typography variant="h6">그룹</Typography>
+            <TonalButton size="small" variant="contained" disableElevation onClick={() => onInsert('group')}>
+              추가
+            </TonalButton>
+          </PanelHeader>
+        </PanelTop>
         <List disablePadding>
           {groups.map((group) => (
             <CategoryGroupItem
@@ -78,25 +86,33 @@ const CategoryTree = ({ axis, groups, selectedGroupId, onSelectGroup, onInsert, 
       </Panel>
 
       <Panel>
-        <PanelHeader>
-          <Typography variant="h6">{selectedGroup.name}</Typography>
-          {!isGroupProtected && (
-            <Box sx={{ display: 'flex', gap: 0.5 }}>
-              <TonalButton size="small" onClick={() => onEdit('group', selectedGroup)}>
-                그룹 수정
-              </TonalButton>
-              <TonalDangerButton size="small" onClick={() => onDelete('group', selectedGroup)}>
-                그룹 삭제
-              </TonalDangerButton>
-            </Box>
-          )}
-        </PanelHeader>
-        {selectedGroup.description !== '' && (
-          <GroupDescription color="text.secondary">{selectedGroup.description}</GroupDescription>
-        )}
-        {selectedGroup.children.map((child) => (
-          <CategoryChildRow key={child.id} item={child} onEdit={() => onEdit('child', child)} onDelete={() => onDelete('child', child)} />
-        ))}
+        <PanelTop>
+          <PanelHeader sx={{ pr: 1 }}>
+            <Typography variant="h6">
+              {selectedGroup.name}
+              {selectedGroup.description !== '' && (
+                <Tooltip title={<TooltipText>{selectedGroup.description}</TooltipText>} placement="right-start">
+                  <InfoIcon fontSize="inherit" />
+                </Tooltip>
+              )}
+            </Typography>
+            {!isGroupProtected && (
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <TonalButton size="small" onClick={() => onEdit('group', selectedGroup)}>
+                  그룹 수정
+                </TonalButton>
+                <TonalDangerButton size="small" onClick={() => onDelete('group', selectedGroup)}>
+                  그룹 삭제
+                </TonalDangerButton>
+              </Box>
+            )}
+          </PanelHeader>
+        </PanelTop>
+        <Box>
+          {selectedGroup.children.map((child) => (
+            <CategoryChildRow key={child.id} item={child} onEdit={() => onEdit('child', child)} onDelete={() => onDelete('child', child)} />
+          ))}
+        </Box>
         {!isGroupProtected && (
           <AddRow>
             <AddButton variant="outlined" size="small" startIcon={<AddOutlinedIcon />} onClick={() => onInsert('child', selectedGroup.id)}>
@@ -135,33 +151,21 @@ const PanelHeader = styled(Box)(({ theme }) => ({
   padding: theme.spacing(1.5, 2),
 }));
 
-const GroupDescription = styled(Typography)(({ theme }) => ({
-  padding: theme.spacing(0, 2, 1.5),
-  whiteSpace: 'pre-line',
-})) as typeof Typography;
+/* 패널 맨 위 칸(제목과 설명). 목록보다 어두운 면에 가는 금색 밑줄로 목록과 나눈다 */
+const PanelTop = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.surfaceSunken,
+  borderBottom: `1px solid ${theme.palette.primary.main}`,
+}));
 
 const AddRow = styled(Box)(({ theme }) => ({
   padding: theme.spacing(1, 2),
-}));
-
-/* 은은하게 색을 깐 버튼 (왼쪽의 꽉 찬 추가 버튼보다 한 단계 약하게) */
-const TonalButton = styled(Button)(({ theme }) => ({
-  color: theme.palette.primary.main,
-  fontWeight: 700,
-  backgroundColor: alpha(theme.palette.primary.main, 0.26),
-  '&:hover': { backgroundColor: alpha(theme.palette.primary.main, 0.38) },
-}));
-
-const TonalDangerButton = styled(Button)(({ theme }) => ({
-  color: theme.palette.error.main,
-  fontWeight: 700,
-  backgroundColor: alpha(theme.palette.error.main, 0.26),
-  '&:hover': { backgroundColor: alpha(theme.palette.error.main, 0.38) },
+  borderTop: `1px solid ${theme.palette.divider}`,
 }));
 
 /* 하위를 더 넣는 자리처럼 보이는 점선 칸 */
 const AddButton = styled(Button)(({ theme }) => ({
   width: '100%',
+  padding: theme.spacing(1.5, 0),
   borderStyle: 'dashed',
   borderColor: alpha(theme.palette.primary.main, 0.5),
   '&:hover': { borderStyle: 'dashed' },

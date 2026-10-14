@@ -4,6 +4,7 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { PROTECTED_CATEGORY_NAME } from '@/app/category/constant/categoryAxes';
 import type { CategoryItem } from '@/app/category/interface/CategoryItem';
+import { InfoIcon, TooltipText } from '@/app/common/style/CommonTooltip.style';
 
 interface CategoryChildRowProps {
   /** 보여 줄 분류 (하위, 또는 하위가 없는 축의 상위) */
@@ -24,14 +25,21 @@ const CategoryChildRow = ({ item, onEdit, onDelete }: CategoryChildRowProps) => 
 
   return (
     <RowBox>
-      <Box>
-        <Typography>{item.name}</Typography>
+      <TextBox>
+        <Typography sx={{ fontWeight: 700 }}>
+          {item.name}
+          {item.description !== '' && (
+            <Tooltip title={<TooltipText>{item.description}</TooltipText>} placement="right-start">
+              <InfoIcon fontSize="inherit" />
+            </Tooltip>
+          )}
+        </Typography>
         {item.description !== '' && (
           <Description variant="caption" color="text.secondary">
             {item.description}
           </Description>
         )}
-      </Box>
+      </TextBox>
       {isProtected ? (
         <Chip label="기본 항목" size="small" variant="outlined" />
       ) : (
@@ -62,14 +70,25 @@ const RowBox = styled(Box)(({ theme }) => ({
   justifyContent: 'space-between',
   gap: theme.spacing(2),
   padding: theme.spacing(1.5, 2),
-  backgroundColor: theme.palette.surfaceRaised,
-  borderBottom: `1px solid ${theme.palette.lineSubtle}`,
+  borderTop: `1px solid ${theme.palette.divider}`,
+  /* 줄무늬: 같은 부모 안에서 홀수/짝수 줄 색을 번갈아 쓴다 (부모는 이 줄들만 담는 상자여야 한다) */
+  '&:nth-of-type(odd)': { backgroundColor: theme.palette.rowStripe },
+  '&:nth-of-type(even)': { backgroundColor: theme.palette.rowStripeAlt },
+  '&:hover': { backgroundColor: theme.palette.rowHover },
 }));
+
+/* 설명은 한 줄로 보여 주고, 길면 …로 줄인다 (전체 글은 이름 옆 아이콘에 올리면 툴팁으로 본다) */
+const TextBox = styled(Box)({
+  flex: 1,
+  minWidth: 0,
+});
 
 const Description = styled(Typography)(({ theme }) => ({
   display: 'block',
   marginTop: theme.spacing(1),
-  whiteSpace: 'pre-line',
+  overflow: 'hidden',
+  whiteSpace: 'nowrap',
+  textOverflow: 'ellipsis',
 })) as typeof Typography;
 
 const ButtonGroup = styled(Box)(({ theme }) => ({

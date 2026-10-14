@@ -12,10 +12,22 @@ declare module '@mui/material/styles' {
     surfaceRaised: string
     /** 면 안쪽을 나누는 옅은 선 */
     lineSubtle: string
+    /** 목록 머리말처럼 면보다 한 단계 푹 꺼진 면 */
+    surfaceSunken: string
+    /** 줄무늬 목록의 홀수 줄 */
+    rowStripe: string
+    /** 줄무늬 목록의 짝수 줄 */
+    rowStripeAlt: string
+    /** 줄무늬 목록에서 마우스를 올린 줄 */
+    rowHover: string
   }
   interface PaletteOptions {
     surfaceRaised?: string
     lineSubtle?: string
+    surfaceSunken?: string
+    rowStripe?: string
+    rowStripeAlt?: string
+    rowHover?: string
   }
   interface TypographyVariants {
     /** 가격, 날짜, 라벨처럼 숫자를 또렷하게 보여 줄 때 */
@@ -49,6 +61,10 @@ const theme = createTheme({
     divider: '#3a3260',
     surfaceRaised: '#241f3d',
     lineSubtle: '#2a2548',
+    surfaceSunken: '#0f0d1c',
+    rowStripe: '#272145',
+    rowStripeAlt: '#1f1a38',
+    rowHover: '#322b58',
   },
   shape: { borderRadius: 8 },
   typography: {

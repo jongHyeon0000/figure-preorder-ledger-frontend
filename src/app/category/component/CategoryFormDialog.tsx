@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
+import { TonalButton } from '@/app/common/style/CommonButton.style';
 import { FormBody } from '@/app/common/style/CommonForm.style';
 import { imageUrl } from '@/app/common/utils/CommonUtils';
 import { validateCategoryDescription, validateCategoryName } from '@/app/common/utils/ValidationUtils';
@@ -45,7 +46,7 @@ const CategoryFormDialog = ({ mode, levelName, target, loading, onSubmit, onClos
   const actionText = mode === 'insert' ? '추가' : '수정';
 
   return (
-    <Dialog open onClose={onClose} fullWidth maxWidth="sm">
+    <Dialog open onClose={onClose} fullWidth maxWidth="md">
       <DialogForm noValidate onSubmit={handleSubmit(onSubmit)}>
         <DialogTitle>
           {levelName} {actionText}
@@ -73,7 +74,8 @@ const CategoryFormDialog = ({ mode, levelName, target, loading, onSubmit, onClos
               <TextField
                 label="설명 (선택)"
                 multiline
-                minRows={3}
+                minRows={5}
+                maxRows={5}
                 error={!!errors.description}
                 helperText={errors.description?.message}
                 inputRef={register('description', { validate: validateCategoryDescription }).ref}
@@ -82,12 +84,12 @@ const CategoryFormDialog = ({ mode, levelName, target, loading, onSubmit, onClos
             </FieldStack>
           </FormLayout>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={onClose}>닫기</Button>
+        <FormActions>
+          <TonalButton onClick={onClose}>닫기</TonalButton>
           <Button type="submit" variant="contained" disabled={loading}>
             {actionText}
           </Button>
-        </DialogActions>
+        </FormActions>
       </DialogForm>
     </Dialog>
   );
@@ -101,9 +103,14 @@ const DialogForm = styled(FormBody)({
   gap: 0,
 });
 
+/* 버튼 줄. 기본 여백(8px)이 좁아서 오른쪽과 아래를 16px 로 넓힌다 */
+const FormActions = styled(DialogActions)(({ theme }) => ({
+  padding: theme.spacing(1, 2, 2),
+}));
+
 const FormLayout = styled(Box)(({ theme }) => ({
   display: 'flex',
-  alignItems: 'flex-start',
+  alignItems: 'stretch',
   gap: theme.spacing(2),
   paddingTop: theme.spacing(1),
 }));
@@ -113,8 +120,8 @@ const ThumbnailBox = styled(Box)(({ theme }) => ({
   flexShrink: 0,
   alignItems: 'center',
   justifyContent: 'center',
-  width: 120,
-  height: 120,
+  /* 높이는 오른쪽 입력칸 높이를 따라가고(설명칸 줄 수를 고정해 둠), 너비는 그 높이와 비슷하게 rem 으로 정한다 */
+  width: '13.75rem',
   overflow: 'hidden',
   backgroundColor: theme.palette.surfaceRaised,
   border: `1px solid ${theme.palette.divider}`,
