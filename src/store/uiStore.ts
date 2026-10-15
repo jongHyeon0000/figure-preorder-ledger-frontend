@@ -42,6 +42,12 @@ interface UiStore {
 
   /** 스낵바 닫기 */
   closeSnackbar: () => void;
+
+  /** 임박 알림 모달을 "새로고침 전까지 다시 보지 않기"로 껐는지 (메모리에만 보관) */
+  urgentDismissed: boolean;
+
+  /** 임박 알림 모달을 새로고침 전까지 끈다 */
+  dismissUrgent: () => void;
 }
 
 export const useUiStore = create<UiStore>((set, get) => ({
@@ -52,4 +58,6 @@ export const useUiStore = create<UiStore>((set, get) => ({
     set({ snackbarOpen: true, snackbarMessage: message, snackbarSeverity: severity }),
   showResult: (res) => get().showSnackbar(res.message, getSeverity(res.code)),
   closeSnackbar: () => set({ snackbarOpen: false }),
+  urgentDismissed: false,
+  dismissUrgent: () => set({ urgentDismissed: true }),
 }));

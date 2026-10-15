@@ -7,32 +7,45 @@ import { cardEnterVariants } from '@/app/common/style/CommonMotion.style';
 import { formatPrice, imageUrl, todayString } from '@/app/common/utils/CommonUtils';
 import FigureDeadlineText from '@/app/figure/component/FigureDeadlineText';
 import type { FigureSummary } from '@/app/figure/interface/FigureSummary';
-import { formatDeliveryMonth, getTotalPrice, isDeadlinePassed } from '@/app/figure/utils/FigureUtils';
+import { DEADLINE_BLINK_MONTHS } from '@/app/figure/constant/figureStatus';
+import { formatDeliveryMonth, getTotalPrice, isDeadlinePassed, isDeadlineUnder } from '@/app/figure/utils/FigureUtils';
 
 interface FigureListComponentProps {
   /** 보여 줄 상품 */
   figures: FigureSummary[];
 
-  /** 카드를 눌렀을 때 (선택 모드가 아닐 때) */
-  onOpenDetail: (figureId: number) => void;
+  /** 마감이 곧인 미구매 상품의 예약마감일을 깜빡이게 할지 */
+  blinkUrgent: boolean;
+
+  /** 카드를 눌렀을 때 (선택 모드가 아닐 때). 없으면 카드는 누를 수 없는 표시 전용이다 */
+  onOpenDetail?: (figureId: number) => void;
 
   /** 선택 모드 여부. 켜지면 카드 앞에 체크칸이 생기고 카드를 눌러도 상세로 가지 않는다 */
-  selectMode: boolean;
+  selectMode?: boolean;
 
   /** 선택 모드에서 체크된 상품 id */
-  checkedIds: number[];
+  checkedIds?: number[];
 
   /** 선택 모드에서 카드를 눌렀을 때 체크를 켜고 끈다 */
-  onToggle: (figureId: number) => void;
+  onToggle?: (figureId: number) => void;
 }
 
 /**
  * 상품 목록. 가로로 긴 티켓형 카드가 세로로 쌓인다(표시 전용).
  */
-const FigureListComponent = ({ figures, onOpenDetail, selectMode, checkedIds, onToggle }: FigureListComponentProps) => {
+const FigureListComponent = ({
+  figures,
+  blinkUrgent,
+  onOpenDetail,
+  selectMode = false,
+  checkedIds = [],
+  onToggle,
+}: FigureListComponentProps) => {
   const today = todayString();
 
-  const handleTicketClick = (figureId: number) => (selectMode ? onToggle(figureId) : onOpenDetail(figureId));
+  const clickable = selectMode || onOpenDetail !== undefined;
+
+  const handleTicketClick = (figureId: number) => (selectMode ? onToggle?.(figureId) : onOpenDetail?.(figureId));
 
   const handleTicketKeyDown = (e: KeyboardEvent<HTMLDivElement>, figureId: number) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -51,8 +64,9 @@ const FigureListComponent = ({ figures, onOpenDetail, selectMode, checkedIds, on
           <motion.div key={figure.figureId} variants={cardEnterVariants} initial="hidden" animate="visible" custom={index}>
             <Ticket
               checked={selectMode && checked}
-              role="button"
-              tabIndex={0}
+              clickable={clickable}
+              role={clickable ? 'button' : undefined}
+              tabIndex={clickable ? 0 : undefined}
               onClick={() => handleTicketClick(figure.figureId)}
               onKeyDown={(e) => handleTicketKeyDown(e, figure.figureId)}
             >
@@ -88,7 +102,9 @@ const FigureListComponent = ({ figures, onOpenDetail, selectMode, checkedIds, on
                   {(figure.status === 'CART' || figure.status === 'UNPURCHASED') && figure.reservationDeadline !== '' && (
                     <StubRow>
                       <Label>예약마감일</Label>
-                      <FigureDeadlineText date={figure.reservationDeadline} passed={isDeadlinePassed(figure, today)} />
+                      <FigureDeadlineText date={figure.reservationDeadline} passed={isDeadlinePassed(figure, today)}
+                        urgent={blinkUrgent && isDeadlineUnder(figure, today, DEADLINE_BLINK_MONTHS)}
+                      />
                     </StubRow>
                   )}
                   {figure.status === 'RESERVED' && figure.balanceDueDate !== null && (
@@ -129,20 +145,25 @@ const ListBox = styled(Box)(({ theme }) => ({
   gap: theme.spacing(1.25),
 }));
 
-const Ticket = styled(Box, { shouldForwardProp: (prop) => prop !== 'checked' })<{ checked: boolean }>(({ theme, checked }) => ({
+const Ticket = styled(Box, { shouldForwardProp: (prop) => prop !== 'checked' && prop !== 'clickable' })<{
+  checked: boolean;
+  clickable: boolean;
+}>(({ theme, checked, clickable }) => ({
   display: 'flex',
   alignItems: 'stretch',
   overflow: 'hidden',
-  cursor: 'pointer',
+  cursor: clickable ? 'pointer' : 'default',
   backgroundColor: theme.palette.background.paper,
   border: `1px solid ${checked ? theme.palette.primary.main : theme.palette.lineSubtle}`,
   borderRadius: 12,
   transition: 'transform 0.15s ease, border-color 0.15s ease',
-  '&:hover, &:focus-visible': {
-    transform: 'translateX(3px)',
-    borderColor: theme.palette.primary.main,
-    outline: 'none',
-  },
+  ...(clickable && {
+    '&:hover, &:focus-visible': {
+      transform: 'translateX(3px)',
+      borderColor: theme.palette.primary.main,
+      outline: 'none',
+    },
+  }),
 }));
 
 /* 선택 모드의 체크칸. 카드 세로 가운데에 둔다 */

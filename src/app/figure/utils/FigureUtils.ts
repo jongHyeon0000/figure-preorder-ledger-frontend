@@ -177,6 +177,12 @@ export const isDeadlinePassed = (figure: FigureSummary, today: string): boolean 
   return beforePurchase && figure.reservationDeadline !== '' && figure.reservationDeadline < today;
 };
 
+/** 미구매 상품의 예약마감일이 오늘부터 months 개월(일수÷30) 미만으로 남았는지. 이미 지난 마감도 해당한다 */
+export const isDeadlineUnder = (figure: FigureSummary, today: string, months: number): boolean => {
+  if (figure.status !== 'UNPURCHASED' || figure.reservationDeadline === '') return false;
+  return dayjs(figure.reservationDeadline).diff(dayjs(today), 'day') / 30 < months;
+};
+
 /**
  * 고른 분류 필터 값을 칩에 보여 줄 글자로 바꾼다.
  * 하위를 골랐으면 "상위 > 하위", 상위만 골랐으면 "상위 전체", 제조사는 이름만.

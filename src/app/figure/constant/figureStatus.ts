@@ -40,3 +40,9 @@ export const DEFAULT_FIGURE_TAB: FigureTabKey = 'ALL';
 export const FIGURE_REGISTER_STATUSES = ['CART', 'UNPURCHASED'] as const;
 
 export type FigureRegisterStatus = (typeof FIGURE_REGISTER_STATUSES)[number];
+
+/** 예약마감일이 이 개월 수(일수÷30) 미만으로 남은 미구매 상품은 날짜가 깜빡인다 */
+export const DEADLINE_BLINK_MONTHS = 2;
+
+/** 예약마감일이 이 개월 수(일수÷30) 미만으로 남은 미구매 상품은 미구매 탭에 들어갈 때 임박 알림에 뜬다 */
+export const DEADLINE_ALERT_MONTHS = 1;

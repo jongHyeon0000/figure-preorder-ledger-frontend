@@ -1,9 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { showConfirmAlert } from '@/app/common/utils/AlertUtils';
+import { todayString } from '@/app/common/utils/CommonUtils';
 import EmptyView from '@/app/common/component/EmptyView';
 import ErrorView from '@/app/common/component/ErrorView';
 import LoadingOverlay from '@/app/common/component/loading/LoadingOverlay';
@@ -14,6 +15,8 @@ import FigureListComponent from '@/app/figure/component/FigureListComponent';
 import FigureResultSummary from '@/app/figure/component/FigureResultSummary';
 import FigureSelectBar from '@/app/figure/component/FigureSelectBar';
 import FigureStatusTabs from '@/app/figure/component/FigureStatusTabs';
+import FigureUrgentModal from '@/app/figure/component/FigureUrgentModal';
+import { DEADLINE_ALERT_MONTHS, type FigureTabKey } from '@/app/figure/constant/figureStatus';
 import useFigureSelection from '@/app/figure/hook/useFigureSelection';
 import useDeleteFigureList from '@/app/figure/service/useDeleteFigureList';
 import useReadFigureList from '@/app/figure/service/useReadFigureList';
@@ -22,6 +25,7 @@ import {
   buildFilterOptions,
   countByTab,
   filterByTab,
+  isDeadlineUnder,
   pruneFilters,
   sortFigures,
   sumPaidAmount,
@@ -40,6 +44,9 @@ const FigureListPage = () => {
   const { figureList, figureListLoading, fetchReadFigureList } = useReadFigureList();
   const { deleteFigureListLoading, fetchDeleteFigureList } = useDeleteFigureList();
   const showResult = useUiStore((state) => state.showResult);
+  const urgentDismissed = useUiStore((state) => state.urgentDismissed);
+  const dismissUrgent = useUiStore((state) => state.dismissUrgent);
+  const [urgentOpen, setUrgentOpen] = useState<boolean>(false);
   const { tab, filters, month, sort, setTab, setFilter, setMonth, setSort, resetFilters } = useFigureViewStore();
 
   useEffect(() => {
@@ -58,6 +65,20 @@ const FigureListPage = () => {
 
   /* 이 값이 바뀌면 목록을 새로 그려 카드 진입 애니메이션이 다시 재생된다(탭, 상품 관리 모드, 필터, 배송월, 정렬) */
   const listKey = JSON.stringify([tab, selection.selectMode, active.filters, active.month, sort]);
+
+  /* 마감이 곧인 미구매 상품. 어느 탭에서든 전체 목록에서 찾는다 */
+  const urgentFigures = figures.filter((figure) => isDeadlineUnder(figure, todayString(), DEADLINE_ALERT_MONTHS));
+
+  /* 미구매 탭을 눌렀을 때만 임박 알림을 띄운다(처음 접속이나 새로고침에서는 띄우지 않는다) */
+  const handleTabChange = (next: FigureTabKey) => {
+    setTab(next);
+    if (next === 'UNPURCHASED' && !urgentDismissed && urgentFigures.length > 0) setUrgentOpen(true);
+  };
+
+  const handleUrgentClose = (dismiss: boolean) => {
+    if (dismiss) dismissUrgent();
+    setUrgentOpen(false);
+  };
 
   const handleOpenDetail = (figureId: number) => navigate(`/figures/${figureId}`);
 
@@ -113,7 +134,7 @@ const FigureListPage = () => {
       {figureList?.code === API_CODE.OK && (
         <>
           <TabRow>
-            <FigureStatusTabs tab={tab} counts={countByTab(figures)} onChange={setTab} />
+            <FigureStatusTabs tab={tab} counts={countByTab(figures)} onChange={handleTabChange} />
             <FigureResultSummary
               count={shownFigures.length}
               totalPrice={sumTotalPrice(shownFigures)}
@@ -154,6 +175,7 @@ const FigureListPage = () => {
             <FigureListComponent
               key={listKey}
               figures={shownFigures}
+              blinkUrgent={tab === 'UNPURCHASED'}
               onOpenDetail={handleOpenDetail}
               selectMode={selection.selectMode}
               checkedIds={selection.checkedIds}
@@ -162,6 +184,8 @@ const FigureListPage = () => {
           )}
         </>
       )}
+
+      {urgentOpen && <FigureUrgentModal figures={urgentFigures} onClose={handleUrgentClose} />}
 
       <LoadingOverlay open={figureListLoading || deleteFigureListLoading} />
     </PageContainer>
