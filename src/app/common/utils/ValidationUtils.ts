@@ -1,5 +1,8 @@
+import type { Dayjs } from 'dayjs';
 import type { SignupFormValues } from '@/app/auth/interface/SignupFormValues';
 import { THUMBNAIL_EXTENSIONS, THUMBNAIL_MAX_BYTES } from '@/app/common/constant/thumbnailFile';
+import { formatPrice } from '@/app/common/utils/CommonUtils';
+import type { FigureStatusFormValues } from '@/app/figure/interface/FigureStatusFormValues';
 
 /*
 * 입력 검증. 통과하면 undefined, 틀리면 사용자에게 보여 줄 문구를 돌려준다.
@@ -174,5 +177,30 @@ export const validateFigureSelection = (value: number | null): string | undefine
  */
 export const validateFigureMultiSelection = (value: number[]): string | undefined => {
   if (value.length === 0) return '1개 이상 선택해 주세요.';
+  return undefined;
+};
+
+/**
+ * [상태 변경 창]
+ *
+ * 날짜(예약금 결제일, 결제일, 도착일): 올바른 날짜 필수 (서버는 비우면 오늘로 채우지만 화면에서는 항상 보여 주고 확인받는다)
+ */
+export const validateStatusDate = (value: Dayjs | null): string | undefined => {
+  if (value === null) return '날짜를 선택해 주세요.';
+  if (!value.isValid()) return '올바른 날짜를 입력해 주세요.';
+  return undefined;
+};
+
+/**
+ * [상태 변경 창]
+ *
+ * 예약금: 예약완료로 바꿀 때만 검사한다. 0 이상의 정수이고 상품 총액 이하
+ * react-hook-form 의 validate 규칙(값, 폼 전체 값)에 그대로 넘길 수 있다.
+ */
+export const validateDepositAmount = (value: string, formValues: FigureStatusFormValues): string | undefined => {
+  if (formValues.nextStatus !== 'RESERVED') return undefined;
+  if (value.trim() === '') return '예약금을 입력해 주세요.';
+  if (!/^\d+$/.test(value.trim()) || Number(value) > 2147483647) return '예약금은 0 이상의 숫자로 입력해 주세요.';
+  if (Number(value) > formValues.totalPrice) return `예약금은 총액(${formatPrice(formValues.totalPrice)}) 이하로 입력해 주세요.`;
   return undefined;
 };

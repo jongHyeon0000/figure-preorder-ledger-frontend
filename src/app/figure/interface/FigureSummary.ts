@@ -1,4 +1,4 @@
-import type { FigureStatus } from '@/app/figure/constant/figureStatus';
+import type { FigureStatus, PaymentType } from '@/app/figure/constant/figureStatus';
 import type { FigureCategoryRef } from '@/app/figure/interface/FigureCategoryRef';
 import type { FigureMakerRef } from '@/app/figure/interface/FigureMakerRef';
 
@@ -11,7 +11,7 @@ export interface FigureSummary {
   status: FigureStatus;
 
   /** 결제 방식 (FULL 전액, DEPOSIT 예약금+잔금). 미구매 이전에는 null */
-  paymentType: 'FULL' | 'DEPOSIT' | null;
+  paymentType: PaymentType | null;
 
   /** 상품명 */
   name: string;
