@@ -83,7 +83,7 @@ const formatMonthDay = (date: Dayjs): string => date.format('M/D');
 
 /** 일괄 변경 확인창 */
 export const getBulkConfirm = (transition: FigureTransition, count: number, date: Dayjs | null) => {
-  const dateText = date !== null ? `${transition.dateLabel} ${formatMonthDay(date)}로 처리해요.<br>` : '';
+  const dateText = date !== null ? `${transition.dateLabel} ${formatMonthDay(date)}로 처리해요.<br><br>` : '';
   const fullPaymentText = transition.paymentType === 'FULL' ? STATUS_ALERT.fullPayment : '';
   return STATUS_ALERT.bulk(count, FIGURE_STATUS_LABELS[transition.next], dateText, fullPaymentText);
 };
