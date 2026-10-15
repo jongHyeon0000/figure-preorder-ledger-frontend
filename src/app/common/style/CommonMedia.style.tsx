@@ -41,13 +41,15 @@ export const StateIcon = styled('span', { shouldForwardProp: (prop) => prop !== 
   }),
 );
 
+const THUMB_AVATAR_SPACING = { sm: 4, md: 6.5, lg: 7 } as const;
+
 /*
-* 동그란 썸네일 (이미지가 없으면 안의 아이콘을 보여 준다)
+* 동그란 썸네일 (이미지가 없으면 안의 아이콘을 보여 준다). 크기는 sm(헤더), md(분류 칩), lg(분류 선택 카드)
 * */
-export const ThumbAvatar = styled(Avatar, { shouldForwardProp: (prop) => prop !== 'size' })<{ size: 'sm' | 'lg' }>(
+export const ThumbAvatar = styled(Avatar, { shouldForwardProp: (prop) => prop !== 'size' })<{ size: keyof typeof THUMB_AVATAR_SPACING }>(
   ({ theme, size }) => ({
-    width: theme.spacing(size === 'sm' ? 4 : 7),
-    height: theme.spacing(size === 'sm' ? 4 : 7),
+    width: theme.spacing(THUMB_AVATAR_SPACING[size]),
+    height: theme.spacing(THUMB_AVATAR_SPACING[size]),
     color: theme.palette.text.secondary,
     backgroundColor: theme.palette.menuSurfaceSub,
   }),

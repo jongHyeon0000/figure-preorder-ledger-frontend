@@ -26,16 +26,18 @@ interface FigureCategoryChipProps {
 const FigureCategoryChip = ({ name, groupName, thumbnailUrl, onDelete }: FigureCategoryChipProps) => {
   return (
     <Chip>
-      <ThumbAvatar size="sm" src={imageUrl(thumbnailUrl)}>
+      <Photo size="md" src={imageUrl(thumbnailUrl)}>
         <ImageOutlinedIcon fontSize="small" />
-      </ThumbAvatar>
-      {groupName && <GroupName>{groupName} ›</GroupName>}
-      {name}
-      {onDelete && (
-        <ChipDelete size="small" aria-label={`${name} 지우기`} onClick={onDelete}>
-          <CloseIcon fontSize="inherit" />
-        </ChipDelete>
-      )}
+      </Photo>
+      <Label>
+        {groupName && <GroupName>{groupName} ›</GroupName>}
+        {name}
+        {onDelete && (
+          <ChipDelete size="small" aria-label={`${name} 지우기`} onClick={onDelete}>
+            <CloseIcon fontSize="inherit" />
+          </ChipDelete>
+        )}
+      </Label>
     </Chip>
   );
 };
@@ -44,11 +46,28 @@ export default FigureCategoryChip;
 
 /* ───────── styles ───────── */
 
-const Chip = styled(Pill)(({ theme }) => ({
+/* 동그란 사진(48px)과 그 옆의 낮은 이름 알약이 열쇠처럼 이어진다. 줄 높이는 사진을 따르고 사진이 알약보다 위아래로 튀어나온다 */
+const Chip = styled('span')({
+  display: 'inline-flex',
+  alignItems: 'center',
+});
+
+/* 알약 왼쪽 끝이 사진 아래로 조금 파고들고, 사진이 그 위에 그려진다 */
+const Photo = styled(ThumbAvatar)(({ theme }) => ({
+  position: 'relative',
+  zIndex: 1,
+  border: `1px solid ${theme.palette.divider}`,
+}));
+
+const Label = styled(Pill)(({ theme }) => ({
   gap: theme.spacing(1.25),
-  padding: theme.spacing(0.625, 2, 0.625, 0.625),
+  marginLeft: theme.spacing(-0.75),
+  padding: theme.spacing(0.75, 2, 0.75, 2.25),
+  fontSize: '0.8125rem',
   backgroundColor: theme.palette.background.paper,
   border: `1px solid ${theme.palette.divider}`,
+  borderLeft: 0,
+  borderRadius: `0 ${theme.shape.pillRadius}px ${theme.shape.pillRadius}px 0`,
 }));
 
 const GroupName = styled('span')(({ theme }) => ({
