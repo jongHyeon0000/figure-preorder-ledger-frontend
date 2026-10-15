@@ -29,7 +29,7 @@ interface FigureFlatFilterProps {
 const FigureFlatFilter = ({ allLabel, options, value, onChange }: FigureFlatFilterProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
-  const handleSelect = (next: string | null) => {
+  const handleFilterSelect = (next: string | null) => {
     onChange(next);
     setAnchorEl(null);
   };
@@ -55,12 +55,12 @@ const FigureFlatFilter = ({ allLabel, options, value, onChange }: FigureFlatFilt
         <FilterColumn>
           <List disablePadding>
             {allLabel !== undefined && (
-              <FilterItem selected={value === null} onClick={() => handleSelect(null)}>
+              <FilterItem selected={value === null} onClick={() => handleFilterSelect(null)}>
                 <ListItemText primary={allLabel} />
               </FilterItem>
             )}
             {options.map((option) => (
-              <FilterItem key={option.value} selected={option.value === value} onClick={() => handleSelect(option.value)}>
+              <FilterItem key={option.value} selected={option.value === value} onClick={() => handleFilterSelect(option.value)}>
                 <ListItemText primary={option.label} />
               </FilterItem>
             ))}

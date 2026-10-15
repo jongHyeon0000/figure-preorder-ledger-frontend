@@ -15,7 +15,7 @@ export const FIGURE_STATUS_LABELS: Record<FigureStatus, string> = {
 /** 목록 탭. 상태 5개와 전체 */
 export type FigureTabKey = FigureStatus | 'ALL';
 
-export interface FigureTabConfig {
+interface FigureTabConfig {
   key: FigureTabKey;
   label: string;
 

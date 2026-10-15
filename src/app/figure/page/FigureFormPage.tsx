@@ -93,9 +93,9 @@ const FigureFormPage = ({ mode }: FigureFormPageProps) => {
       : fetchDeleteThumbnail('figure', savedFigureId);
   };
 
-  const handleCancel = () => navigate(mode === 'insert' ? '/figures' : `/figures/${figureId}`);
+  const handleFormCancel = () => navigate(mode === 'insert' ? '/figures' : `/figures/${figureId}`);
 
-  const handleSave = async (values: FigureFormValues, thumbnail: ThumbnailChange) => {
+  const handleFigureSave = async (values: FigureFormValues, thumbnail: ThumbnailChange) => {
     const body = toSaveRequestBody(values);
     const res = mode === 'insert' ? await fetchCreateFigure(body) : await fetchUpdateFigure(figureId, body);
 
@@ -121,7 +121,7 @@ const FigureFormPage = ({ mode }: FigureFormPageProps) => {
         <PageTitle variant="h4" component="h1">
           {mode === 'insert' ? '상품 등록' : '상품 수정'}
         </PageTitle>
-        <FigureFormActions mode={mode} saving={saving} showSubmit={loaded} onCancel={handleCancel} />
+        <FigureFormActions mode={mode} saving={saving} showSubmit={loaded} onCancel={handleFormCancel} />
       </PageHeader>
 
       {failed && <ErrorView message={failed.message} onRetry={fetchAll} />}
@@ -131,8 +131,8 @@ const FigureFormPage = ({ mode }: FigureFormPageProps) => {
           figure={mode === 'edit' ? figure!.data! : undefined}
           options={formOptions.data!}
           saving={saving}
-          onSubmit={handleSave}
-          onCancel={handleCancel}
+          onSubmit={handleFigureSave}
+          onCancel={handleFormCancel}
         />
       )}
 

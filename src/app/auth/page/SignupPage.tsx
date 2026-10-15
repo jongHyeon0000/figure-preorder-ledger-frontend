@@ -21,7 +21,7 @@ const SignupPage = () => {
 
   if (isAuthenticated) return <Navigate to="/figures" replace />;
 
-  const handleSubmit = async (body: SignupRequestBody) => {
+  const handleSignupSubmit = async (body: SignupRequestBody) => {
     const res = await fetchSignup(body);
 
     showResult(res);
@@ -42,7 +42,7 @@ const SignupPage = () => {
           </>
         }
       >
-        <SignupForm onSubmit={handleSubmit} loading={signupLoading} />
+        <SignupForm onSubmit={handleSignupSubmit} loading={signupLoading} />
       </AuthCardLayout>
       <LoadingOverlay open={signupLoading} />
     </>

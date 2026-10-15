@@ -37,7 +37,7 @@ export const filterByTab = (figures: FigureSummary[], tab: FigureTabKey): Figure
 };
 
 /** 배송예정월("YYYY-MM-DD")을 필터에 쓰는 "YYYY-MM"으로 */
-export const toMonthKey = (deliveryMonth: string): string => deliveryMonth.slice(0, 7);
+const toMonthKey = (deliveryMonth: string): string => deliveryMonth.slice(0, 7);
 
 /** 배송예정월 표시 (예: "2027-02-01" 또는 "2027-02" -> "2027.02") */
 export const formatDeliveryMonth = (deliveryMonth: string): string => {
@@ -139,7 +139,7 @@ export const getTotalPrice = (figure: FigureSummary): number => figure.price * f
  * 지금까지 낸 금액: 예약완료는 예약금, 구매완료와 배송완료는 총액.
  * 장바구니와 미구매는 아직 내지 않았으므로 0
  */
-export const getPaidAmount = (figure: FigureSummary): number => {
+const getPaidAmount = (figure: FigureSummary): number => {
   if (figure.status === 'RESERVED') return figure.depositAmount ?? 0;
   if (figure.status === 'PURCHASED' || figure.status === 'DELIVERED') return getTotalPrice(figure);
   return 0;

@@ -16,7 +16,7 @@ export const FilterButton = styled(Button, { shouldForwardProp: (prop) => prop !
   }),
 );
 
-/* 필터 목록을 띄우는 팝오버. 버튼과 4px 띄우고, 바깥 틀은 투명하게 두고, 열마다 따로 카드 모양을 가진다(하위 목록이 옆에 따로 뜨기 위해) */
+/* 필터 목록을 띄우는 팝오버. 버튼과 조금 띄우고, 바깥 틀은 투명하게 두고, 열마다 따로 카드 모양을 가진다(하위 목록이 옆에 따로 뜨기 위해) */
 export const FilterPopover = styled(Popover)(({ theme }) => ({
   '& .MuiPopover-paper': {
     marginTop: theme.spacing(0.5),

@@ -102,7 +102,7 @@ const CategoryContent = ({ axis }: CategoryContentProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [axis]);
 
-  const handleSave = async (dialog: CategoryDialogState, body: CategorySaveRequestBody, thumbnail: ThumbnailChange) => {
+  const handleCategorySave = async (dialog: CategoryDialogState, body: CategorySaveRequestBody, thumbnail: ThumbnailChange) => {
     const res =
       dialog.mode === 'insert'
         ? await fetchCreateCategory(axis, dialog.level, body, dialog.parentId)
@@ -141,7 +141,7 @@ const CategoryContent = ({ axis }: CategoryContentProps) => {
       : fetchDeleteThumbnail(thumbnailTarget, targetId);
   };
 
-  const handleDelete = async (level: CategoryLevel, target: CategoryItem) => {
+  const handleCategoryDelete = async (level: CategoryLevel, target: CategoryItem) => {
     const usageRes = await fetchReadCategoryUsage(axis, level, target.id);
     if (usageRes.code !== API_CODE.OK) {
       showResult(usageRes);
@@ -194,7 +194,7 @@ const CategoryContent = ({ axis }: CategoryContentProps) => {
           onSelectGroup={setSelectedGroupId}
           onInsert={(level, parentId) => setDialog({ mode: 'insert', level, parentId })}
           onEdit={(level, target) => setDialog({ mode: 'edit', level, target })}
-          onDelete={handleDelete}
+          onDelete={handleCategoryDelete}
         />
       )}
 
@@ -204,7 +204,7 @@ const CategoryContent = ({ axis }: CategoryContentProps) => {
           levelName={dialog.level === 'group' ? groupLabel : '하위'}
           target={dialog.mode === 'edit' ? dialog.target : undefined}
           loading={createCategoryLoading || updateCategoryLoading || uploadThumbnailLoading || deleteThumbnailLoading}
-          onSubmit={(body, thumbnail) => handleSave(dialog, body, thumbnail)}
+          onSubmit={(body, thumbnail) => handleCategorySave(dialog, body, thumbnail)}
           onClose={() => setDialog(null)}
         />
       )}

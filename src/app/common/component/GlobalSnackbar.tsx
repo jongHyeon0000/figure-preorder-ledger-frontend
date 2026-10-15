@@ -11,7 +11,7 @@ const GlobalSnackbar = () => {
   const severity = useUiStore((state) => state.snackbarSeverity);
   const closeSnackbar = useUiStore((state) => state.closeSnackbar);
 
-  const handleClose = (_event?: unknown, reason?: string) => {
+  const handleSnackbarClose = (_event?: unknown, reason?: string) => {
     if (reason === 'clickaway') return;
     closeSnackbar();
   };
@@ -20,10 +20,10 @@ const GlobalSnackbar = () => {
     <Snackbar
       open={open}
       autoHideDuration={severity === 'success' ? 3000 : 5000}
-      onClose={handleClose}
+      onClose={handleSnackbarClose}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
     >
-      <Alert variant="filled" severity={severity} onClose={handleClose}>
+      <Alert variant="filled" severity={severity} onClose={handleSnackbarClose}>
         {message}
       </Alert>
     </Snackbar>

@@ -16,7 +16,7 @@ export interface CategoryLevelConfig {
 }
 
 /** 분류 축 하나의 설정 */
-export interface CategoryAxisConfig {
+interface CategoryAxisConfig {
   /** 탭에 보여 줄 이름 */
   nameKr: string;
 

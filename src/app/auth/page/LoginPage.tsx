@@ -21,7 +21,7 @@ const LoginPage = () => {
 
   if (isAuthenticated) return <Navigate to={redirectTo} replace />;
 
-  const handleSubmit = async (body: LoginRequestBody) => {
+  const handleLoginSubmit = async (body: LoginRequestBody) => {
     const res = await login(body);
     showResult(res);
   };
@@ -40,7 +40,7 @@ const LoginPage = () => {
           </>
         }
       >
-        <LoginForm onSubmit={handleSubmit} loading={loginLoading} />
+        <LoginForm onSubmit={handleLoginSubmit} loading={loginLoading} />
       </AuthCardLayout>
       <LoadingOverlay open={loginLoading} />
     </>

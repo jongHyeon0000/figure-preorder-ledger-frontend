@@ -43,7 +43,7 @@ const FigureDetailPage = () => {
   const failed = [figure, formOptions].find((res) => res !== undefined && res.code !== API_CODE.OK);
   const loaded = figure?.code === API_CODE.OK && formOptions?.code === API_CODE.OK;
 
-  const handleDelete = async (name: string) => {
+  const handleFigureDelete = async (name: string) => {
     const confirmed = await showConfirmAlert({
       title: `'${name}'을(를) 삭제할까요?`,
       text: '삭제하면 되돌릴 수 없어요.',
@@ -71,7 +71,7 @@ const FigureDetailPage = () => {
           {loaded && (
             <>
               <TonalButton onClick={() => navigate(`/figures/${figureId}/edit`)}>수정</TonalButton>
-              <TonalDangerButton onClick={() => handleDelete(figure.data!.name)}>삭제</TonalDangerButton>
+              <TonalDangerButton onClick={() => handleFigureDelete(figure.data!.name)}>삭제</TonalDangerButton>
             </>
           )}
         </Box>

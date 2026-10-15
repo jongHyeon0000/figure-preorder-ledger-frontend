@@ -39,7 +39,7 @@ const FigureCategoryFilter = ({ label, groups = [], items = [], value, onChange 
   const isFlat = groups.length === 0;
   const hoverGroup = groups.find((group) => group.groupId === hoverGroupId);
 
-  const handleOpen = (e: MouseEvent<HTMLElement>) => {
+  const handleFilterOpen = (e: MouseEvent<HTMLElement>) => {
     setHoverGroupId(null);
     setAnchorEl(e.currentTarget);
   };
@@ -50,7 +50,7 @@ const FigureCategoryFilter = ({ label, groups = [], items = [], value, onChange 
     setHoverTop(e.currentTarget.getBoundingClientRect().top - (columnsRef.current?.getBoundingClientRect().top ?? 0));
   };
 
-  const handleSelect = (next: FigureFilterValue | null) => {
+  const handleFilterSelect = (next: FigureFilterValue | null) => {
     onChange(next);
     setAnchorEl(null);
   };
@@ -62,7 +62,7 @@ const FigureCategoryFilter = ({ label, groups = [], items = [], value, onChange 
         color="inherit"
         filled={value !== null}
         endIcon={<ArrowDropDownIcon />}
-        onClick={handleOpen}
+        onClick={handleFilterOpen}
       >
         {value === null ? `${label} 전체` : label}
         {value !== null && <FilterDot />}
@@ -77,7 +77,7 @@ const FigureCategoryFilter = ({ label, groups = [], items = [], value, onChange 
         <Columns ref={columnsRef} onMouseLeave={() => setHoverGroupId(null)}>
           <FilterColumn>
             <List disablePadding>
-              <FilterItem selected={value === null} onMouseEnter={() => setHoverGroupId(null)} onClick={() => handleSelect(null)}>
+              <FilterItem selected={value === null} onMouseEnter={() => setHoverGroupId(null)} onClick={() => handleFilterSelect(null)}>
                 <ListItemText primary={`${label} 전체`} />
               </FilterItem>
 
@@ -86,7 +86,7 @@ const FigureCategoryFilter = ({ label, groups = [], items = [], value, onChange 
                   <FilterItem
                     key={item.id}
                     selected={value?.itemId === item.id}
-                    onClick={() => handleSelect({ groupId: null, itemId: item.id })}
+                    onClick={() => handleFilterSelect({ groupId: null, itemId: item.id })}
                   >
                     <ListItemText primary={item.name} />
                   </FilterItem>
@@ -98,7 +98,7 @@ const FigureCategoryFilter = ({ label, groups = [], items = [], value, onChange 
                   open={hoverGroupId === group.groupId}
                   selected={value?.groupId === group.groupId && value.itemId === null}
                   onMouseEnter={(e) => handleHoverGroup(e, group.groupId)}
-                  onClick={() => handleSelect({ groupId: group.groupId, itemId: null })}
+                  onClick={() => handleFilterSelect({ groupId: group.groupId, itemId: null })}
                 >
                   <ListItemText primary={group.groupName} />
                   <ChevronRightIcon fontSize="small" color={hoverGroupId === group.groupId ? 'primary' : 'disabled'} />
@@ -115,7 +115,7 @@ const FigureCategoryFilter = ({ label, groups = [], items = [], value, onChange 
                     <FilterItem
                       key={item.id}
                       selected={value?.itemId === item.id}
-                      onClick={() => handleSelect({ groupId: hoverGroup.groupId, itemId: item.id })}
+                      onClick={() => handleFilterSelect({ groupId: hoverGroup.groupId, itemId: item.id })}
                     >
                       <ListItemText primary={item.name} />
                     </FilterItem>

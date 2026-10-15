@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import { showConfirmAlert } from '@/app/common/utils/AlertUtils';
 import EmptyView from '@/app/common/component/EmptyView';
 import ErrorView from '@/app/common/component/ErrorView';
 import LoadingOverlay from '@/app/common/component/loading/LoadingOverlay';
@@ -11,7 +12,10 @@ import FigureFilterBar from '@/app/figure/component/FigureFilterBar';
 import FigureFilterChips from '@/app/figure/component/FigureFilterChips';
 import FigureListComponent from '@/app/figure/component/FigureListComponent';
 import FigureResultSummary from '@/app/figure/component/FigureResultSummary';
+import FigureSelectBar from '@/app/figure/component/FigureSelectBar';
 import FigureStatusTabs from '@/app/figure/component/FigureStatusTabs';
+import useFigureSelection from '@/app/figure/hook/useFigureSelection';
+import useDeleteFigureList from '@/app/figure/service/useDeleteFigureList';
 import useReadFigureList from '@/app/figure/service/useReadFigureList';
 import {
   applyFilters,
@@ -25,6 +29,7 @@ import {
 } from '@/app/figure/utils/FigureUtils';
 import { API_CODE } from '@/config/axios/constant/apiCode';
 import { useFigureViewStore } from '@/store/figureViewStore';
+import { useUiStore } from '@/store/uiStore';
 
 /**
  * 상품 목록 화면 (/figures)
@@ -33,6 +38,8 @@ import { useFigureViewStore } from '@/store/figureViewStore';
 const FigureListPage = () => {
   const navigate = useNavigate();
   const { figureList, figureListLoading, fetchReadFigureList } = useReadFigureList();
+  const { deleteFigureListLoading, fetchDeleteFigureList } = useDeleteFigureList();
+  const showResult = useUiStore((state) => state.showResult);
   const { tab, filters, month, sort, setTab, setFilter, setMonth, setSort, resetFilters } = useFigureViewStore();
 
   useEffect(() => {
@@ -47,7 +54,27 @@ const FigureListPage = () => {
   const active = pruneFilters(filters, month, options);
   const shownFigures = sortFigures(applyFilters(tabFigures, active.filters, active.month), sort);
 
-  const handleSelect = (figureId: number) => navigate(`/figures/${figureId}`);
+  const selection = useFigureSelection(shownFigures);
+
+  const handleOpenDetail = (figureId: number) => navigate(`/figures/${figureId}`);
+
+  const handleCheckedDelete = async () => {
+    const confirmed = await showConfirmAlert({
+      title: `${selection.checkedIds.length}개를 삭제할까요?`,
+      text: '삭제하면 되돌릴 수 없어요.',
+      confirmText: '삭제',
+      danger: true,
+      focusCancel: true,
+    });
+    if (!confirmed) return;
+
+    const res = await fetchDeleteFigureList(selection.checkedIds);
+    showResult(res);
+    if (res.code !== API_CODE.OK) return;
+
+    selection.cancelSelectMode();
+    fetchReadFigureList();
+  };
 
   return (
     <PageContainer>
@@ -55,9 +82,16 @@ const FigureListPage = () => {
         <PageTitle variant="h4" component="h1">
           상품
         </PageTitle>
-        <Button variant="contained" startIcon={<AddOutlinedIcon />} onClick={() => navigate('/figures/new')}>
-          상품 등록
-        </Button>
+        <Actions>
+          {!selection.selectMode && (
+            <Button variant="outlined" color="inherit" disabled={figures.length === 0} onClick={selection.startSelectMode}>
+              상품 관리
+            </Button>
+          )}
+          <Button variant="contained" startIcon={<AddOutlinedIcon />} onClick={() => navigate('/figures/new')}>
+            상품 등록
+          </Button>
+        </Actions>
       </PageHeader>
 
       {figureList && figureList.code !== API_CODE.OK && <ErrorView message={figureList.message} onRetry={fetchReadFigureList} />}
@@ -66,11 +100,21 @@ const FigureListPage = () => {
         <>
           <TabRow>
             <FigureStatusTabs tab={tab} counts={countByTab(figures)} onChange={setTab} />
-            <FigureResultSummary
-              count={shownFigures.length}
-              totalPrice={sumTotalPrice(shownFigures)}
-              paidAmount={sumPaidAmount(shownFigures)}
-            />
+            {selection.selectMode ? (
+              <FigureSelectBar
+                checkedCount={selection.checkedIds.length}
+                shownCount={shownFigures.length}
+                onToggleAll={selection.toggleAllFigures}
+                onDelete={handleCheckedDelete}
+                onCancel={selection.cancelSelectMode}
+              />
+            ) : (
+              <FigureResultSummary
+                count={shownFigures.length}
+                totalPrice={sumTotalPrice(shownFigures)}
+                paidAmount={sumPaidAmount(shownFigures)}
+              />
+            )}
           </TabRow>
           <Conditions>
             <FigureFilterBar
@@ -103,12 +147,18 @@ const FigureListPage = () => {
             />
           )}
           {shownFigures.length > 0 && (
-            <FigureListComponent figures={shownFigures} onSelect={handleSelect} />
+            <FigureListComponent
+              figures={shownFigures}
+              onOpenDetail={handleOpenDetail}
+              selectMode={selection.selectMode}
+              checkedIds={selection.checkedIds}
+              onToggle={selection.toggleFigure}
+            />
           )}
         </>
       )}
 
-      <LoadingOverlay open={figureListLoading} />
+      <LoadingOverlay open={figureListLoading || deleteFigureListLoading} />
     </PageContainer>
   );
 };
@@ -116,6 +166,11 @@ const FigureListPage = () => {
 export default FigureListPage;
 
 /* ───────── styles ───────── */
+
+const Actions = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  gap: theme.spacing(1),
+}));
 
 /* 탭(왼쪽)과 결과 요약(오른쪽 끝)을 한 줄에 두고 아래에 선을 긋는다 */
 const TabRow = styled(Box)(({ theme }) => ({

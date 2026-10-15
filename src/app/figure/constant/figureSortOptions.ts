@@ -1,7 +1,7 @@
 /** 정렬 종류 */
 export type FigureSortKey = 'DEADLINE_ASC' | 'PRICE_ASC' | 'PRICE_DESC' | 'MONTH_ASC';
 
-export interface FigureSortOption {
+interface FigureSortOption {
   key: FigureSortKey;
   label: string;
 }

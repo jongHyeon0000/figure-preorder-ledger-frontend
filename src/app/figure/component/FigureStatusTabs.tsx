@@ -18,10 +18,10 @@ interface FigureStatusTabsProps {
  * 상태 탭 (전체 | 장바구니 | 미구매 | 예약완료 | 구매완료 | 배송완료). 탭마다 상품 수가 붙는다.
  */
 const FigureStatusTabs = ({ tab, counts, onChange }: FigureStatusTabsProps) => {
-  const handleChange = (_event: SyntheticEvent, value: FigureTabKey) => onChange(value);
+  const handleTabChange = (_event: SyntheticEvent, value: FigureTabKey) => onChange(value);
 
   return (
-    <StatusTabs value={tab} onChange={handleChange}>
+    <StatusTabs value={tab} onChange={handleTabChange}>
       {FIGURE_TABS.map((config) => {
         const TabItem = config.separated ? SeparatedTab : Tab;
         return (

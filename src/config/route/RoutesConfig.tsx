@@ -10,9 +10,9 @@ import ComingSoonPage from '@/app/common/page/ComingSoonPage';
 import NotFoundPage from '@/app/common/page/NotFoundPage';
 
 /** 라우트 종류. gnb 는 상단 메뉴에 나오는 라우트 */
-export type RouteKind = 'root' | 'gnb' | 'login' | 'signup' | 'figure' | 'my-page' | 'my-page-sub' | 'not-found';
+type RouteKind = 'root' | 'gnb' | 'login' | 'signup' | 'figure' | 'my-page' | 'my-page-sub' | 'not-found';
 
-export type RouteType = {
+type RouteType = {
   path: string;
   nameKr: string;
   element: ReactNode;

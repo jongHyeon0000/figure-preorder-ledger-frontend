@@ -103,7 +103,7 @@ const DialogForm = styled(FormBody)({
   gap: 0,
 });
 
-/* 버튼 줄. 기본 여백(8px)이 좁아서 오른쪽과 아래를 16px 로 넓힌다 */
+/* 버튼 줄. 기본 여백이 좁아서 오른쪽과 아래를 넓힌다 */
 const FormActions = styled(DialogActions)(({ theme }) => ({
   padding: theme.spacing(1, 2, 2),
 }));

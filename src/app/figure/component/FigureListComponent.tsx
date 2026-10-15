@@ -1,5 +1,5 @@
 import type { KeyboardEvent } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Checkbox, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import { formatPrice, imageUrl, todayString } from '@/app/common/utils/CommonUtils';
@@ -11,20 +11,31 @@ interface FigureListComponentProps {
   /** 보여 줄 상품 */
   figures: FigureSummary[];
 
-  /** 카드를 눌렀을 때 */
-  onSelect: (figureId: number) => void;
+  /** 카드를 눌렀을 때 (선택 모드가 아닐 때) */
+  onOpenDetail: (figureId: number) => void;
+
+  /** 선택 모드 여부. 켜지면 카드 앞에 체크칸이 생기고 카드를 눌러도 상세로 가지 않는다 */
+  selectMode: boolean;
+
+  /** 선택 모드에서 체크된 상품 id */
+  checkedIds: number[];
+
+  /** 선택 모드에서 카드를 눌렀을 때 체크를 켜고 끈다 */
+  onToggle: (figureId: number) => void;
 }
 
 /**
  * 상품 목록. 가로로 긴 티켓형 카드가 세로로 쌓인다(표시 전용).
  */
-const FigureListComponent = ({ figures, onSelect }: FigureListComponentProps) => {
+const FigureListComponent = ({ figures, onOpenDetail, selectMode, checkedIds, onToggle }: FigureListComponentProps) => {
   const today = todayString();
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>, figureId: number) => {
+  const handleTicketClick = (figureId: number) => (selectMode ? onToggle(figureId) : onOpenDetail(figureId));
+
+  const handleTicketKeyDown = (e: KeyboardEvent<HTMLDivElement>, figureId: number) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      onSelect(figureId);
+      handleTicketClick(figureId);
     }
   };
 
@@ -32,15 +43,20 @@ const FigureListComponent = ({ figures, onSelect }: FigureListComponentProps) =>
     <ListBox>
       {figures.map((figure) => {
         const genre = figure.characters[0].groupName;
+        const checked = checkedIds.includes(figure.figureId);
 
         return (
           <Ticket
             key={figure.figureId}
+            checked={selectMode && checked}
             role="button"
             tabIndex={0}
-            onClick={() => onSelect(figure.figureId)}
-            onKeyDown={(e) => handleKeyDown(e, figure.figureId)}
+            onClick={() => handleTicketClick(figure.figureId)}
+            onKeyDown={(e) => handleTicketKeyDown(e, figure.figureId)}
           >
+            {selectMode && (
+              <Check checked={checked} tabIndex={-1} disableRipple slotProps={{ input: { 'aria-label': `${figure.name} 선택` } }} />
+            )}
             <Thumb>
               {figure.thumbnailUrl ? (
                 <ThumbImage src={imageUrl(figure.thumbnailUrl)} alt={figure.name} />
@@ -110,13 +126,13 @@ const ListBox = styled(Box)(({ theme }) => ({
   gap: theme.spacing(1.25),
 }));
 
-const Ticket = styled(Box)(({ theme }) => ({
+const Ticket = styled(Box, { shouldForwardProp: (prop) => prop !== 'checked' })<{ checked: boolean }>(({ theme, checked }) => ({
   display: 'flex',
   alignItems: 'stretch',
   overflow: 'hidden',
   cursor: 'pointer',
   backgroundColor: theme.palette.background.paper,
-  border: `1px solid ${theme.palette.lineSubtle}`,
+  border: `1px solid ${checked ? theme.palette.primary.main : theme.palette.lineSubtle}`,
   borderRadius: 12,
   transition: 'transform 0.15s ease, border-color 0.15s ease',
   '&:hover, &:focus-visible': {
@@ -124,6 +140,12 @@ const Ticket = styled(Box)(({ theme }) => ({
     borderColor: theme.palette.primary.main,
     outline: 'none',
   },
+}));
+
+/* 선택 모드의 체크칸. 카드 세로 가운데에 둔다 */
+const Check = styled(Checkbox)(({ theme }) => ({
+  alignSelf: 'center',
+  marginLeft: theme.spacing(1),
 }));
 
 const Thumb = styled(Box)(({ theme }) => ({
