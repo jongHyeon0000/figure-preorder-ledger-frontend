@@ -16,7 +16,7 @@ import FigureListActions from '@/app/figure/component/FigureListActions';
 import FigureStatusModal from '@/app/figure/component/FigureStatusModal';
 import FigureStatusTabs from '@/app/figure/component/FigureStatusTabs';
 import FigureUrgentModal from '@/app/figure/component/FigureUrgentModal';
-import { DEADLINE_ALERT_MONTHS, type FigureTabKey } from '@/app/figure/constant/figureStatus';
+import { DEADLINE_ALERT_MONTHS, isUrgentTab, URGENT_ALERT, type FigureTabKey, type UrgentTabKey } from '@/app/figure/constant/figureStatus';
 import type { FigureTransition } from '@/app/figure/constant/figureTransition';
 import type { FigureStatusFormValues } from '@/app/figure/interface/FigureStatusFormValues';
 import useFigureSelection from '@/app/figure/hook/useFigureSelection';
@@ -42,7 +42,7 @@ const FigureListPage = () => {
   const showResult = useUiStore((state) => state.showResult);
   const urgentDismissed = useUiStore((state) => state.urgentDismissed);
   const dismissUrgent = useUiStore((state) => state.dismissUrgent);
-  const [urgentOpen, setUrgentOpen] = useState<boolean>(false);
+  const [urgentTab, setUrgentTab] = useState<UrgentTabKey | null>(null);
   const [statusModalOpen, setStatusModalOpen] = useState<boolean>(false);
   const { tab, filters, month, sort, setTab, setFilter, setMonth, setSort, resetFilters } = useFigureViewStore();
 
@@ -66,19 +66,20 @@ const FigureListPage = () => {
   /* 이 값이 바뀌면 목록을 새로 그려 카드 진입 애니메이션이 다시 재생된다(탭, 선택 모드, 필터, 배송월, 정렬) */
   const listKey = JSON.stringify([tab, selection.mode, active.filters, active.month, sort]);
 
-  /* 마감이 곧인 미구매 상품. 어느 탭에서든 전체 목록에서 찾는다 */
-  const urgentFigures = figures.filter((figure) => isDeadlineUnder(figure, todayString(), DEADLINE_ALERT_MONTHS));
+  /* 그 탭(미구매, 예약완료)의 기한이 곧인 상품. 필터와 상관없이 전체 목록에서 찾는다 */
+  const findUrgentFigures = (urgent: UrgentTabKey) =>
+    figures.filter((figure) => figure.status === urgent && isDeadlineUnder(figure, todayString(), DEADLINE_ALERT_MONTHS));
 
-  /* 미구매 탭을 눌렀을 때만 임박 알림을 띄운다(처음 접속이나 새로고침에서는 띄우지 않는다) */
+  /* 미구매, 예약완료 탭을 눌렀을 때만 임박 알림을 띄운다(처음 접속이나 새로고침에서는 띄우지 않는다) */
   const handleTabChange = (next: FigureTabKey) => {
     selection.exitMode();
     setTab(next);
-    if (next === 'UNPURCHASED' && !urgentDismissed && urgentFigures.length > 0) setUrgentOpen(true);
+    if (isUrgentTab(next) && !urgentDismissed.includes(next) && findUrgentFigures(next).length > 0) setUrgentTab(next);
   };
 
   const handleUrgentClose = (dismiss: boolean) => {
-    if (dismiss) dismissUrgent();
-    setUrgentOpen(false);
+    if (dismiss) dismissUrgent(urgentTab!);
+    setUrgentTab(null);
   };
 
   const handleOpenDetail = (figureId: number) => navigate(`/figures/${figureId}`);
@@ -195,7 +196,7 @@ const FigureListPage = () => {
             <FigureListComponent
               key={listKey}
               figures={shownFigures}
-              blinkUrgent={tab === 'UNPURCHASED'}
+              blinkUrgent={isUrgentTab(tab)}
               onOpenDetail={handleOpenDetail}
               selectMode={selection.mode !== null}
               checkedIds={selection.checkedIds}
@@ -205,7 +206,14 @@ const FigureListPage = () => {
         </>
       )}
 
-      {urgentOpen && <FigureUrgentModal figures={urgentFigures} onClose={handleUrgentClose} />}
+      {urgentTab !== null && (
+        <FigureUrgentModal
+          title={URGENT_ALERT[urgentTab].title}
+          subtitle={URGENT_ALERT[urgentTab].subtitle}
+          figures={findUrgentFigures(urgentTab)}
+          onClose={handleUrgentClose}
+        />
+      )}
       {statusModalOpen && (
         <FigureStatusModal
           title={getTransitionLabel(bulkTransition!)}

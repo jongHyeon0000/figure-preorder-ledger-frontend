@@ -16,7 +16,7 @@ interface FigureListComponentProps {
   /** 보여 줄 상품 */
   figures: FigureSummary[];
 
-  /** 마감이 곧인 미구매 상품의 예약마감일을 깜빡이게 할지 */
+  /** 마감이 곧인 미구매 상품의 예약마감일, 예약완료 상품의 잔금 기한을 깜빡이게 할지 */
   blinkUrgent: boolean;
 
   /** 카드를 눌렀을 때 (선택 모드가 아닐 때). 없으면 카드는 누를 수 없는 표시 전용이다 */
@@ -112,7 +112,10 @@ const FigureListComponent = ({
                   {figure.status === 'RESERVED' && figure.balanceDueDate !== null && (
                     <LabelValueRow>
                       <LabelText>잔금 기한</LabelText>
-                      <FigureDeadlineText date={figure.balanceDueDate} />
+                      <FigureDeadlineText
+                        date={figure.balanceDueDate}
+                        urgent={blinkUrgent && isDeadlineUnder(figure, today, DEADLINE_BLINK_MONTHS)}
+                      />
                     </LabelValueRow>
                   )}
                   <LabelValueRow>

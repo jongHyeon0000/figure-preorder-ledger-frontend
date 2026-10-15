@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { API_CODE } from '@/config/axios/constant/apiCode';
 import type { ApiResponse } from '@/config/axios/interface/ApiResponse';
+import type { UrgentTabKey } from '@/app/figure/constant/figureStatus';
 
 /* 서버 결과 코드에 맞는 스낵바 종류. 성공은 success, 입력을 고치면 되는 문제는 warning, 나머지 실패는 error */
 const getSeverity = (code: string): 'success' | 'warning' | 'error' => {
@@ -43,11 +44,11 @@ interface UiStore {
   /** 스낵바 닫기 */
   closeSnackbar: () => void;
 
-  /** 임박 알림 모달을 "새로고침 전까지 다시 보지 않기"로 껐는지 (메모리에만 보관) */
-  urgentDismissed: boolean;
+  /** 임박 알림 모달을 "새로고침 전까지 다시 보지 않기"로 끈 탭 (메모리에만 보관) */
+  urgentDismissed: UrgentTabKey[];
 
-  /** 임박 알림 모달을 새로고침 전까지 끈다 */
-  dismissUrgent: () => void;
+  /** 임박 알림 모달을 그 탭에 한해 새로고침 전까지 끈다 */
+  dismissUrgent: (tab: UrgentTabKey) => void;
 }
 
 export const useUiStore = create<UiStore>((set, get) => ({
@@ -58,6 +59,6 @@ export const useUiStore = create<UiStore>((set, get) => ({
     set({ snackbarOpen: true, snackbarMessage: message, snackbarSeverity: severity }),
   showResult: (res) => get().showSnackbar(res.message, getSeverity(res.code)),
   closeSnackbar: () => set({ snackbarOpen: false }),
-  urgentDismissed: false,
-  dismissUrgent: () => set({ urgentDismissed: true }),
+  urgentDismissed: [],
+  dismissUrgent: (tab) => set((state) => ({ urgentDismissed: [...state.urgentDismissed, tab] })),
 }));

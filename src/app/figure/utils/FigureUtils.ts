@@ -177,10 +177,15 @@ export const isDeadlinePassed = (figure: FigureSummary, today: string): boolean 
   return beforePurchase && figure.reservationDeadline !== '' && figure.reservationDeadline < today;
 };
 
-/** 미구매 상품의 예약마감일이 오늘부터 months 개월(일수÷30) 미만으로 남았는지. 이미 지난 마감도 해당한다 */
+/**
+ * 미구매 상품의 예약마감일, 예약완료 상품의 잔금 기한이 오늘부터 months 개월(일수÷30) 미만으로 남았는지. 이미 지난 기한도 해당한다.
+ * 기한이 비어 있으면(잔금 기한은 선택 입력) 해당하지 않는다.
+ */
 export const isDeadlineUnder = (figure: FigureSummary, today: string, months: number): boolean => {
-  if (figure.status !== 'UNPURCHASED' || figure.reservationDeadline === '') return false;
-  return dayjs(figure.reservationDeadline).diff(dayjs(today), 'day') / 30 < months;
+  const deadline =
+    figure.status === 'UNPURCHASED' ? figure.reservationDeadline : figure.status === 'RESERVED' ? figure.balanceDueDate : null;
+  if (!deadline) return false;
+  return dayjs(deadline).diff(dayjs(today), 'day') / 30 < months;
 };
 
 /**

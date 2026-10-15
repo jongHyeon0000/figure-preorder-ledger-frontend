@@ -9,7 +9,13 @@ import { BoldText } from '@/app/common/style/CommonText.style';
 import { styled } from '@mui/material/styles';
 
 interface FigureUrgentModalProps {
-  /** 예약마감일이 곧인 미구매 상품 */
+  /** 제목 */
+  title: string;
+
+  /** 부제목 */
+  subtitle: string;
+
+  /** 기한이 곧인 상품 */
   figures: FigureSummary[];
 
   /** 닫을 때. dismiss 가 true 면 "새로고침 전까지 다시 보지 않기"를 체크하고 닫은 것이다 */
@@ -19,7 +25,7 @@ interface FigureUrgentModalProps {
 /**
  * 마감 임박 알림 모달. 목록과 같은 카드를 누를 수 없는 표시 전용으로 보여 준다.
  */
-const FigureUrgentModal = ({ figures, onClose }: FigureUrgentModalProps) => {
+const FigureUrgentModal = ({ title, subtitle, figures, onClose }: FigureUrgentModalProps) => {
   const [dismiss, setDismiss] = useState<boolean>(false);
 
   return (
@@ -27,9 +33,9 @@ const FigureUrgentModal = ({ figures, onClose }: FigureUrgentModalProps) => {
       <Header>
         <Row>
           <NotificationsActiveIcon color="error" />
-          <UrgentTitle>곧 품절될 가능성이 높은 제품이 있어요!</UrgentTitle>
+          <UrgentTitle>{title}</UrgentTitle>
         </Row>
-        <BoldText color="text.secondary">예약마감일이 얼마 남지 않은 미구매 항목이에요. 서둘러 확인해보세요.</BoldText>
+        <BoldText color="text.secondary">{subtitle}</BoldText>
       </Header>
       <Content>
         <FigureListComponent figures={figures} blinkUrgent />
