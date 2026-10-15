@@ -16,7 +16,7 @@ import { useUiStore } from '@/store/uiStore';
 const SignupPage = () => {
   const { isAuthenticated } = useAuth();
   const { signupLoading, fetchSignup } = useSignup();
-  const showSnackbar = useUiStore((state) => state.showSnackbar);
+  const showResult = useUiStore((state) => state.showResult);
   const navigate = useNavigate();
 
   if (isAuthenticated) return <Navigate to="/figures" replace />;
@@ -24,12 +24,8 @@ const SignupPage = () => {
   const handleSubmit = async (body: SignupRequestBody) => {
     const res = await fetchSignup(body);
 
-    if (res.code === API_CODE.OK) {
-      showSnackbar(res.message, 'success');
-      navigate('/login');
-    } else {
-      showSnackbar(res.message, 'error');
-    }
+    showResult(res);
+    if (res.code === API_CODE.OK) navigate('/login');
   };
 
   return (

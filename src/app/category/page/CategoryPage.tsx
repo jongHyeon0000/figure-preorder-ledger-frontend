@@ -72,6 +72,7 @@ const CategoryPage = () => {
  */
 const CategoryContent = ({ axis }: CategoryContentProps) => {
   const showSnackbar = useUiStore((state) => state.showSnackbar);
+  const showResult = useUiStore((state) => state.showResult);
 
   const { categoryList, categoryListLoading, fetchReadCategoryList } = useReadCategoryList();
   const { createCategoryLoading, fetchCreateCategory } = useCreateCategory();
@@ -108,7 +109,7 @@ const CategoryContent = ({ axis }: CategoryContentProps) => {
         : await fetchUpdateCategory(axis, dialog.level, dialog.target.id, body);
 
     if (res.code !== API_CODE.OK) {
-      showSnackbar(res.message, 'error');
+      showResult(res);
       return;
     }
 
@@ -119,7 +120,7 @@ const CategoryContent = ({ axis }: CategoryContentProps) => {
     if (thumbnailRes !== null && thumbnailRes.code !== API_CODE.OK) {
       showSnackbar(`저장했지만 이미지는 처리하지 못했어요. ${thumbnailRes.message}`, 'warning');
     } else {
-      showSnackbar(res.message, 'success');
+      showResult(res);
     }
     setDialog(null);
 
@@ -143,7 +144,7 @@ const CategoryContent = ({ axis }: CategoryContentProps) => {
   const handleDelete = async (level: CategoryLevel, target: CategoryItem) => {
     const usageRes = await fetchReadCategoryUsage(axis, level, target.id);
     if (usageRes.code !== API_CODE.OK) {
-      showSnackbar(usageRes.message, 'error');
+      showResult(usageRes);
       return;
     }
 
@@ -163,12 +164,9 @@ const CategoryContent = ({ axis }: CategoryContentProps) => {
     if (!confirmed) return;
 
     const res = await fetchDeleteCategory(axis, level, target.id);
-    if (res.code !== API_CODE.OK) {
-      showSnackbar(res.message, 'error');
-      return;
-    }
+    showResult(res);
+    if (res.code !== API_CODE.OK) return;
 
-    showSnackbar(res.message, 'success');
     if (level === 'group' && target.id === selectedGroupId) setSelectedGroupId(null);
     await fetchReadCategoryList(axis);
   };

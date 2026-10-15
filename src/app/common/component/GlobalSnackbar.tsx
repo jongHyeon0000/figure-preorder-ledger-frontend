@@ -3,7 +3,7 @@ import { useUiStore } from '@/store/uiStore';
 
 /**
  * 루트에 하나만 둔다. uiStore 의 showSnackbar 로 띄운 알림을 그린다.
- * 오류는 읽을 시간이 필요해서 성공보다 오래 둔다.
+ * 성공이 아닌 알림(경고, 오류)은 읽을 시간이 필요해서 성공보다 오래 둔다.
  */
 const GlobalSnackbar = () => {
   const open = useUiStore((state) => state.snackbarOpen);
@@ -19,7 +19,7 @@ const GlobalSnackbar = () => {
   return (
     <Snackbar
       open={open}
-      autoHideDuration={severity === 'error' ? 5000 : 3000}
+      autoHideDuration={severity === 'success' ? 3000 : 5000}
       onClose={handleClose}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
     >
