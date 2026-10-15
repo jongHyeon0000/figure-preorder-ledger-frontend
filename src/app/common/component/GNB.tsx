@@ -47,7 +47,7 @@ const GNB = () => {
     <GnbBar position="sticky" elevation={0}>
       <Toolbar>
         <Brand variant="h6" component={Link} to="/">
-          피규어 예약 장부
+          미쿠미쿠예약시스템
         </Brand>
 
         {isAuthenticated ? (

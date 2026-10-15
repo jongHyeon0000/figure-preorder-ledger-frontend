@@ -30,7 +30,7 @@ const LoginPage = () => {
     <>
       <AuthCardLayout
         title="로그인"
-        description="피규어 예약 장부에 오신 것을 환영해요."
+        description="미쿠미쿠예약시스템에 오신 것을 환영해요."
         footer={
           <>
             아직 계정이 없으신가요?{' '}
