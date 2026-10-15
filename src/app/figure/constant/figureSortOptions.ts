@@ -15,8 +15,3 @@ export const FIGURE_SORT_OPTIONS: readonly FigureSortOption[] = [
 ];
 
 export const DEFAULT_FIGURE_SORT: FigureSortKey = 'DEADLINE_ASC';
-
-/** 값이 정렬 종류인지 확인 */
-export const isFigureSortKey = (value: string): value is FigureSortKey => {
-  return FIGURE_SORT_OPTIONS.some((option) => option.key === value);
-};

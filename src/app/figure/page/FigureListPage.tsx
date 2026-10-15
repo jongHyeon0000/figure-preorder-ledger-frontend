@@ -103,7 +103,7 @@ const FigureListPage = () => {
             />
           )}
           {shownFigures.length > 0 && (
-            <FigureListComponent figures={shownFigures} showStatus={tab === 'ALL'} onSelect={handleSelect} />
+            <FigureListComponent figures={shownFigures} onSelect={handleSelect} />
           )}
         </>
       )}

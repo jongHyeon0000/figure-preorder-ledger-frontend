@@ -9,7 +9,7 @@ interface ConfirmOptions {
   /** 본문 (일반 글자) */
   text?: string;
 
-  /** 본문 (HTML). 사용자 입력을 넣을 때는 escapeHtml 로 감싼다 */
+  /** 본문 (HTML) */
   html?: string;
 
   /** 확인 버튼 글자 */

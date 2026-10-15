@@ -1,19 +1,15 @@
 import type { KeyboardEvent } from 'react';
 import { Box, Typography } from '@mui/material';
-import { alpha, styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import { formatPrice, imageUrl, todayString } from '@/app/common/utils/CommonUtils';
 import FigureDeadlineText from '@/app/figure/component/FigureDeadlineText';
-import FigureStatusChip from '@/app/figure/component/FigureStatusChip';
 import type { FigureSummary } from '@/app/figure/interface/FigureSummary';
 import { formatDeliveryMonth, getTotalPrice, isDeadlinePassed } from '@/app/figure/utils/FigureUtils';
 
 interface FigureListComponentProps {
   /** 보여 줄 상품 */
   figures: FigureSummary[];
-
-  /** 상태 칩을 보여 줄지 (탭 하나만 볼 때는 모두 같은 상태라 숨긴다) */
-  showStatus: boolean;
 
   /** 카드를 눌렀을 때 */
   onSelect: (figureId: number) => void;
@@ -22,7 +18,7 @@ interface FigureListComponentProps {
 /**
  * 상품 목록. 가로로 긴 티켓형 카드가 세로로 쌓인다(표시 전용).
  */
-const FigureListComponent = ({ figures, showStatus, onSelect }: FigureListComponentProps) => {
+const FigureListComponent = ({ figures, onSelect }: FigureListComponentProps) => {
   const today = todayString();
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>, figureId: number) => {
@@ -36,8 +32,6 @@ const FigureListComponent = ({ figures, showStatus, onSelect }: FigureListCompon
     <ListBox>
       {figures.map((figure) => {
         const genre = figure.characters[0].groupName;
-        const seriesLine = [...figure.series, ...figure.characters].map((ref) => ref.name).join(' · ');
-        const makerLine = `${figure.maker.name} · ${figure.shop.name}`;
 
         return (
           <Ticket
@@ -56,42 +50,48 @@ const FigureListComponent = ({ figures, showStatus, onSelect }: FigureListCompon
             </Thumb>
 
             <Main>
-              <Tags>
-                <GoldTag>{genre}</GoldTag>
-                <PinkTag>{figure.figureType.name}</PinkTag>
-              </Tags>
               <Names>
-                <NameRow>
-                  <FigureName variant="h6" component="div">
-                    {figure.name}
-                  </FigureName>
-                  {showStatus && <FigureStatusChip status={figure.status} />}
-                </NameRow>
-                <Typography variant="body2" color="text.secondary" noWrap>
-                  {seriesLine}
-                </Typography>
-                <Typography variant="mono" color="text.secondary" noWrap>
-                  {makerLine}
-                </Typography>
+                <FigureName variant="h6" component="div">
+                  {figure.name}
+                </FigureName>
+                <Rows>
+                  <Label>장르</Label>
+                  <Value>{genre}</Value>
+                  <Label>형태</Label>
+                  <Value>
+                    {figure.figureType.groupName} › {figure.figureType.name}
+                  </Value>
+                </Rows>
               </Names>
             </Main>
 
             <Stub>
-              {(figure.status === 'CART' || figure.status === 'UNPURCHASED') && figure.reservationDeadline !== '' && (
-                <FigureDeadlineText label="예약마감일" date={figure.reservationDeadline} passed={isDeadlinePassed(figure, today)} />
-              )}
-              {figure.status === 'RESERVED' && figure.balanceDueDate !== null && (
-                <FigureDeadlineText label="잔금 기한" date={figure.balanceDueDate} />
-              )}
-              <Typography variant="mono" color="text.secondary" noWrap>
-                배송예정월 <b>{formatDeliveryMonth(figure.deliveryMonth)}</b>
-              </Typography>
-              <Price>{formatPrice(getTotalPrice(figure))}</Price>
-              {figure.quantity > 1 && (
-                <Typography variant="mono" color="text.secondary" noWrap>
-                  {formatPrice(figure.price)} × {figure.quantity}
-                </Typography>
-              )}
+              <Dates>
+                {(figure.status === 'CART' || figure.status === 'UNPURCHASED') && figure.reservationDeadline !== '' && (
+                  <StubRow>
+                    <Label>예약마감일</Label>
+                    <FigureDeadlineText date={figure.reservationDeadline} passed={isDeadlinePassed(figure, today)} />
+                  </StubRow>
+                )}
+                {figure.status === 'RESERVED' && figure.balanceDueDate !== null && (
+                  <StubRow>
+                    <Label>잔금 기한</Label>
+                    <FigureDeadlineText date={figure.balanceDueDate} />
+                  </StubRow>
+                )}
+                <StubRow>
+                  <Label>배송예정월</Label>
+                  <Value>{formatDeliveryMonth(figure.deliveryMonth)}</Value>
+                </StubRow>
+              </Dates>
+              <PriceBox>
+                <Price>{formatPrice(getTotalPrice(figure))}</Price>
+                {figure.quantity > 1 && (
+                  <Quantity variant="mono" color="text.secondary" noWrap>
+                    {formatPrice(figure.price)} × {figure.quantity}
+                  </Quantity>
+                )}
+              </PriceBox>
             </Stub>
           </Ticket>
         );
@@ -151,33 +151,7 @@ const Main = styled(Box)(({ theme }) => ({
   flex: 1,
   minWidth: 0,
   alignItems: 'center',
-  gap: theme.spacing(2),
-  padding: theme.spacing(1.5, 2.5),
-}));
-
-const Tags = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flex: `0 0 ${theme.spacing(11.5)}`,
-  flexDirection: 'column',
-  gap: theme.spacing(0.75),
-}));
-
-/* 장르(금색)와 형태(분홍색) 꼬리표 */
-const GoldTag = styled('span')(({ theme }) => ({
-  ...theme.typography.mono,
-  padding: theme.spacing(0.25, 0.75),
-  overflow: 'hidden',
-  textAlign: 'center',
-  textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
-  color: theme.palette.primary.main,
-  backgroundColor: alpha(theme.palette.primary.main, 0.14),
-  borderRadius: 5,
-}));
-
-const PinkTag = styled(GoldTag)(({ theme }) => ({
-  color: theme.palette.secondary.main,
-  backgroundColor: alpha(theme.palette.secondary.main, 0.14),
+  padding: theme.spacing(1.75, 2.75),
 }));
 
 const Names = styled(Box)(({ theme }) => ({
@@ -185,31 +159,50 @@ const Names = styled(Box)(({ theme }) => ({
   flex: 1,
   minWidth: 0,
   flexDirection: 'column',
-  gap: theme.spacing(0.5),
-}));
-
-const NameRow = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
   gap: theme.spacing(1),
 }));
 
 const FigureName = styled(Typography)({
   display: '-webkit-box',
   overflow: 'hidden',
+  fontSize: '1.375rem',
   WebkitBoxOrient: 'vertical',
   WebkitLineClamp: 2,
 }) as typeof Typography;
 
-/* 티켓 오른쪽의 점선으로 끊긴 칸 (마감일, 배송예정월, 가격) */
+/* 이름표(Label)와 값(Value)이 두 줄로 선 칸. 이름표 칸 폭은 가장 긴 이름표를 따른다 */
+const Rows = styled(Box)(({ theme }) => ({
+  display: 'grid',
+  gridTemplateColumns: 'auto 1fr',
+  columnGap: theme.spacing(1.5),
+  rowGap: theme.spacing(0.5),
+  alignItems: 'baseline',
+  fontSize: '0.8125rem',
+  lineHeight: 1.5,
+}));
+
+const Label = styled('span')(({ theme }) => ({
+  color: theme.palette.text.secondary,
+}));
+
+const Value = styled('span')(({ theme }) => ({
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+  color: theme.palette.text.primary,
+  fontWeight: 500,
+}));
+
+/* 티켓 오른쪽의 점선으로 끊긴 칸. 위는 날짜들, 아래는 가격이고 둘 사이를 띄운다 */
 const Stub = styled(Box)(({ theme }) => ({
   position: 'relative',
   display: 'flex',
-  flex: `0 0 ${theme.spacing(25)}`,
+  flex: `0 0 ${theme.spacing(27)}`,
   flexDirection: 'column',
   justifyContent: 'center',
-  gap: theme.spacing(0.75),
-  padding: theme.spacing(1.75, 2.5),
+  padding: theme.spacing(1.75, 2.75),
+  fontSize: '0.8125rem',
+  lineHeight: 1.5,
   backgroundColor: theme.palette.surfaceRaised,
   borderLeft: `1px dashed ${theme.palette.divider}`,
   '&::before, &::after': {
@@ -225,9 +218,32 @@ const Stub = styled(Box)(({ theme }) => ({
   '&::after': { bottom: -7 },
 }));
 
+const Dates = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: theme.spacing(0.5),
+}));
+
+const StubRow = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  gap: theme.spacing(1.5),
+}));
+
+const PriceBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-end',
+  marginTop: theme.spacing(2),
+}));
+
 const Price = styled(Typography)(({ theme }) => ({
   ...theme.typography.mono,
-  fontSize: '1rem',
+  fontSize: '1.25rem',
   fontWeight: 700,
   color: theme.palette.primary.main,
 }));
+
+const Quantity = styled(Typography)({
+  fontSize: '0.75rem',
+}) as typeof Typography;
