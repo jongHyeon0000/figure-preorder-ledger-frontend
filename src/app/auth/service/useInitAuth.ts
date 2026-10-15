@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { API_CODE } from '@/config/axios/constant/apiCode';
 import { api } from '@/config/axios/AxiosConfig';
 import type { ApiResponse } from '@/config/axios/interface/ApiResponse';
 import { useAuthStore } from '@/store/authStore';
@@ -24,7 +25,7 @@ const useInitAuth = () => {
     api
       .get<ApiResponse<UserInfo>>('/api/auth/me')
       .then((response) => {
-        if (response.data.code === 'OK') {
+        if (response.data.code === API_CODE.OK) {
           setUser(response.data.data);
         }
       })

@@ -6,6 +6,7 @@ import type { SignupRequestBody } from '@/app/auth/interface/SignupRequestBody';
 import useAuth from '@/app/auth/service/useAuth';
 import useSignup from '@/app/auth/service/useSignup';
 import LoadingOverlay from '@/app/common/component/loading/LoadingOverlay';
+import { API_CODE } from '@/config/axios/constant/apiCode';
 import { useUiStore } from '@/store/uiStore';
 
 /**
@@ -23,7 +24,7 @@ const SignupPage = () => {
   const handleSubmit = async (body: SignupRequestBody) => {
     const res = await fetchSignup(body);
 
-    if (res.code === 'OK') {
+    if (res.code === API_CODE.OK) {
       showSnackbar(res.message, 'success');
       navigate('/login');
     } else {

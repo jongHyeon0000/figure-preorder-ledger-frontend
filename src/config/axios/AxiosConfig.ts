@@ -1,4 +1,4 @@
-import axios, { type AxiosInstance } from 'axios';
+import axios, { HttpStatusCode, type AxiosInstance } from 'axios';
 import { getAccessToken, removeAccessToken } from '@/utils/cookieUtils';
 import { useAuthStore } from '@/store/authStore';
 
@@ -34,7 +34,7 @@ api.interceptors.response.use(
   (error) => {
     const status = error.response?.status;
 
-    if (status === 401 || status === 403) {
+    if (status === HttpStatusCode.Unauthorized || status === HttpStatusCode.Forbidden) {
       removeAccessToken();
       useAuthStore.getState().logout();
     }

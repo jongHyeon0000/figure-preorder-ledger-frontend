@@ -23,6 +23,7 @@ import {
   sumPaidAmount,
   sumTotalPrice,
 } from '@/app/figure/utils/FigureUtils';
+import { API_CODE } from '@/config/axios/constant/apiCode';
 import { useFigureViewStore } from '@/store/figureViewStore';
 
 /**
@@ -59,9 +60,9 @@ const FigureListPage = () => {
         </Button>
       </PageHeader>
 
-      {figureList && figureList.code !== 'OK' && <ErrorView message={figureList.message} onRetry={fetchReadFigureList} />}
+      {figureList && figureList.code !== API_CODE.OK && <ErrorView message={figureList.message} onRetry={fetchReadFigureList} />}
 
-      {figureList?.code === 'OK' && (
+      {figureList?.code === API_CODE.OK && (
         <>
           <TabRow>
             <FigureStatusTabs tab={tab} counts={countByTab(figures)} onChange={setTab} />

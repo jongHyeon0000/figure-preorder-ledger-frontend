@@ -27,6 +27,7 @@ import useDeleteThumbnail from '@/app/common/service/useDeleteThumbnail';
 import useUploadThumbnail from '@/app/common/service/useUploadThumbnail';
 import { PageContainer, PageHeader, PageTitle } from '@/app/common/style/CommonPage.style';
 import { showConfirmAlert } from '@/app/common/utils/AlertUtils';
+import { API_CODE } from '@/config/axios/constant/apiCode';
 import { useUiStore } from '@/store/uiStore';
 
 /** 열려 있는 추가/수정 창의 상태. 하위를 추가할 때는 속할 상위 id 를 가진다 */
@@ -106,7 +107,7 @@ const CategoryContent = ({ axis }: CategoryContentProps) => {
         ? await fetchCreateCategory(axis, dialog.level, body, dialog.parentId)
         : await fetchUpdateCategory(axis, dialog.level, dialog.target.id, body);
 
-    if (res.code !== 'OK') {
+    if (res.code !== API_CODE.OK) {
       showSnackbar(res.message, 'error');
       return;
     }
@@ -115,7 +116,7 @@ const CategoryContent = ({ axis }: CategoryContentProps) => {
     const targetId = dialog.mode === 'insert' ? res.data!.id : dialog.target.id;
     const thumbnailRes = await saveThumbnail(dialog.level, targetId, thumbnail);
 
-    if (thumbnailRes !== null && thumbnailRes.code !== 'OK') {
+    if (thumbnailRes !== null && thumbnailRes.code !== API_CODE.OK) {
       showSnackbar(`저장했지만 이미지는 처리하지 못했어요. ${thumbnailRes.message}`, 'warning');
     } else {
       showSnackbar(res.message, 'success');
@@ -141,7 +142,7 @@ const CategoryContent = ({ axis }: CategoryContentProps) => {
 
   const handleDelete = async (level: CategoryLevel, target: CategoryItem) => {
     const usageRes = await fetchReadCategoryUsage(axis, level, target.id);
-    if (usageRes.code !== 'OK') {
+    if (usageRes.code !== API_CODE.OK) {
       showSnackbar(usageRes.message, 'error');
       return;
     }
@@ -162,7 +163,7 @@ const CategoryContent = ({ axis }: CategoryContentProps) => {
     if (!confirmed) return;
 
     const res = await fetchDeleteCategory(axis, level, target.id);
-    if (res.code !== 'OK') {
+    if (res.code !== API_CODE.OK) {
       showSnackbar(res.message, 'error');
       return;
     }
@@ -174,10 +175,10 @@ const CategoryContent = ({ axis }: CategoryContentProps) => {
 
   return (
     <>
-      {categoryList && categoryList.code !== 'OK' && (
+      {categoryList && categoryList.code !== API_CODE.OK && (
         <ErrorView message={categoryList.message} onRetry={() => fetchReadCategoryList(axis)} />
       )}
-      {categoryList?.code === 'OK' && groups.length === 0 && (
+      {categoryList?.code === API_CODE.OK && groups.length === 0 && (
         <EmptyView
           message={`등록된 ${groupLabel}이(가) 없어요`}
           action={
@@ -187,7 +188,7 @@ const CategoryContent = ({ axis }: CategoryContentProps) => {
           }
         />
       )}
-      {categoryList?.code === 'OK' && groups.length > 0 && (
+      {categoryList?.code === API_CODE.OK && groups.length > 0 && (
         <CategoryTree
           axis={axis}
           groups={groups}

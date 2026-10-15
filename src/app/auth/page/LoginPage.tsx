@@ -5,6 +5,7 @@ import LoginForm from '@/app/auth/component/LoginForm';
 import type { LoginRequestBody } from '@/app/auth/interface/LoginRequestBody';
 import useAuth from '@/app/auth/service/useAuth';
 import LoadingOverlay from '@/app/common/component/loading/LoadingOverlay';
+import { API_CODE } from '@/config/axios/constant/apiCode';
 import { useUiStore } from '@/store/uiStore';
 
 /**
@@ -24,7 +25,7 @@ const LoginPage = () => {
   const handleSubmit = async (body: LoginRequestBody) => {
     const res = await login(body);
 
-    if (res.code === 'OK') {
+    if (res.code === API_CODE.OK) {
       showSnackbar(res.message, 'success');
     } else {
       showSnackbar(res.message, 'error');
