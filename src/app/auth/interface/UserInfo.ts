@@ -11,6 +11,9 @@ export interface UserInfo {
   /** 닉네임 (1~20자) */
   name: string;
 
+  /** 프로필 이미지 주소 ('/uploads/...'). 없으면 필드가 오지 않는다 */
+  thumbnailUrl?: string;
+
   /** 가입 일시 */
   createdAt: string;
 

@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { api } from '@/config/axios/AxiosConfig';
 import type { ApiResponse } from '@/config/axios/interface/ApiResponse';
 import { toApiResponse } from '@/config/axios/utils/toApiResponse';
-import { useAuthStore } from '@/store/authStore';
 import { removeAccessToken, setAccessToken } from '@/utils/cookieUtils';
 import type { LoginRequestBody } from '@/app/auth/interface/LoginRequestBody';
 import type { LoginResponseData } from '@/app/auth/interface/LoginResponseData';
 import type { UserInfo } from '@/app/auth/interface/UserInfo';
+import useReadMe from '@/app/auth/service/useReadMe';
+import { API_CODE } from '@/config/axios/constant/apiCode';
 
 /**
  * 로그인 훅
@@ -16,7 +17,7 @@ import type { UserInfo } from '@/app/auth/interface/UserInfo';
  */
 const useLogin = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const setUser = useAuthStore((state) => state.setUser);
+  const { fetchReadMe } = useReadMe();
 
   const fetchLogin = async (body: LoginRequestBody): Promise<ApiResponse<UserInfo | null>> => {
     setLoading(true);
@@ -24,10 +25,13 @@ const useLogin = () => {
       const loginRes = await api.post<ApiResponse<LoginResponseData>>('/api/auth/login', body);
       setAccessToken(loginRes.data.data.accessToken);
 
-      const meRes = await api.get<ApiResponse<UserInfo>>('/api/auth/me');
-      setUser(meRes.data.data);
+      const meRes = await fetchReadMe();
+      if (meRes.code !== API_CODE.OK) {
+        removeAccessToken();
+        return meRes;
+      }
 
-      return { ...loginRes.data, data: meRes.data.data };
+      return { ...loginRes.data, data: meRes.data };
     } catch (err) {
       /* 로그인은 됐는데 사용자 정보를 못 가져온 경우에 토큰이 남지 않게 한다 */
       removeAccessToken();

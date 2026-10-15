@@ -1,7 +1,7 @@
 import type { SyntheticEvent } from 'react';
-import { Tab, Tabs } from '@mui/material';
+import { Tab } from '@mui/material';
 import { CATEGORY_AXES, isCategoryAxisKey, type CategoryAxisKey } from '@/app/category/constant/categoryAxes';
-import { styled } from '@mui/material/styles';
+import { UnderlineTabs } from '@/app/common/style/CommonTabs.style';
 
 interface CategoryAxisTabsProps {
   /** 지금 보고 있는 축 */
@@ -20,19 +20,12 @@ const CategoryAxisTabs = ({ axis, onChange }: CategoryAxisTabsProps) => {
   };
 
   return (
-    <AxisTabs value={axis} onChange={handleAxisChange}>
+    <UnderlineTabs value={axis} onChange={handleAxisChange}>
       {Object.entries(CATEGORY_AXES).map(([key, config]) => (
         <Tab key={key} value={key} label={config.nameKr} />
       ))}
-    </AxisTabs>
+    </UnderlineTabs>
   );
 };
 
 export default CategoryAxisTabs;
-
-/* ───────── styles ───────── */
-
-const AxisTabs = styled(Tabs)(({ theme }) => ({
-  marginBottom: theme.spacing(3),
-  borderBottom: `1px solid ${theme.palette.divider}`,
-}));

@@ -5,6 +5,8 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import useAuth from '@/app/auth/service/useAuth';
+import { ThumbAvatar } from '@/app/common/style/CommonMedia.style';
+import { imageUrl } from '@/app/common/utils/CommonUtils';
 import { APP_ROUTES } from '@/config/route/RoutesConfig';
 import { useUiStore } from '@/store/uiStore';
 import { styled } from '@mui/material/styles';
@@ -59,7 +61,11 @@ const GNB = () => {
             </NavTabs>
 
             <IconButton aria-label="프로필 메뉴" onClick={handleOpenMenu}>
-              <AccountCircleOutlinedIcon />
+              {user!.thumbnailUrl ? (
+                <ThumbAvatar size="sm" src={imageUrl(user!.thumbnailUrl)} />
+              ) : (
+                <AccountCircleOutlinedIcon />
+              )}
             </IconButton>
             <Menu anchorEl={anchorEl} open={anchorEl !== null} onClose={handleCloseMenu}>
               <MenuName variant="subtitle2">{user!.name}</MenuName>
