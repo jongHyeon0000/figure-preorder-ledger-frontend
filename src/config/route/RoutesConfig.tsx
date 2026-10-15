@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom';
 import LoginPage from '@/app/auth/page/LoginPage';
 import SignupPage from '@/app/auth/page/SignupPage';
 import CategoryPage from '@/app/category/page/CategoryPage';
+import FigureDetailPage from '@/app/figure/page/FigureDetailPage';
 import FigureListPage from '@/app/figure/page/FigureListPage';
 import ComingSoonPage from '@/app/common/page/ComingSoonPage';
 import NotFoundPage from '@/app/common/page/NotFoundPage';
@@ -32,7 +33,7 @@ export const APP_ROUTES: readonly RouteType[] = [
 
   { path: '/figures', nameKr: '상품', element: <FigureListPage />, type: 'gnb', requireAuth: true },
   { path: '/figures/new', nameKr: '상품 등록', element: <ComingSoonPage title="상품 등록" />, type: 'figure', requireAuth: true },
-  { path: '/figures/:figureId', nameKr: '상품 상세', element: <ComingSoonPage title="상품 상세" />, type: 'figure', requireAuth: true },
+  { path: '/figures/:figureId', nameKr: '상품 상세', element: <FigureDetailPage />, type: 'figure', requireAuth: true },
   { path: '/figures/:figureId/edit', nameKr: '상품 수정', element: <ComingSoonPage title="상품 수정" />, type: 'figure', requireAuth: true },
 
   { path: '/categories', nameKr: '카테고리', element: <CategoryPage />, type: 'gnb', requireAuth: true },

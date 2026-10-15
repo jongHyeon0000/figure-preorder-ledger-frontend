@@ -1,3 +1,4 @@
+import type { CategoryGroup } from '@/app/category/interface/CategoryGroup';
 import type { FigureSortKey } from '@/app/figure/constant/figureSortOptions';
 import type { FigureTabKey } from '@/app/figure/constant/figureStatus';
 import { FIGURE_TABS } from '@/app/figure/constant/figureStatus';
@@ -181,4 +182,9 @@ export const getFilterValueText = (key: FigureFilterKey, value: FigureFilterValu
   if (value.itemId === null) return `${group.groupName} 전체`;
 
   return `${group.groupName} > ${group.items.find((item) => item.id === value.itemId)!.name}`;
+};
+
+/** 하위 분류 한 건의 썸네일 주소. 상품이 쓰는 분류는 선택지에 반드시 있고, 이미지가 없으면 undefined */
+export const findItemThumbnail = (groups: CategoryGroup[], itemId: number): string | undefined => {
+  return groups.flatMap((group) => group.children).find((item) => item.id === itemId)!.thumbnailUrl;
 };
