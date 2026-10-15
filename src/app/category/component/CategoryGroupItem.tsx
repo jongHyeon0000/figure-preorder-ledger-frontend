@@ -1,6 +1,6 @@
 import { ListItemButton, ListItemText, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import type { CategoryGroup } from '@/app/category/interface/CategoryGroup';
+import { styled } from '@mui/material/styles';
 
 interface CategoryGroupItemProps {
   /** 상위 분류 (하위 포함) */

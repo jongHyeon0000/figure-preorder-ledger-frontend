@@ -1,12 +1,14 @@
-import { Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import LinkOutlinedIcon from '@mui/icons-material/LinkOutlined';
 import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
 import FigureCategoryChip from '@/app/figure/component/FigureCategoryChip';
-import { InfoCard, InfoChips, InfoGroup, InfoLabel, InfoRow } from '@/app/figure/component/FigureInfo.style';
+import { InfoChips, InfoGroup, InfoRow } from '@/app/figure/component/FigureInfo.style';
 import type { FigureDetail } from '@/app/figure/interface/FigureDetail';
 import type { FigureFormOptions } from '@/app/figure/interface/FigureFormOptions';
 import { findItemThumbnail } from '@/app/figure/utils/FigureUtils';
+import { ColumnCard } from '@/app/common/style/CommonCard.style';
+import { LabelText } from '@/app/common/style/CommonText.style';
+import { Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 interface FigureDetailInfoProps {
   /** 보여 줄 상품 */
@@ -24,20 +26,20 @@ const FigureDetailInfo = ({ figure, options }: FigureDetailInfoProps) => {
   const genre = options.genres.find((group) => group.id === figure.characters[0].groupId)!;
 
   return (
-    <InfoCard>
+    <ColumnCard>
       <FigureName variant="h5" component="h2">
         {figure.name}
       </FigureName>
 
       <InfoGroup>
         <InfoRow>
-          <InfoLabel>장르</InfoLabel>
+          <LabelText>장르</LabelText>
           <InfoChips>
             <FigureCategoryChip name={genre.name} thumbnailUrl={genre.thumbnailUrl} />
           </InfoChips>
         </InfoRow>
         <InfoRow>
-          <InfoLabel>캐릭터</InfoLabel>
+          <LabelText>캐릭터</LabelText>
           <InfoChips>
             {figure.characters.map((character) => (
               <FigureCategoryChip
@@ -52,7 +54,7 @@ const FigureDetailInfo = ({ figure, options }: FigureDetailInfoProps) => {
 
       <InfoGroup>
         <InfoRow>
-          <InfoLabel>형태</InfoLabel>
+          <LabelText>형태</LabelText>
           <InfoChips>
             <FigureCategoryChip
               name={figure.figureType.name}
@@ -65,7 +67,7 @@ const FigureDetailInfo = ({ figure, options }: FigureDetailInfoProps) => {
 
       <InfoGroup>
         <InfoRow>
-          <InfoLabel>판매처</InfoLabel>
+          <LabelText>판매처</LabelText>
           <InfoChips>
             <FigureCategoryChip
               name={figure.shop.name}
@@ -78,7 +80,7 @@ const FigureDetailInfo = ({ figure, options }: FigureDetailInfoProps) => {
 
       <InfoGroup>
         <InfoRow>
-          <InfoLabel>제조사</InfoLabel>
+          <LabelText>제조사</LabelText>
           <InfoChips>
             <FigureCategoryChip
               name={figure.maker.name}
@@ -90,7 +92,7 @@ const FigureDetailInfo = ({ figure, options }: FigureDetailInfoProps) => {
 
       <InfoGroup>
         <InfoRow>
-          <InfoLabel>시리즈</InfoLabel>
+          <LabelText>시리즈</LabelText>
           <InfoChips>
             {figure.series.map((series) => (
               <FigureCategoryChip
@@ -113,7 +115,7 @@ const FigureDetailInfo = ({ figure, options }: FigureDetailInfoProps) => {
           <OpenInNewOutlinedIcon fontSize="inherit" />
         </LinkAction>
       </PurchaseLink>
-    </InfoCard>
+    </ColumnCard>
   );
 };
 

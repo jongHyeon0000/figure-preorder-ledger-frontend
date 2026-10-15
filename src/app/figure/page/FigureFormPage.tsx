@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Box } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import ErrorView from '@/app/common/component/ErrorView';
 import LoadingOverlay from '@/app/common/component/loading/LoadingOverlay';
 import type { ThumbnailChange } from '@/app/common/interface/ThumbnailChange';
@@ -25,6 +23,7 @@ import useUpdateFigure from '@/app/figure/service/useUpdateFigure';
 import { toFormValues, toSaveRequestBody } from '@/app/figure/utils/FigureUtils';
 import { API_CODE } from '@/config/axios/constant/apiCode';
 import { useUiStore } from '@/store/uiStore';
+import { EndRow, SideColumn, SplitLayout } from '@/app/common/style/CommonLayout.style';
 
 interface FigureFormPageProps {
   /** 등록(/figures/new)인지 수정(/figures/:figureId/edit)인지 */
@@ -152,8 +151,8 @@ const FigureFormContent = ({ mode, figure, options, saving, onSubmit, onCancel }
 
   return (
     <FormBody id={FIGURE_FORM_ID} noValidate onSubmit={form.handleSubmit(handleValid)}>
-      <Layout>
-        <LeftColumn>
+      <SplitLayout>
+        <SideColumn>
           <FigureFormThumbnail
             currentUrl={figure?.thumbnailUrl}
             value={thumbnail}
@@ -161,39 +160,15 @@ const FigureFormContent = ({ mode, figure, options, saving, onSubmit, onCancel }
             disabled={saving}
           />
           <FigureFormSchedule form={form} />
-        </LeftColumn>
+        </SideColumn>
         <FigureFormInfo form={form} options={options} showStatus={mode === 'insert'} />
-      </Layout>
+      </SplitLayout>
       <FigureFormDescription form={form} disabled={saving} />
-      <BottomActions>
+      <EndRow>
         <FigureFormActions mode={mode} saving={saving} showSubmit onCancel={onCancel} />
-      </BottomActions>
+      </EndRow>
     </FormBody>
   );
 };
 
 export default FigureFormPage;
-
-/* ───────── styles ───────── */
-
-/* 왼쪽(썸네일, 일정·금액) 1 : 오른쪽(정보) 2 (상세와 같은 비율) */
-const Layout = styled(Box)(({ theme }) => ({
-  display: 'grid',
-  gridTemplateColumns: '1fr',
-  gap: theme.spacing(2),
-  [theme.breakpoints.up('md')]: {
-    gridTemplateColumns: '1fr 2fr',
-  },
-}));
-
-const LeftColumn = styled(Box)(({ theme }) => ({
-  display: 'grid',
-  gridTemplateRows: 'auto 1fr',
-  gap: theme.spacing(2),
-}));
-
-/* 폼 맨 아래 버튼 줄 (오른쪽 정렬) */
-const BottomActions = styled(Box)({
-  display: 'flex',
-  justifyContent: 'flex-end',
-});

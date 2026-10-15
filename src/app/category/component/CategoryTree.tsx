@@ -1,5 +1,4 @@
 import { Box, Button, List, Tooltip, Typography } from '@mui/material';
-import { alpha, styled } from '@mui/material/styles';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import CategoryChildRow from '@/app/category/component/CategoryChildRow';
 import CategoryGroupItem from '@/app/category/component/CategoryGroupItem';
@@ -8,6 +7,8 @@ import type { CategoryGroup } from '@/app/category/interface/CategoryGroup';
 import type { CategoryItem } from '@/app/category/interface/CategoryItem';
 import { TonalButton, TonalDangerButton } from '@/app/common/style/CommonButton.style';
 import { InfoIcon, TooltipText } from '@/app/common/style/CommonTooltip.style';
+import { Row, SpreadRow } from '@/app/common/style/CommonLayout.style';
+import { alpha, styled } from '@mui/material/styles';
 
 interface CategoryTreeProps {
   /** 지금 보고 있는 축 */
@@ -43,7 +44,7 @@ const CategoryTree = ({ axis, groups, selectedGroupId, onSelectGroup, onInsert, 
     return (
       <Panel>
         <PanelTop>
-          <PanelHeader sx={{ pr: 1 }}>
+          <PanelHeader>
             <Typography variant="h6">{nameKr} 목록</Typography>
             <TonalButton size="small" variant="contained" disableElevation onClick={() => onInsert('group')}>
               {nameKr} 추가
@@ -66,7 +67,7 @@ const CategoryTree = ({ axis, groups, selectedGroupId, onSelectGroup, onInsert, 
     <TreeLayout>
       <Panel>
         <PanelTop>
-          <PanelHeader sx={{ pr: 1 }}>
+          <PanelHeader>
             <Typography variant="h6">그룹</Typography>
             <TonalButton size="small" variant="contained" disableElevation onClick={() => onInsert('group')}>
               추가
@@ -87,7 +88,7 @@ const CategoryTree = ({ axis, groups, selectedGroupId, onSelectGroup, onInsert, 
 
       <Panel>
         <PanelTop>
-          <PanelHeader sx={{ pr: 1 }}>
+          <PanelHeader>
             <Typography variant="h6">
               {selectedGroup.name}
               {selectedGroup.description && (
@@ -97,14 +98,14 @@ const CategoryTree = ({ axis, groups, selectedGroupId, onSelectGroup, onInsert, 
               )}
             </Typography>
             {!isGroupProtected && (
-              <Box sx={{ display: 'flex', gap: 1 }}>
+              <Row>
                 <TonalButton size="small" onClick={() => onEdit('group', selectedGroup)}>
                   그룹 수정
                 </TonalButton>
                 <TonalDangerButton size="small" onClick={() => onDelete('group', selectedGroup)}>
                   그룹 삭제
                 </TonalDangerButton>
-              </Box>
+              </Row>
             )}
           </PanelHeader>
         </PanelTop>
@@ -143,12 +144,8 @@ const Panel = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
 }));
 
-const PanelHeader = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  gap: theme.spacing(2),
-  padding: theme.spacing(1.5, 2),
+const PanelHeader = styled(SpreadRow)(({ theme }) => ({
+  padding: theme.spacing(1.5, 1, 1.5, 2),
 }));
 
 /* 패널 맨 위 칸(제목과 설명). 목록보다 어두운 면에 가는 금색 밑줄로 목록과 나눈다 */

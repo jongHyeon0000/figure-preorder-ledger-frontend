@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Dayjs } from 'dayjs';
 import { Box, Button } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import { showConfirmAlert } from '@/app/common/utils/AlertUtils';
 import { todayString } from '@/app/common/utils/CommonUtils';
 import EmptyView from '@/app/common/component/EmptyView';
@@ -24,27 +23,12 @@ import useFigureSelection from '@/app/figure/hook/useFigureSelection';
 import useDeleteFigureList from '@/app/figure/service/useDeleteFigureList';
 import useReadFigureList from '@/app/figure/service/useReadFigureList';
 import useUpdateFigureStatusList from '@/app/figure/service/useUpdateFigureStatusList';
-import {
-  applyFilters,
-  buildFilterOptions,
-  countByTab,
-  filterByTab,
-  isDeadlineUnder,
-  pruneFilters,
-  sortFigures,
-  sumPaidAmount,
-  sumTotalPrice,
-} from '@/app/figure/utils/FigureUtils';
-import {
-  findBulkTransition,
-  getBulkConfirm,
-  getTransitionLabel,
-  toStatusFormValues,
-  toStatusRequestBody,
-} from '@/app/figure/utils/FigureTransitionUtils';
+import { applyFilters, buildFilterOptions, countByTab, filterByTab, isDeadlineUnder, pruneFilters, sortFigures, sumPaidAmount, sumTotalPrice } from '@/app/figure/utils/FigureUtils';
+import { findBulkTransition, getBulkConfirm, getTransitionLabel, toStatusFormValues, toStatusRequestBody } from '@/app/figure/utils/FigureTransitionUtils';
 import { API_CODE } from '@/config/axios/constant/apiCode';
 import { useFigureViewStore } from '@/store/figureViewStore';
 import { useUiStore } from '@/store/uiStore';
+import { styled } from '@mui/material/styles';
 
 /**
  * 상품 목록 화면 (/figures)
@@ -146,7 +130,7 @@ const FigureListPage = () => {
 
   return (
     <PageContainer>
-      <PageHeader sx={{ mb: 1 }}>
+      <ListHeader>
         <PageTitle variant="h4" component="h1">
           상품
         </PageTitle>
@@ -163,7 +147,7 @@ const FigureListPage = () => {
           onAction={selection.mode === 'STATUS' ? handleCheckedStatusChange : handleCheckedDelete}
           onInsert={() => navigate('/figures/new')}
         />
-      </PageHeader>
+      </ListHeader>
 
       {figureList && figureList.code !== API_CODE.OK && <ErrorView message={figureList.message} onRetry={fetchReadFigureList} />}
 
@@ -255,4 +239,9 @@ const TabRow = styled(Box)(({ theme }) => ({
 /* 필터 줄과 고른 필터 칩. 아래 카드 목록과는 크게 띄운다 */
 const Conditions = styled(Box)(({ theme }) => ({
   marginBottom: theme.spacing(4.5),
+}));
+
+/* 목록 화면의 제목 줄. 아래 탭 줄과 가깝게 붙인다 */
+const ListHeader = styled(PageHeader)(({ theme }) => ({
+  marginBottom: theme.spacing(1),
 }));

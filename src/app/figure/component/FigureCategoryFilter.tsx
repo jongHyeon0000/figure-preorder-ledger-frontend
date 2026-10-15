@@ -1,12 +1,12 @@
 import { useRef, useState, type MouseEvent } from 'react';
 import { Box, List, ListItemText } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { FilterButton, FilterColumn, FilterDot, FilterItem, FilterPopover, FilterSubColumn, FilterSubWrap } from '@/app/figure/component/FigureFilter.style';
 import type { FigureFilterOptionGroup } from '@/app/figure/interface/FigureFilterOptionGroup';
 import type { FigureFilterOptionItem } from '@/app/figure/interface/FigureFilterOptionItem';
 import type { FigureFilterValue } from '@/app/figure/interface/FigureFilterValue';
+import { styled } from '@mui/material/styles';
 
 interface FigureCategoryFilterProps {
   /** 칸 이름 (예: "판매처") */
@@ -138,4 +138,3 @@ export default FigureCategoryFilter;
 const Columns = styled(Box)({
   position: 'relative',
 });
-

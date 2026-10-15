@@ -1,9 +1,9 @@
-import { Box, Chip } from '@mui/material';
-import { alpha, styled } from '@mui/material/styles';
 import { FIGURE_FILTER_KEYS, FIGURE_FILTER_LABELS } from '@/app/figure/constant/figureFilter';
 import type { FigureFilterOptions } from '@/app/figure/interface/FigureFilterOptions';
 import type { FigureFilterKey, FigureFilters } from '@/app/figure/interface/FigureFilters';
 import { getFilterValueText } from '@/app/figure/utils/FigureUtils';
+import { Box, Chip } from '@mui/material';
+import { alpha, styled } from '@mui/material/styles';
 
 interface FigureFilterChipsProps {
   /** 고른 분류 필터 */

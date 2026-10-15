@@ -1,8 +1,7 @@
-import { Box } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import ThumbnailUploader from '@/app/common/component/ThumbnailUploader';
 import type { ThumbnailChange } from '@/app/common/interface/ThumbnailChange';
-import { SectionCard } from '@/app/common/style/CommonCard.style';
+import { SquareFrame } from '@/app/common/style/CommonMedia.style';
+import { MediaCard } from '@/app/common/style/CommonCard.style';
 
 interface FigureFormThumbnailProps {
   /** 서버에 이미 올라가 있는 썸네일 주소 (수정일 때) */
@@ -23,18 +22,12 @@ interface FigureFormThumbnailProps {
  */
 const FigureFormThumbnail = ({ currentUrl, value, onChange, disabled }: FigureFormThumbnailProps) => {
   return (
-    <SectionCard sx={{ p: 2.5 }}>
-      <Frame>
+    <MediaCard>
+      <SquareFrame>
         <ThumbnailUploader currentUrl={currentUrl} value={value} onChange={onChange} disabled={disabled} />
-      </Frame>
-    </SectionCard>
+      </SquareFrame>
+    </MediaCard>
   );
 };
 
 export default FigureFormThumbnail;
-
-/* ───────── styles ───────── */
-
-const Frame = styled(Box)({
-  aspectRatio: '1 / 1',
-});

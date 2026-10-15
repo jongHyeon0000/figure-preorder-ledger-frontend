@@ -1,19 +1,17 @@
 import { Controller, useWatch, type UseFormReturn } from 'react-hook-form';
-import { Box, FormHelperText, InputBase, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Box, FormHelperText, InputBase, TextField, ToggleButton } from '@mui/material';
 import LinkOutlinedIcon from '@mui/icons-material/LinkOutlined';
-import {
-  validateFigureMultiSelection,
-  validateFigureName,
-  validateFigureSelection,
-} from '@/app/common/utils/ValidationUtils';
-import { InfoCard, InfoGroup } from '@/app/figure/component/FigureInfo.style';
+import { validateFigureMultiSelection, validateFigureName, validateFigureSelection } from '@/app/common/utils/ValidationUtils';
+import { InfoGroup } from '@/app/figure/component/FigureInfo.style';
 import FigurePickField from '@/app/figure/component/FigurePickField';
 import { FIGURE_REGISTER_STATUSES, FIGURE_STATUS_LABELS } from '@/app/figure/constant/figureStatus';
 import type { FigureFormOptions } from '@/app/figure/interface/FigureFormOptions';
 import type { FigureFormValues } from '@/app/figure/interface/FigureFormValues';
 import type { FigurePickItem } from '@/app/figure/interface/FigurePickItem';
 import { toGroupPickItems, toPickItems } from '@/app/figure/utils/FigureUtils';
+import { ColumnCard } from '@/app/common/style/CommonCard.style';
+import { EqualToggleGroup } from '@/app/common/style/CommonForm.style';
+import { styled } from '@mui/material/styles';
 
 interface FigureFormInfoProps {
   /** 상품 폼 */
@@ -54,7 +52,7 @@ const FigureFormInfo = ({ form, options, showStatus }: FigureFormInfoProps) => {
   const series = toPickItems(options.series);
 
   return (
-    <InfoCard>
+    <ColumnCard>
       <Box>
         <NameLine>
           <TextField
@@ -70,7 +68,7 @@ const FigureFormInfo = ({ form, options, showStatus }: FigureFormInfoProps) => {
               name="status"
               control={control}
               render={({ field }) => (
-                <StatusToggle
+                <EqualToggleGroup
                   exclusive
                   color="primary"
                   value={field.value}
@@ -81,7 +79,7 @@ const FigureFormInfo = ({ form, options, showStatus }: FigureFormInfoProps) => {
                       {FIGURE_STATUS_LABELS[status]}
                     </ToggleButton>
                   ))}
-                </StatusToggle>
+                </EqualToggleGroup>
               )}
             />
           )}
@@ -220,7 +218,7 @@ const FigureFormInfo = ({ form, options, showStatus }: FigureFormInfoProps) => {
           {...register('purchaseLink')}
         />
       </LinkBar>
-    </InfoCard>
+    </ColumnCard>
   );
 };
 
@@ -233,15 +231,6 @@ const NameLine = styled('div')(({ theme }) => ({
   alignItems: 'stretch',
   gap: theme.spacing(2),
 }));
-
-/* 상태 토글. 높이는 상품명 칸과 나란히 늘어나고(오류 문구는 줄 아래에 둔다), 두 버튼은 가장 긴 글자에 맞춰 같은 폭이 된다 */
-const StatusToggle = styled(ToggleButtonGroup)({
-  display: 'inline-grid',
-  gridAutoFlow: 'column',
-  gridAutoColumns: '1fr',
-  flexShrink: 0,
-  whiteSpace: 'nowrap',
-});
 
 /* 구매 링크 띠 (상세의 구매 링크 띠와 같은 모양, 입력칸이 들어 있다). 카드가 길어져도 맨 아래에 붙는다 */
 const LinkBar = styled('div')(({ theme }) => ({

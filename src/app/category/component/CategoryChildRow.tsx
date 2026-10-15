@@ -1,10 +1,12 @@
 import { Box, Chip, IconButton, Tooltip, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { PROTECTED_CATEGORY_NAME } from '@/app/category/constant/categoryAxes';
 import type { CategoryItem } from '@/app/category/interface/CategoryItem';
 import { InfoIcon, TooltipText } from '@/app/common/style/CommonTooltip.style';
+import { BoldText } from '@/app/common/style/CommonText.style';
+import { styled } from '@mui/material/styles';
+import { SpreadRow } from '@/app/common/style/CommonLayout.style';
 
 interface CategoryChildRowProps {
   /** 보여 줄 분류 (하위, 또는 하위가 없는 축의 상위) */
@@ -26,14 +28,14 @@ const CategoryChildRow = ({ item, onEdit, onDelete }: CategoryChildRowProps) => 
   return (
     <RowBox>
       <TextBox>
-        <Typography sx={{ fontWeight: 700 }}>
+        <BoldText>
           {item.name}
           {item.description && (
             <Tooltip title={<TooltipText>{item.description}</TooltipText>} placement="right-start">
               <InfoIcon fontSize="inherit" />
             </Tooltip>
           )}
-        </Typography>
+        </BoldText>
         {item.description && (
           <Description variant="caption" color="text.secondary">
             {item.description}
@@ -64,11 +66,7 @@ export default CategoryChildRow;
 
 /* ───────── styles ───────── */
 
-const RowBox = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  gap: theme.spacing(2),
+const RowBox = styled(SpreadRow)(({ theme }) => ({
   padding: theme.spacing(1.5, 2),
   borderTop: `1px solid ${theme.palette.divider}`,
   /* 줄무늬: 같은 부모 안에서 홀수/짝수 줄 색을 번갈아 쓴다 (부모는 이 줄들만 담는 상자여야 한다) */

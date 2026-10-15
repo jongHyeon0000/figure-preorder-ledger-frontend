@@ -1,13 +1,13 @@
 import { useState, type MouseEvent } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AppBar, Button, Divider, IconButton, ListItemIcon, Menu, MenuItem, Tab, Tabs, Toolbar, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import useAuth from '@/app/auth/service/useAuth';
 import { APP_ROUTES } from '@/config/route/RoutesConfig';
 import { useUiStore } from '@/store/uiStore';
+import { styled } from '@mui/material/styles';
 
 /*
 * 상단 메뉴에 나올 라우트 (APP_ROUTES 에서 type 이 gnb 인 것)
@@ -52,11 +52,11 @@ const GNB = () => {
 
         {isAuthenticated ? (
           <>
-            <Tabs value={activeRoute?.path ?? false} sx={{ flexGrow: 1, ml: 3 }}>
+            <NavTabs value={activeRoute?.path ?? false}>
               {GNB_ROUTES.map((route) => (
                 <Tab key={route.path} value={route.path} label={route.nameKr} component={Link} to={route.path} />
               ))}
-            </Tabs>
+            </NavTabs>
 
             <IconButton aria-label="프로필 메뉴" onClick={handleOpenMenu}>
               <AccountCircleOutlinedIcon />
@@ -110,3 +110,8 @@ const MenuName = styled(Typography)(({ theme }) => ({
 })) as typeof Typography;
 
 const Spacer = styled('div')({ flexGrow: 1 });
+
+const NavTabs = styled(Tabs)(({ theme }) => ({
+  flexGrow: 1,
+  marginLeft: theme.spacing(3),
+}));

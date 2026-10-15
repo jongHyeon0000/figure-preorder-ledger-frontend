@@ -1,7 +1,9 @@
 import { Button, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import { TonalButton, TonalDangerButton } from '@/app/common/style/CommonButton.style';
 import type { SelectMode } from '@/app/figure/constant/figureSelect';
+import { Highlight } from '@/app/common/style/CommonText.style';
+import { styled } from '@mui/material/styles';
+import { Row } from '@/app/common/style/CommonLayout.style';
 
 interface FigureSelectBarProps {
   /** 켜진 선택 모드. 동작 버튼의 색이 정해진다(상품 관리는 삭제라 경고색) */
@@ -33,7 +35,7 @@ const FigureSelectBar = ({ mode, checkedCount, shownCount, actionLabel, onToggle
   return (
     <Bar>
       <Typography color="text.secondary" variant="body2">
-        <Strong>{checkedCount}개</Strong> 선택
+        <Highlight>{checkedCount}개</Highlight> 선택
       </Typography>
       <Button onClick={onToggleAll} disabled={shownCount === 0}>
         {allChecked ? '전체 해제' : '전체 선택'}
@@ -49,14 +51,6 @@ export default FigureSelectBar;
 
 /* ───────── styles ───────── */
 
-const Bar = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  gap: theme.spacing(1),
+const Bar = styled(Row)({
   whiteSpace: 'nowrap',
-}));
-
-const Strong = styled('b')(({ theme }) => ({
-  color: theme.palette.primary.main,
-  fontWeight: 600,
-}));
+});

@@ -1,7 +1,7 @@
 import type { SyntheticEvent } from 'react';
 import { Tab, Tabs } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import { CATEGORY_AXES, isCategoryAxisKey, type CategoryAxisKey } from '@/app/category/constant/categoryAxes';
+import { styled } from '@mui/material/styles';
 
 interface CategoryAxisTabsProps {
   /** 지금 보고 있는 축 */

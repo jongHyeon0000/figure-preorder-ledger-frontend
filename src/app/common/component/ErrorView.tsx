@@ -1,4 +1,6 @@
-import { Button, Stack, Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
+import { StateStack } from '@/app/common/style/CommonState.style';
+import { styled } from '@mui/material/styles';
 import ErrorOutlinedIcon from '@mui/icons-material/ErrorOutlined';
 
 interface ErrorViewProps {
@@ -14,16 +16,22 @@ interface ErrorViewProps {
  */
 const ErrorView = ({ message, onRetry }: ErrorViewProps) => {
   return (
-    <Stack spacing={2} sx={{ alignItems: 'center', py: 8 }}>
-      <ErrorOutlinedIcon color="error" sx={{ fontSize: 48 }} />
+    <StateStack>
+      <ErrorIcon color="error" />
       <Typography color="text.secondary">{message}</Typography>
       {onRetry && (
         <Button variant="outlined" onClick={onRetry}>
           다시 시도
         </Button>
       )}
-    </Stack>
+    </StateStack>
   );
 };
 
 export default ErrorView;
+
+/* ───────── styles ───────── */
+
+const ErrorIcon = styled(ErrorOutlinedIcon)({
+  fontSize: '3rem',
+});

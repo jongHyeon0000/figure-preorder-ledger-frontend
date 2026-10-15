@@ -1,6 +1,7 @@
+import { formatPrice } from '@/app/common/utils/CommonUtils';
+import { Highlight } from '@/app/common/style/CommonText.style';
 import { Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { formatPrice } from '@/app/common/utils/CommonUtils';
 
 interface FigureResultSummaryProps {
   /** 지금 보이는 상품 수 */
@@ -19,7 +20,7 @@ interface FigureResultSummaryProps {
 const FigureResultSummary = ({ count, totalPrice, paidAmount }: FigureResultSummaryProps) => {
   return (
     <Summary color="text.secondary" variant="body2">
-      총 <Strong>{count}</Strong>개 표시 중 · 합계 <Strong>{formatPrice(totalPrice)}</Strong> · 구매액 <Strong>{formatPrice(paidAmount)}</Strong>
+      총 <Highlight>{count}</Highlight>개 표시 중 · 합계 <Highlight>{formatPrice(totalPrice)}</Highlight> · 구매액 <Highlight>{formatPrice(paidAmount)}</Highlight>
     </Summary>
   );
 };
@@ -34,8 +35,3 @@ const Summary = styled(Typography)(({ theme }) => ({
   paddingBottom: theme.spacing(1.5),
   whiteSpace: 'nowrap',
 })) as typeof Typography;
-
-const Strong = styled('b')(({ theme }) => ({
-  color: theme.palette.primary.main,
-  fontWeight: 600,
-}));

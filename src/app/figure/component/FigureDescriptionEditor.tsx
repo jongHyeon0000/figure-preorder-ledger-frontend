@@ -1,6 +1,5 @@
 import { useEffect, useRef, type ChangeEvent, type ClipboardEvent, type DragEvent, type ReactNode } from 'react';
 import { Box, Divider, IconButton, Tooltip, Typography } from '@mui/material';
-import { alpha, styled } from '@mui/material/styles';
 import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
@@ -22,6 +21,7 @@ import { validateThumbnailFiles } from '@/app/common/utils/ValidationUtils';
 import useUploadEditorImage from '@/app/figure/service/useUploadEditorImage';
 import { API_CODE } from '@/config/axios/constant/apiCode';
 import { useUiStore } from '@/store/uiStore';
+import { alpha, styled } from '@mui/material/styles';
 
 /*
 * 이미지 노드. 저장되는 주소(src)는 서버가 준 '/uploads/...' 상대 경로 그대로 두고, 에디터 화면에 그릴 때만 서버 주소를 붙인다.

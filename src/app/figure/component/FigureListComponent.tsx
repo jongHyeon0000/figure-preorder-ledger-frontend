@@ -1,6 +1,4 @@
 import type { KeyboardEvent } from 'react';
-import { Box, Checkbox, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import { motion } from 'motion/react';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import { cardEnterVariants } from '@/app/common/style/CommonMotion.style';
@@ -9,6 +7,10 @@ import FigureDeadlineText from '@/app/figure/component/FigureDeadlineText';
 import type { FigureSummary } from '@/app/figure/interface/FigureSummary';
 import { DEADLINE_BLINK_MONTHS } from '@/app/figure/constant/figureStatus';
 import { formatDeliveryMonth, getTotalPrice, isDeadlinePassed, isDeadlineUnder } from '@/app/figure/utils/FigureUtils';
+import { LabelText, LabelValueGrid, LabelValueRow, PriceColumn, PriceText, ValueText } from '@/app/common/style/CommonText.style';
+import { FillImage, ThumbFrame } from '@/app/common/style/CommonMedia.style';
+import { Box, Checkbox, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 interface FigureListComponentProps {
   /** 보여 줄 상품 */
@@ -75,7 +77,7 @@ const FigureListComponent = ({
               )}
               <Thumb>
                 {figure.thumbnailUrl ? (
-                  <ThumbImage src={imageUrl(figure.thumbnailUrl)} alt={figure.name} />
+                  <FillImage src={imageUrl(figure.thumbnailUrl)} alt={figure.name} />
                 ) : (
                   <ImageOutlinedIcon color="disabled" fontSize="large" />
                 )}
@@ -87,39 +89,39 @@ const FigureListComponent = ({
                     {figure.name}
                   </FigureName>
                   <Rows>
-                    <Label>장르</Label>
-                    <Value>{genre}</Value>
-                    <Label>형태</Label>
-                    <Value>
+                    <LabelText>장르</LabelText>
+                    <ValueText>{genre}</ValueText>
+                    <LabelText>형태</LabelText>
+                    <ValueText>
                       {figure.figureType.groupName} › {figure.figureType.name}
-                    </Value>
+                    </ValueText>
                   </Rows>
                 </Names>
               </Main>
 
               <Stub>
-                <Dates>
+                <LabelValueGrid>
                   {(figure.status === 'CART' || figure.status === 'UNPURCHASED') && figure.reservationDeadline !== '' && (
-                    <StubRow>
-                      <Label>예약마감일</Label>
+                    <LabelValueRow>
+                      <LabelText>예약마감일</LabelText>
                       <FigureDeadlineText date={figure.reservationDeadline} passed={isDeadlinePassed(figure, today)}
                         urgent={blinkUrgent && isDeadlineUnder(figure, today, DEADLINE_BLINK_MONTHS)}
                       />
-                    </StubRow>
+                    </LabelValueRow>
                   )}
                   {figure.status === 'RESERVED' && figure.balanceDueDate !== null && (
-                    <StubRow>
-                      <Label>잔금 기한</Label>
+                    <LabelValueRow>
+                      <LabelText>잔금 기한</LabelText>
                       <FigureDeadlineText date={figure.balanceDueDate} />
-                    </StubRow>
+                    </LabelValueRow>
                   )}
-                  <StubRow>
-                    <Label>배송예정월</Label>
-                    <Value>{formatDeliveryMonth(figure.deliveryMonth)}</Value>
-                  </StubRow>
-                </Dates>
+                  <LabelValueRow>
+                    <LabelText>배송예정월</LabelText>
+                    <ValueText>{formatDeliveryMonth(figure.deliveryMonth)}</ValueText>
+                  </LabelValueRow>
+                </LabelValueGrid>
                 <PriceBox>
-                  <Price>{formatPrice(getTotalPrice(figure))}</Price>
+                  <PriceText>{formatPrice(getTotalPrice(figure))}</PriceText>
                   {figure.quantity > 1 && (
                     <Quantity variant="mono" color="text.secondary" noWrap>
                       {formatPrice(figure.price)} × {figure.quantity}
@@ -172,25 +174,14 @@ const Check = styled(Checkbox)(({ theme }) => ({
   marginLeft: theme.spacing(1),
 }));
 
-const Thumb = styled(Box)(({ theme }) => ({
-  display: 'flex',
+const Thumb = styled(ThumbFrame)(({ theme }) => ({
   flex: `0 0 ${theme.spacing(14)}`,
-  alignItems: 'center',
-  justifyContent: 'center',
   alignSelf: 'center',
   width: theme.spacing(14),
   height: theme.spacing(14),
   margin: theme.spacing(1.25, 0, 1.25, 1.25),
-  overflow: 'hidden',
-  backgroundColor: theme.palette.surfaceRaised,
   borderRadius: 10,
 }));
-
-const ThumbImage = styled('img')({
-  width: '100%',
-  height: '100%',
-  objectFit: 'cover',
-});
 
 const Main = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -217,27 +208,10 @@ const FigureName = styled(Typography)({
 }) as typeof Typography;
 
 /* 이름표(Label)와 값(Value)이 두 줄로 선 칸. 이름표 칸 폭은 가장 긴 이름표를 따른다 */
-const Rows = styled(Box)(({ theme }) => ({
-  display: 'grid',
-  gridTemplateColumns: 'auto 1fr',
-  columnGap: theme.spacing(1.5),
-  rowGap: theme.spacing(0.5),
-  alignItems: 'baseline',
+const Rows = styled(LabelValueGrid)({
   fontSize: '0.8125rem',
   lineHeight: 1.5,
-}));
-
-const Label = styled('span')(({ theme }) => ({
-  color: theme.palette.text.secondary,
-}));
-
-const Value = styled('span')(({ theme }) => ({
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
-  color: theme.palette.text.primary,
-  fontWeight: 500,
-}));
+});
 
 /* 티켓 오른쪽의 점선으로 끊긴 칸. 위는 날짜들, 아래는 가격이고 둘 사이를 띄운다 */
 const Stub = styled(Box)(({ theme }) => ({
@@ -264,30 +238,8 @@ const Stub = styled(Box)(({ theme }) => ({
   '&::after': { bottom: -7 },
 }));
 
-/* 이름표와 날짜가 두 줄로 선 칸. 값이 같은 세로선에서 시작하도록 이름표 칸 폭을 같이 쓴다(StubRow 는 칸만 거든다) */
-const Dates = styled(Box)(({ theme }) => ({
-  display: 'grid',
-  gridTemplateColumns: 'auto 1fr',
-  columnGap: theme.spacing(1.5),
-  rowGap: theme.spacing(0.5),
-}));
-
-const StubRow = styled(Box)({
-  display: 'contents',
-});
-
-const PriceBox = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-end',
+const PriceBox = styled(PriceColumn)(({ theme }) => ({
   marginTop: theme.spacing(2),
-}));
-
-const Price = styled(Typography)(({ theme }) => ({
-  ...theme.typography.mono,
-  fontSize: '1.25rem',
-  fontWeight: 700,
-  color: theme.palette.primary.main,
 }));
 
 const Quantity = styled(Typography)({

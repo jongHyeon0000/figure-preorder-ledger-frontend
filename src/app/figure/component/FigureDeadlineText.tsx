@@ -1,7 +1,7 @@
-import { styled } from '@mui/material/styles';
 import { motion, useReducedMotion } from 'motion/react';
 import { blinkAnimate, blinkTransition } from '@/app/common/style/CommonMotion.style';
 import { formatDeadline } from '@/app/figure/utils/FigureUtils';
+import { styled } from '@mui/material/styles';
 
 interface FigureDeadlineTextProps {
   /** 날짜 ("YYYY-MM-DD") */

@@ -27,11 +27,11 @@ const AuthCardLayout = ({ title, description, children, footer }: AuthCardLayout
           {title}
         </Typography>
         {description && (
-          <Typography color="text.secondary" sx={{ mt: 1 }}>
+          <AuthDescription color="text.secondary">
             {description}
-          </Typography>
+          </AuthDescription>
         )}
-        <Box sx={{ mt: 3 }}>{children}</Box>
+        <AuthBody>{children}</AuthBody>
         {footer && <FooterArea>{footer}</FooterArea>}
       </AuthCard>
     </AuthWrap>
@@ -60,4 +60,12 @@ const FooterArea = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(3),
   textAlign: 'center',
   color: theme.palette.text.secondary,
+}));
+
+const AuthDescription = styled(Typography)(({ theme }) => ({
+  marginTop: theme.spacing(1),
+}));
+
+const AuthBody = styled(Box)(({ theme }) => ({
+  marginTop: theme.spacing(3),
 }));

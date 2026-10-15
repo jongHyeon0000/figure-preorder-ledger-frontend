@@ -1,8 +1,8 @@
-import { Box, Button } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Button } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import FigureSelectBar from '@/app/figure/component/FigureSelectBar';
 import type { SelectMode } from '@/app/figure/constant/figureSelect';
+import { Row } from '@/app/common/style/CommonLayout.style';
 
 interface FigureListActionsProps {
   /** 켜진 선택 모드. 평소는 null */
@@ -75,7 +75,7 @@ const FigureListActions = ({
     );
 
   return (
-    <Actions>
+    <Row>
       {mode !== null && (
         <FigureSelectBar
           mode={mode}
@@ -91,16 +91,8 @@ const FigureListActions = ({
       <Button variant="contained" startIcon={<AddOutlinedIcon />} onClick={onInsert}>
         상품 등록
       </Button>
-    </Actions>
+    </Row>
   );
 };
 
 export default FigureListActions;
-
-/* ───────── styles ───────── */
-
-const Actions = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  gap: theme.spacing(1),
-}));

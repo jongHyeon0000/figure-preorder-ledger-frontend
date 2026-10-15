@@ -1,4 +1,5 @@
-import { Box, Button } from '@mui/material';
+import { Button } from '@mui/material';
+import { Row } from '@/app/common/style/CommonLayout.style';
 
 /* 저장 버튼이 폼 밖(페이지 위쪽)에도 있어서, form 속성으로 이 폼과 이어 준다 */
 export const FIGURE_FORM_ID = 'figure-form';
@@ -22,7 +23,7 @@ interface FigureFormActionsProps {
  */
 const FigureFormActions = ({ mode, saving, showSubmit, onCancel }: FigureFormActionsProps) => {
   return (
-    <Box sx={{ display: 'flex', gap: 1 }}>
+    <Row>
       <Button variant="outlined" color="inherit" onClick={onCancel}>
         취소
       </Button>
@@ -31,7 +32,7 @@ const FigureFormActions = ({ mode, saving, showSubmit, onCancel }: FigureFormAct
           {mode === 'insert' ? '등록' : '수정'}
         </Button>
       )}
-    </Box>
+    </Row>
   );
 };
 

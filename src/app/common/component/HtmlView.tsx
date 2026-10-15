@@ -1,7 +1,7 @@
 import DOMPurify from 'dompurify';
+import { BASE_URL } from '@/config/axios/AxiosConfig';
 import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { BASE_URL } from '@/config/axios/AxiosConfig';
 
 interface HtmlViewProps {
   /** 서버에 저장된 HTML (에디터 결과) */

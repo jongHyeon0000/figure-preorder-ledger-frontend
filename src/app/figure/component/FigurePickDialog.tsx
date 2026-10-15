@@ -1,26 +1,14 @@
 import { useState, type ChangeEvent } from 'react';
-import {
-  Avatar,
-  Box,
-  Button,
-  ButtonBase,
-  Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Pagination,
-  TextField,
-  Typography,
-} from '@mui/material';
-import { alpha, styled } from '@mui/material/styles';
-import CheckIcon from '@mui/icons-material/Check';
+import { Avatar, Box, Button, ButtonBase, Chip, Dialog, DialogContent, DialogTitle, Pagination, TextField, Typography } from '@mui/material';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import { TonalButton } from '@/app/common/style/CommonButton.style';
 import { imageUrl } from '@/app/common/utils/CommonUtils';
 import { PICK_PAGE_SIZE } from '@/app/figure/constant/figurePick';
 import type { FigurePickItem } from '@/app/figure/interface/FigurePickItem';
 import { collectPickGroups, getPickPage, searchPickItems } from '@/app/figure/utils/FigureUtils';
+import { DialogFieldStack, FormActions } from '@/app/common/style/CommonForm.style';
+import { alpha, styled } from '@mui/material/styles';
+import CheckIcon from '@mui/icons-material/Check';
 
 interface FigurePickDialogProps {
   /** 창 제목 (예: "캐릭터 추가") */
@@ -78,7 +66,7 @@ const FigurePickDialog = ({ title, items, selectedIds, multiple, onSelect, onClo
     <Dialog open onClose={onClose} fullWidth maxWidth="md">
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <Body>
+        <DialogFieldStack>
           <TextField placeholder="이름으로 검색" autoFocus value={keyword} onChange={handleKeyword} />
 
           {groups.length > 1 && (
@@ -96,9 +84,9 @@ const FigurePickDialog = ({ title, items, selectedIds, multiple, onSelect, onClo
           )}
 
           {pageItems.length === 0 ? (
-            <Typography color="text.secondary" align="center" sx={{ py: 6 }}>
+            <EmptyText color="text.secondary">
               검색 결과가 없어요
-            </Typography>
+            </EmptyText>
           ) : (
             <Cards>
               {pageItems.map((item) => {
@@ -125,7 +113,7 @@ const FigurePickDialog = ({ title, items, selectedIds, multiple, onSelect, onClo
               />
             </Pager>
           )}
-        </Body>
+        </DialogFieldStack>
       </DialogContent>
       <FormActions>
         {multiple && <Typography color="text.secondary">{checkedIds.length}개 선택됨</Typography>}
@@ -143,13 +131,6 @@ const FigurePickDialog = ({ title, items, selectedIds, multiple, onSelect, onClo
 export default FigurePickDialog;
 
 /* ───────── styles ───────── */
-
-const Body = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: theme.spacing(2),
-  paddingTop: theme.spacing(1),
-}));
 
 const Tabs = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -195,7 +176,7 @@ const Pager = styled(Box)({
   justifyContent: 'center',
 });
 
-/* 버튼 줄. 기본 여백(8px)이 좁아서 오른쪽과 아래를 16px 로 넓힌다 */
-const FormActions = styled(DialogActions)(({ theme }) => ({
-  padding: theme.spacing(1, 2, 2),
+const EmptyText = styled(Typography)(({ theme }) => ({
+  padding: theme.spacing(6, 0),
+  textAlign: 'center',
 }));

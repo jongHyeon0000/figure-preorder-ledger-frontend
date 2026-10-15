@@ -1,9 +1,9 @@
 import { Box, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import HtmlView from '@/app/common/component/HtmlView';
-import { SectionCard, SectionTitle } from '@/app/common/style/CommonCard.style';
+import { ColumnCard, SectionTitle } from '@/app/common/style/CommonCard.style';
 import type { FigureDetail } from '@/app/figure/interface/FigureDetail';
 import { formatDeadline } from '@/app/figure/utils/FigureUtils';
+import { styled } from '@mui/material/styles';
 
 interface FigureDetailDescriptionProps {
   /** 보여 줄 상품 */
@@ -15,7 +15,7 @@ interface FigureDetailDescriptionProps {
  */
 const FigureDetailDescription = ({ figure }: FigureDetailDescriptionProps) => {
   return (
-    <Card>
+    <ColumnCard>
       <SectionTitle variant="h6" component="h3">
         설명
       </SectionTitle>
@@ -31,19 +31,13 @@ const FigureDetailDescription = ({ figure }: FigureDetailDescriptionProps) => {
       <Typography variant="caption" color="text.secondary">
         등록 {formatDeadline(figure.createdAt)} · 수정 {formatDeadline(figure.updatedAt)}
       </Typography>
-    </Card>
+    </ColumnCard>
   );
 };
 
 export default FigureDetailDescription;
 
 /* ───────── styles ───────── */
-
-const Card = styled(SectionCard)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: theme.spacing(2),
-}));
 
 /* 설명이 들어가는 어두운 상자 */
 const Content = styled(Box)(({ theme }) => ({

@@ -1,8 +1,8 @@
-import { Avatar, IconButton } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import { imageUrl } from '@/app/common/utils/CommonUtils';
+import { Avatar, IconButton } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 interface FigureCategoryChipProps {
   /** 분류 이름 */

@@ -3,16 +3,16 @@ import {
   Alert,
   Button,
   Dialog,
+  DialogContent,
   DialogTitle,
   InputAdornment,
-  Stack,
   TextField,
   ToggleButton,
-  ToggleButtonGroup,
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TonalButton } from '@/app/common/style/CommonButton.style';
+import { DialogFieldStack, DialogFormBody, EqualToggleGroup, FormActions } from '@/app/common/style/CommonForm.style';
 import { formatPrice } from '@/app/common/utils/CommonUtils';
 import { validateDepositAmount, validateStatusDate } from '@/app/common/utils/ValidationUtils';
 import { FIGURE_STATUS_LABELS } from '@/app/figure/constant/figureStatus';
@@ -62,110 +62,105 @@ const FigureStatusModal = ({ title, transitions, totalPrice, loading, onSubmit, 
   const handleValid = (values: FigureStatusFormValues) => onSubmit(transition, values);
 
   return (
-    <Dialog
-      open
-      onClose={onClose}
-      fullWidth
-      maxWidth="xs"
-      scroll="body"
-      slotProps={{ paper: { component: 'form', onSubmit: handleSubmit(handleValid) } }}
-    >
-      <Stack spacing={3} sx={{ p: 3 }}>
-        <DialogTitle sx={{ p: 0 }}>{title}</DialogTitle>
-        <Stack spacing={3}>
-          {transitions.length > 1 && (
-            <Controller
-              name="nextStatus"
-              control={control}
-              render={({ field }) => (
-                <ToggleButtonGroup
-                  exclusive
-                  fullWidth
-                  value={field.value}
-                  onChange={(_event, value) => value !== null && field.onChange(value)}
-                >
-                  {transitions.map((candidate) => (
-                    <ToggleButton key={candidate.next} value={candidate.next}>
-                      {FIGURE_STATUS_LABELS[candidate.next]}
-                    </ToggleButton>
-                  ))}
-                </ToggleButtonGroup>
-              )}
-            />
-          )}
+    <Dialog open onClose={onClose} fullWidth maxWidth="xs">
+      <DialogFormBody noValidate onSubmit={handleSubmit(handleValid)}>
+        <DialogTitle>{title}</DialogTitle>
+        <DialogContent>
+          <DialogFieldStack>
+            {transitions.length > 1 && (
+              <Controller
+                name="nextStatus"
+                control={control}
+                render={({ field }) => (
+                  <EqualToggleGroup
+                    exclusive
+                    fullWidth
+                    value={field.value}
+                    onChange={(_event, value) => value !== null && field.onChange(value)}
+                  >
+                    {transitions.map((candidate) => (
+                      <ToggleButton key={candidate.next} value={candidate.next}>
+                        {FIGURE_STATUS_LABELS[candidate.next]}
+                      </ToggleButton>
+                    ))}
+                  </EqualToggleGroup>
+                )}
+              />
+            )}
 
-          {transitions.length === 1 && transition.paymentType === 'FULL' && (
-            <Alert severity="warning">
-              미구매 상품은 모두 <b>전액 결제(구매완료)</b>로 처리돼요. 예약금으로 구매한 상품은 상세 화면에서 예약완료로 바꿔 주세요.
-            </Alert>
-          )}
+            {transitions.length === 1 && transition.paymentType === 'FULL' && (
+              <Alert severity="warning">
+                미구매 상품은 모두 <b>전액 결제(구매완료)</b>로 처리돼요. 예약금으로 구매한 상품은 상세 화면에서 예약완료로 바꿔 주세요.
+              </Alert>
+            )}
 
-          {transition.next === 'RESERVED' && (
-            <TextField
-              label="예약금"
-              autoFocus
-              error={!!errors.depositAmount}
-              helperText={errors.depositAmount?.message ?? `총액 ${formatPrice(totalPrice)} 이하`}
-              slotProps={{
-                htmlInput: { inputMode: 'numeric' },
-                input: { endAdornment: <InputAdornment position="end">원</InputAdornment> },
-              }}
-              inputRef={register('depositAmount', { validate: validateDepositAmount }).ref}
-              {...register('depositAmount', { validate: validateDepositAmount })}
-            />
-          )}
+            {transition.next === 'RESERVED' && (
+              <TextField
+                label="예약금"
+                autoFocus
+                error={!!errors.depositAmount}
+                helperText={errors.depositAmount?.message ?? `총액 ${formatPrice(totalPrice)} 이하`}
+                slotProps={{
+                  htmlInput: { inputMode: 'numeric' },
+                  input: { endAdornment: <InputAdornment position="end">원</InputAdornment> },
+                }}
+                inputRef={register('depositAmount', { validate: validateDepositAmount }).ref}
+                {...register('depositAmount', { validate: validateDepositAmount })}
+              />
+            )}
 
-          {transition.dateField !== null && (
-            <Controller
-              name="date"
-              control={control}
-              rules={{ validate: validateStatusDate }}
-              render={({ field, fieldState }) => (
-                <DatePicker
-                  label={transition.dateLabel}
-                  format="YYYY.MM.DD"
-                  value={field.value}
-                  onChange={field.onChange}
-                  slotProps={{
-                    textField: {
-                      error: !!fieldState.error,
-                      helperText: fieldState.error?.message,
-                      onBlur: field.onBlur,
-                      inputRef: field.ref,
-                    },
-                  }}
-                />
-              )}
-            />
-          )}
+            {transition.dateField !== null && (
+              <Controller
+                name="date"
+                control={control}
+                rules={{ validate: validateStatusDate }}
+                render={({ field, fieldState }) => (
+                  <DatePicker
+                    label={transition.dateLabel}
+                    format="YYYY.MM.DD"
+                    value={field.value}
+                    onChange={field.onChange}
+                    slotProps={{
+                      textField: {
+                        error: !!fieldState.error,
+                        helperText: fieldState.error?.message,
+                        onBlur: field.onBlur,
+                        inputRef: field.ref,
+                      },
+                    }}
+                  />
+                )}
+              />
+            )}
 
-          {transition.next === 'RESERVED' && (
-            <Controller
-              name="balanceDueDate"
-              control={control}
-              render={({ field }) => (
-                <DatePicker
-                  label="잔금 기한 (선택)"
-                  format="YYYY.MM.DD"
-                  value={field.value}
-                  onChange={field.onChange}
-                  slotProps={{ field: { clearable: true }, textField: { onBlur: field.onBlur, inputRef: field.ref } }}
-                />
-              )}
-            />
-          )}
+            {transition.next === 'RESERVED' && (
+              <Controller
+                name="balanceDueDate"
+                control={control}
+                render={({ field }) => (
+                  <DatePicker
+                    label="잔금 기한 (선택)"
+                    format="YYYY.MM.DD"
+                    value={field.value}
+                    onChange={field.onChange}
+                    slotProps={{ field: { clearable: true }, textField: { onBlur: field.onBlur, inputRef: field.ref } }}
+                  />
+                )}
+              />
+            )}
 
-          {transition.dateField === null && (
-            <Typography color="text.secondary">입력할 값은 없어요. 변경하면 {FIGURE_STATUS_LABELS[transition.next]} 상태가 돼요.</Typography>
-          )}
-        </Stack>
-        <Stack direction="row" spacing={1} sx={{ justifyContent: 'flex-end' }}>
+            {transition.dateField === null && (
+              <Typography color="text.secondary">입력할 값은 없어요. 변경하면 {FIGURE_STATUS_LABELS[transition.next]} 상태가 돼요.</Typography>
+            )}
+          </DialogFieldStack>
+        </DialogContent>
+        <FormActions>
           <TonalButton onClick={onClose}>닫기</TonalButton>
           <Button type="submit" variant="contained" disabled={loading}>
             변경
           </Button>
-        </Stack>
-      </Stack>
+        </FormActions>
+      </DialogFormBody>
     </Dialog>
   );
 };

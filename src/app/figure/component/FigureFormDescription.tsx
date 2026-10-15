@@ -1,6 +1,5 @@
 import { Controller, type UseFormReturn } from 'react-hook-form';
-import { styled } from '@mui/material/styles';
-import { SectionCard, SectionTitle } from '@/app/common/style/CommonCard.style';
+import { ColumnCard, SectionTitle } from '@/app/common/style/CommonCard.style';
 import FigureDescriptionEditor from '@/app/figure/component/FigureDescriptionEditor';
 import type { FigureFormValues } from '@/app/figure/interface/FigureFormValues';
 
@@ -18,7 +17,7 @@ interface FigureFormDescriptionProps {
  */
 const FigureFormDescription = ({ form, disabled }: FigureFormDescriptionProps) => {
   return (
-    <Card>
+    <ColumnCard>
       <SectionTitle variant="h6" component="h3">
         설명
       </SectionTitle>
@@ -27,16 +26,8 @@ const FigureFormDescription = ({ form, disabled }: FigureFormDescriptionProps) =
         control={form.control}
         render={({ field }) => <FigureDescriptionEditor value={field.value} onChange={field.onChange} disabled={disabled} />}
       />
-    </Card>
+    </ColumnCard>
   );
 };
 
 export default FigureFormDescription;
-
-/* ───────── styles ───────── */
-
-const Card = styled(SectionCard)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: theme.spacing(2),
-}));

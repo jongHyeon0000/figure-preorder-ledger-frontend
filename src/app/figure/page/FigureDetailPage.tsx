@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Box, Button } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Button } from '@mui/material';
 import ErrorView from '@/app/common/component/ErrorView';
 import LoadingOverlay from '@/app/common/component/loading/LoadingOverlay';
 import { TonalButton, TonalDangerButton } from '@/app/common/style/CommonButton.style';
@@ -18,15 +17,12 @@ import useDeleteFigure from '@/app/figure/service/useDeleteFigure';
 import useReadFigure from '@/app/figure/service/useReadFigure';
 import useReadFigureFormOptions from '@/app/figure/service/useReadFigureFormOptions';
 import useUpdateFigureStatus from '@/app/figure/service/useUpdateFigureStatus';
-import {
-  findTransitions,
-  getSingleConfirm,
-  getTransitionLabel,
-  toStatusRequestBody,
-} from '@/app/figure/utils/FigureTransitionUtils';
+import { findTransitions, getSingleConfirm, getTransitionLabel, toStatusRequestBody } from '@/app/figure/utils/FigureTransitionUtils';
 import { getTotalPrice } from '@/app/figure/utils/FigureUtils';
 import { API_CODE } from '@/config/axios/constant/apiCode';
 import { useUiStore } from '@/store/uiStore';
+import { Row, SideColumn, SplitLayout } from '@/app/common/style/CommonLayout.style';
+import { styled } from '@mui/material/styles';
 
 /**
  * 상품 상세 화면 (/figures/:figureId)
@@ -92,7 +88,7 @@ const FigureDetailPage = () => {
         <PageTitle variant="h4" component="h1">
           상품 상세
         </PageTitle>
-        <Box sx={{ display: 'flex', gap: 1 }}>
+        <Row>
           <Button variant="outlined" color="inherit" onClick={() => navigate('/figures')}>
             목록
           </Button>
@@ -103,17 +99,17 @@ const FigureDetailPage = () => {
               <TonalDangerButton onClick={() => handleFigureDelete(figure.data!.name)}>삭제</TonalDangerButton>
             </>
           )}
-        </Box>
+        </Row>
       </PageHeader>
 
       {failed && <ErrorView message={failed.message} onRetry={fetchAll} />}
       {loaded && (
         <>
           <Layout>
-            <LeftColumn>
+            <SideColumn>
               <FigureDetailThumbnail figure={figure.data!} />
               <FigureDetailSchedule figure={figure.data!} />
-            </LeftColumn>
+            </SideColumn>
             <FigureDetailInfo figure={figure.data!} options={formOptions.data!} />
           </Layout>
           <FigureDetailDescription figure={figure.data!} />
@@ -141,18 +137,6 @@ export default FigureDetailPage;
 /* ───────── styles ───────── */
 
 /* 왼쪽(썸네일, 일정·금액) 1 : 오른쪽(정보) 2 */
-const Layout = styled(Box)(({ theme }) => ({
-  display: 'grid',
-  gridTemplateColumns: '1fr',
-  gap: theme.spacing(2),
+const Layout = styled(SplitLayout)(({ theme }) => ({
   marginBottom: theme.spacing(2),
-  [theme.breakpoints.up('md')]: {
-    gridTemplateColumns: '1fr 2fr',
-  },
-}));
-
-const LeftColumn = styled(Box)(({ theme }) => ({
-  display: 'grid',
-  gridTemplateRows: 'auto 1fr',
-  gap: theme.spacing(2),
 }));

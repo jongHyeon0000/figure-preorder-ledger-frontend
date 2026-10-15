@@ -1,4 +1,5 @@
 import { Backdrop, CircularProgress } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 interface LoadingOverlayProps {
   /** 표시 여부 (보통 훅의 xxxLoading 값) */
@@ -10,10 +11,17 @@ interface LoadingOverlayProps {
  */
 const LoadingOverlay = ({ open }: LoadingOverlayProps) => {
   return (
-    <Backdrop open={open} sx={{ zIndex: (theme) => theme.zIndex.modal + 1 }}>
+    <LoadingBackdrop open={open}>
       <CircularProgress color="primary" />
-    </Backdrop>
+    </LoadingBackdrop>
   );
 };
 
 export default LoadingOverlay;
+
+/* ───────── styles ───────── */
+
+/* 열려 있는 모달 위에 뜨도록 모달 층보다 한 칸 위에 둔다 */
+const LoadingBackdrop = styled(Backdrop)(({ theme }) => ({
+  zIndex: theme.zIndex.modal + 1,
+}));

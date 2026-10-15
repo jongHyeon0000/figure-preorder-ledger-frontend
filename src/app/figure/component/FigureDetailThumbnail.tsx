@@ -1,10 +1,11 @@
-import { Box } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
-import { SectionCard } from '@/app/common/style/CommonCard.style';
 import { imageUrl } from '@/app/common/utils/CommonUtils';
 import { FIGURE_STATUS_LABELS } from '@/app/figure/constant/figureStatus';
 import type { FigureDetail } from '@/app/figure/interface/FigureDetail';
+import { FillImage, ThumbFrame } from '@/app/common/style/CommonMedia.style';
+import { MediaCard } from '@/app/common/style/CommonCard.style';
+import { Box } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 
 interface FigureDetailThumbnailProps {
   /** 보여 줄 상품 */
@@ -16,12 +17,12 @@ interface FigureDetailThumbnailProps {
  */
 const FigureDetailThumbnail = ({ figure }: FigureDetailThumbnailProps) => {
   return (
-    <SectionCard sx={{ p: 2.5 }}>
-      <Frame>
+    <MediaCard>
+      <ThumbFrame>
         {figure.thumbnailUrl ? (
-          <Image src={imageUrl(figure.thumbnailUrl)} alt={figure.name} />
+          <FillImage src={imageUrl(figure.thumbnailUrl)} alt={figure.name} />
         ) : (
-          <ImageOutlinedIcon color="disabled" sx={{ fontSize: 64 }} />
+          <PlaceholderIcon color="disabled" />
         )}
         <Badges>
           <StatusBadge>{FIGURE_STATUS_LABELS[figure.status]}</StatusBadge>
@@ -29,31 +30,14 @@ const FigureDetailThumbnail = ({ figure }: FigureDetailThumbnailProps) => {
             <PaymentBadge>{figure.paymentType === 'FULL' ? '전액' : '예약금형'}</PaymentBadge>
           )}
         </Badges>
-      </Frame>
-    </SectionCard>
+      </ThumbFrame>
+    </MediaCard>
   );
 };
 
 export default FigureDetailThumbnail;
 
 /* ───────── styles ───────── */
-
-const Frame = styled(Box)(({ theme }) => ({
-  position: 'relative',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  aspectRatio: '1 / 1',
-  overflow: 'hidden',
-  backgroundColor: theme.palette.surfaceRaised,
-  borderRadius: theme.shape.borderRadius,
-}));
-
-const Image = styled('img')({
-  width: '100%',
-  height: '100%',
-  objectFit: 'cover',
-});
 
 const Badges = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -76,3 +60,7 @@ const PaymentBadge = styled(StatusBadge)(({ theme }) => ({
   color: theme.palette.secondary.contrastText,
   backgroundColor: theme.palette.secondary.main,
 }));
+
+const PlaceholderIcon = styled(ImageOutlinedIcon)({
+  fontSize: '4rem',
+});

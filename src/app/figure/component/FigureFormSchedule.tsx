@@ -1,11 +1,12 @@
 import { Controller, useWatch, type UseFormReturn } from 'react-hook-form';
 import { Box, InputAdornment, TextField, Typography } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { styled } from '@mui/material/styles';
-import { SectionCard } from '@/app/common/style/CommonCard.style';
 import { formatPrice } from '@/app/common/utils/CommonUtils';
 import { validateFigurePrice, validateFigureQuantity } from '@/app/common/utils/ValidationUtils';
 import type { FigureFormValues } from '@/app/figure/interface/FigureFormValues';
+import { SpreadCard } from '@/app/common/style/CommonCard.style';
+import { PriceColumn, PriceText } from '@/app/common/style/CommonText.style';
+import { styled } from '@mui/material/styles';
 
 interface FigureFormScheduleProps {
   /** 상품 폼 */
@@ -28,7 +29,7 @@ const FigureFormSchedule = ({ form }: FigureFormScheduleProps) => {
   const total = isNumber(price) && isNumber(quantity) ? Number(price) * Number(quantity) : 0;
 
   return (
-    <Card>
+    <SpreadCard>
       <Pair>
         <Controller
           name="reservationDeadline"
@@ -88,13 +89,13 @@ const FigureFormSchedule = ({ form }: FigureFormScheduleProps) => {
         />
       </Pair>
 
-      <Money>
+      <PriceColumn>
         <Typography variant="caption" color="text.secondary">
           총액 (자동 계산)
         </Typography>
-        <Price>{formatPrice(total)}</Price>
-      </Money>
-    </Card>
+        <PriceText size="lg">{formatPrice(total)}</PriceText>
+      </PriceColumn>
+    </SpreadCard>
   );
 };
 
@@ -102,28 +103,8 @@ export default FigureFormSchedule;
 
 /* ───────── styles ───────── */
 
-const Card = styled(SectionCard)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'space-between',
-  gap: theme.spacing(2.5),
-}));
-
 const Pair = styled(Box)(({ theme }) => ({
   display: 'grid',
   gridTemplateColumns: '1fr 1fr',
   gap: theme.spacing(2),
-}));
-
-const Money = styled(Box)({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-end',
-});
-
-const Price = styled(Typography)(({ theme }) => ({
-  ...theme.typography.mono,
-  color: theme.palette.primary.main,
-  fontSize: '1.9375rem',
-  fontWeight: 700,
 }));

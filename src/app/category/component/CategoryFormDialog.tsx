@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Box, Button, Dialog, DialogContent, DialogTitle, TextField } from '@mui/material';
 import ThumbnailUploader from '@/app/common/component/ThumbnailUploader';
 import type { ThumbnailChange } from '@/app/common/interface/ThumbnailChange';
 import { TonalButton } from '@/app/common/style/CommonButton.style';
-import { FormBody } from '@/app/common/style/CommonForm.style';
 import { validateCategoryDescription, validateCategoryName } from '@/app/common/utils/ValidationUtils';
 import type { CategoryItem } from '@/app/category/interface/CategoryItem';
 import type { CategorySaveRequestBody } from '@/app/category/interface/CategorySaveRequestBody';
+import { DialogFormBody, FieldStack, FormActions } from '@/app/common/style/CommonForm.style';
+import { styled } from '@mui/material/styles';
 
 interface CategoryFormDialogProps {
   /** 추가인지 수정인지 */
@@ -53,7 +53,7 @@ const CategoryFormDialog = ({ mode, levelName, target, loading, onSubmit, onClos
 
   return (
     <Dialog open onClose={onClose} fullWidth maxWidth="md">
-      <DialogForm noValidate onSubmit={handleSubmit(handleValid)}>
+      <DialogFormBody noValidate onSubmit={handleSubmit(handleValid)}>
         <DialogTitle>
           {levelName} {actionText}
         </DialogTitle>
@@ -62,7 +62,7 @@ const CategoryFormDialog = ({ mode, levelName, target, loading, onSubmit, onClos
             <ThumbnailBox>
               <ThumbnailUploader currentUrl={target?.thumbnailUrl} value={thumbnail} onChange={setThumbnail} disabled={loading} />
             </ThumbnailBox>
-            <FieldStack>
+            <FieldColumn>
               <TextField
                 label="이름"
                 autoFocus
@@ -81,7 +81,7 @@ const CategoryFormDialog = ({ mode, levelName, target, loading, onSubmit, onClos
                 inputRef={register('description', { validate: validateCategoryDescription }).ref}
                 {...register('description', { validate: validateCategoryDescription })}
               />
-            </FieldStack>
+            </FieldColumn>
           </FormLayout>
         </DialogContent>
         <FormActions>
@@ -90,7 +90,7 @@ const CategoryFormDialog = ({ mode, levelName, target, loading, onSubmit, onClos
             {actionText}
           </Button>
         </FormActions>
-      </DialogForm>
+      </DialogFormBody>
     </Dialog>
   );
 };
@@ -98,15 +98,6 @@ const CategoryFormDialog = ({ mode, levelName, target, loading, onSubmit, onClos
 export default CategoryFormDialog;
 
 /* ───────── styles ───────── */
-
-const DialogForm = styled(FormBody)({
-  gap: 0,
-});
-
-/* 버튼 줄. 기본 여백이 좁아서 오른쪽과 아래를 넓힌다 */
-const FormActions = styled(DialogActions)(({ theme }) => ({
-  padding: theme.spacing(1, 2, 2),
-}));
 
 const FormLayout = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -121,9 +112,6 @@ const ThumbnailBox = styled(Box)({
   width: '13.75rem',
 });
 
-const FieldStack = styled(Box)(({ theme }) => ({
-  display: 'flex',
+const FieldColumn = styled(FieldStack)({
   flex: 1,
-  flexDirection: 'column',
-  gap: theme.spacing(2),
-}));
+});

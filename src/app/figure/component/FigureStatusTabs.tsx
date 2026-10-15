@@ -1,7 +1,7 @@
 import type { SyntheticEvent } from 'react';
 import { Tab, Tabs } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import { FIGURE_TABS, type FigureTabKey } from '@/app/figure/constant/figureStatus';
+import { styled } from '@mui/material/styles';
 
 interface FigureStatusTabsProps {
   /** 선택한 탭 */

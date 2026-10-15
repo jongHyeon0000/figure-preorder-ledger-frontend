@@ -1,5 +1,3 @@
-import { Box, Button } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import FigureCategoryFilter from '@/app/figure/component/FigureCategoryFilter';
 import FigureFlatFilter from '@/app/figure/component/FigureFlatFilter';
 import { FIGURE_SORT_OPTIONS, type FigureSortKey } from '@/app/figure/constant/figureSortOptions';
@@ -7,6 +5,9 @@ import type { FigureFilterOptions } from '@/app/figure/interface/FigureFilterOpt
 import type { FigureFilterValue } from '@/app/figure/interface/FigureFilterValue';
 import type { FigureFilterKey, FigureFilters } from '@/app/figure/interface/FigureFilters';
 import { formatDeliveryMonth } from '@/app/figure/utils/FigureUtils';
+import { Row, SpreadRow } from '@/app/common/style/CommonLayout.style';
+import { Button } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 interface FigureFilterBarProps {
   /** 지금 탭의 상품에 쓰인 분류만 모은 선택지 */
@@ -50,8 +51,8 @@ const FigureFilterBar = ({
   onReset,
 }: FigureFilterBarProps) => {
   return (
-    <Bar>
-      <Side>
+    <SpreadRow>
+      <Row>
         <FigureCategoryFilter
           label="형태"
           groups={options.figureType}
@@ -82,7 +83,7 @@ const FigureFilterBar = ({
           value={filters.character}
           onChange={(value) => onFilterChange('character', value)}
         />
-      </Side>
+      </Row>
 
       <RightSide>
         <FigureFlatFilter
@@ -100,7 +101,7 @@ const FigureFilterBar = ({
           필터 초기화
         </ResetButton>
       </RightSide>
-    </Bar>
+    </SpreadRow>
   );
 };
 
@@ -108,21 +109,7 @@ export default FigureFilterBar;
 
 /* ───────── styles ───────── */
 
-const Bar = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexWrap: 'nowrap',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  gap: theme.spacing(2),
-}));
-
-const Side = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  gap: theme.spacing(1),
-}));
-
-const RightSide = styled(Side)({
+const RightSide = styled(Row)({
   marginLeft: 'auto',
   flexShrink: 0,
 });

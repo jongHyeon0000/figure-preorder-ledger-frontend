@@ -1,10 +1,11 @@
-import { Box, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { SectionCard } from '@/app/common/style/CommonCard.style';
+import { Typography } from '@mui/material';
 import { formatPrice, todayString } from '@/app/common/utils/CommonUtils';
 import FigureDeadlineText from '@/app/figure/component/FigureDeadlineText';
 import type { FigureDetail } from '@/app/figure/interface/FigureDetail';
 import { formatDeadline, formatDeliveryMonth, getTotalPrice, isDeadlinePassed } from '@/app/figure/utils/FigureUtils';
+import { SpreadCard } from '@/app/common/style/CommonCard.style';
+import { LabelText, LabelValueGrid, LabelValueRow, PriceColumn, PriceText } from '@/app/common/style/CommonText.style';
+import { styled } from '@mui/material/styles';
 
 interface FigureDetailScheduleProps {
   /** 보여 줄 상품 */
@@ -16,52 +17,52 @@ interface FigureDetailScheduleProps {
  */
 const FigureDetailSchedule = ({ figure }: FigureDetailScheduleProps) => {
   return (
-    <Card>
+    <SpreadCard>
       <Dates>
         {figure.reservationDeadline !== '' && (
-          <DateRow>
+          <LabelValueRow>
             <Label>예약마감</Label>
             <FigureDeadlineText date={figure.reservationDeadline} passed={isDeadlinePassed(figure, todayString())} />
-          </DateRow>
+          </LabelValueRow>
         )}
         {figure.balanceDueDate !== null && (
-          <DateRow>
+          <LabelValueRow>
             <Label>잔금 기한</Label>
             <FigureDeadlineText date={figure.balanceDueDate} />
-          </DateRow>
+          </LabelValueRow>
         )}
-        <DateRow>
+        <LabelValueRow>
           <Label>배송예정</Label>
           <span>{formatDeliveryMonth(figure.deliveryMonth)}</span>
-        </DateRow>
+        </LabelValueRow>
         {figure.depositPaidAt !== null && (
-          <DateRow>
+          <LabelValueRow>
             <Label>예약금 결제</Label>
             <span>{formatDeadline(figure.depositPaidAt)}</span>
-          </DateRow>
+          </LabelValueRow>
         )}
         {figure.paidAt !== null && (
-          <DateRow>
+          <LabelValueRow>
             <Label>전액 결제</Label>
             <span>{formatDeadline(figure.paidAt)}</span>
-          </DateRow>
+          </LabelValueRow>
         )}
         {figure.deliveredAt !== null && (
-          <DateRow>
+          <LabelValueRow>
             <Label>배송완료</Label>
             <span>{formatDeadline(figure.deliveredAt)}</span>
-          </DateRow>
+          </LabelValueRow>
         )}
       </Dates>
 
-      <Money>
-        <Price>{formatPrice(getTotalPrice(figure))}</Price>
+      <PriceColumn>
+        <PriceText size="lg">{formatPrice(getTotalPrice(figure))}</PriceText>
         <Typography variant="mono" color="text.secondary">
           {formatPrice(figure.price)} × {figure.quantity}개
           {figure.depositAmount !== null && ` · 예약금 ${formatPrice(figure.depositAmount)}`}
         </Typography>
-      </Money>
-    </Card>
+      </PriceColumn>
+    </SpreadCard>
   );
 };
 
@@ -69,45 +70,17 @@ export default FigureDetailSchedule;
 
 /* ───────── styles ───────── */
 
-const Card = styled(SectionCard)({
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'space-between',
-});
-
 /* 이름표, 값, 이름표, 값 네 칸. 값이 같은 세로선에서 시작하도록 줄들이 칸을 같이 쓴다(DateRow 는 칸만 거든다) */
-const Dates = styled(Box)(({ theme }) => ({
+const Dates = styled(LabelValueGrid)(({ theme }) => ({
   ...theme.typography.mono,
-  display: 'grid',
   gridTemplateColumns: 'auto 1fr auto 1fr',
-  columnGap: theme.spacing(1.5),
   rowGap: theme.spacing(0.75),
-  alignItems: 'baseline',
   marginBottom: theme.spacing(2.5),
   fontWeight: 500,
 }));
 
-const DateRow = styled(Box)({
-  display: 'contents',
-});
-
-const Label = styled('span')(({ theme }) => ({
-  color: theme.palette.text.secondary,
+const Label = styled(LabelText)(({ theme }) => ({
   fontFamily: theme.typography.fontFamily,
   fontWeight: 400,
   whiteSpace: 'nowrap',
-}));
-
-const Money = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-end',
-  gap: theme.spacing(0.75),
-}));
-
-const Price = styled(Typography)(({ theme }) => ({
-  ...theme.typography.mono,
-  fontSize: '1.9375rem',
-  fontWeight: 700,
-  color: theme.palette.primary.main,
 }));

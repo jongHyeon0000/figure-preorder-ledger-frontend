@@ -1,16 +1,9 @@
 import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { SectionCard } from '@/app/common/style/CommonCard.style';
 
 /*
 * 상품 정보 카드와 분류 묶음 (상세와 폼이 같이 쓴다)
 * */
-
-export const InfoCard = styled(SectionCard)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: theme.spacing(2),
-}));
 
 /* 묶음 하나(한 단계 밝은 면). 안의 줄들이 같은 묶음이다 */
 export const InfoGroup = styled(Box)(({ theme }) => ({
@@ -27,10 +20,6 @@ export const InfoRow = styled(Box)(({ theme }) => ({
   gridTemplateColumns: `${theme.spacing(9)} 1fr`,
   alignItems: 'center',
   columnGap: theme.spacing(1.5),
-}));
-
-export const InfoLabel = styled('span')(({ theme }) => ({
-  color: theme.palette.text.secondary,
 }));
 
 export const InfoChips = styled(Box)(({ theme }) => ({

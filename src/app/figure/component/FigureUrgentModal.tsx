@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { Box, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Box, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel } from '@mui/material';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import { TonalButton } from '@/app/common/style/CommonButton.style';
 import FigureListComponent from '@/app/figure/component/FigureListComponent';
 import type { FigureSummary } from '@/app/figure/interface/FigureSummary';
+import { Row } from '@/app/common/style/CommonLayout.style';
+import { BoldText } from '@/app/common/style/CommonText.style';
+import { styled } from '@mui/material/styles';
 
 interface FigureUrgentModalProps {
   /** 예약마감일이 곧인 미구매 상품 */
@@ -23,11 +25,11 @@ const FigureUrgentModal = ({ figures, onClose }: FigureUrgentModalProps) => {
   return (
     <Dialog open onClose={() => onClose(dismiss)} fullWidth maxWidth="md">
       <Header>
-        <TitleRow>
+        <Row>
           <NotificationsActiveIcon color="error" />
           <UrgentTitle>곧 품절될 가능성이 높은 제품이 있어요!</UrgentTitle>
-        </TitleRow>
-        <Subtitle color="text.secondary">예약마감일이 얼마 남지 않은 미구매 항목이에요. 서둘러 확인해보세요.</Subtitle>
+        </Row>
+        <BoldText color="text.secondary">예약마감일이 얼마 남지 않은 미구매 항목이에요. 서둘러 확인해보세요.</BoldText>
       </Header>
       <Content>
         <FigureListComponent figures={figures} blinkUrgent />
@@ -56,21 +58,10 @@ const Header = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2, 3, 0),
 }));
 
-/* 아이콘과 제목 글자를 한 줄에 */
-const TitleRow = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  gap: theme.spacing(1),
-}));
-
 const UrgentTitle = styled(DialogTitle)(({ theme }) => ({
   padding: 0,
   color: theme.palette.error.main,
 }));
-
-const Subtitle = styled(Typography)({
-  fontWeight: 700,
-}) as typeof Typography;
 
 /* 부제목과 첫 카드 사이, 마지막 카드와 아래 버튼 줄 사이를 좁힌다 */
 const Content = styled(DialogContent)(({ theme }) => ({

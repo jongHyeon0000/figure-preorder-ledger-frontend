@@ -1,12 +1,13 @@
 import { useRef, useState, type ChangeEvent, type DragEvent, type KeyboardEvent } from 'react';
 import { Box, IconButton, Tooltip, Typography } from '@mui/material';
-import { alpha, styled } from '@mui/material/styles';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import { THUMBNAIL_ACCEPT } from '@/app/common/constant/thumbnailFile';
 import type { ThumbnailChange } from '@/app/common/interface/ThumbnailChange';
 import { imageUrl } from '@/app/common/utils/CommonUtils';
 import { validateThumbnailFiles } from '@/app/common/utils/ValidationUtils';
+import { FillImage } from '@/app/common/style/CommonMedia.style';
+import { alpha, styled } from '@mui/material/styles';
 
 interface ThumbnailUploaderProps {
   /** 서버에 이미 올라가 있는 썸네일 주소 ('/uploads/...'). 없으면 null */
@@ -98,7 +99,7 @@ const ThumbnailUploader = ({ currentUrl, value, onChange, disabled = false }: Th
         onDrop={handleDrop}
       >
         {shownUrl ? (
-          <Preview src={shownUrl} alt="썸네일" />
+          <FillImage src={shownUrl} alt="썸네일" />
         ) : (
           <Placeholder>
             <ImageOutlinedIcon color="disabled" fontSize="large" />
@@ -161,12 +162,6 @@ const DropZone = styled(Box, { shouldForwardProp: (prop) => prop !== 'dragging' 
     '&:hover': { borderColor: theme.palette.primary.main },
   }),
 );
-
-const Preview = styled('img')({
-  width: '100%',
-  height: '100%',
-  objectFit: 'cover',
-});
 
 const Placeholder = styled(Box)(({ theme }) => ({
   display: 'flex',
