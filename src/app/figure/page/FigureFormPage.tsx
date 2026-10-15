@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Box, Button } from '@mui/material';
+import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import ErrorView from '@/app/common/component/ErrorView';
 import LoadingOverlay from '@/app/common/component/loading/LoadingOverlay';
@@ -10,6 +10,7 @@ import useDeleteThumbnail from '@/app/common/service/useDeleteThumbnail';
 import useUploadThumbnail from '@/app/common/service/useUploadThumbnail';
 import { PageContainer, PageHeader, PageTitle } from '@/app/common/style/CommonPage.style';
 import { FormBody } from '@/app/common/style/CommonForm.style';
+import FigureFormActions, { FIGURE_FORM_ID } from '@/app/figure/component/FigureFormActions';
 import FigureFormDescription from '@/app/figure/component/FigureFormDescription';
 import FigureFormInfo from '@/app/figure/component/FigureFormInfo';
 import FigureFormSchedule from '@/app/figure/component/FigureFormSchedule';
@@ -24,9 +25,6 @@ import useUpdateFigure from '@/app/figure/service/useUpdateFigure';
 import { toFormValues, toSaveRequestBody } from '@/app/figure/utils/FigureUtils';
 import { API_CODE } from '@/config/axios/constant/apiCode';
 import { useUiStore } from '@/store/uiStore';
-
-/* 헤더의 저장 버튼이 폼 밖에 있어서 form 속성으로 이 폼과 이어 준다 */
-const FIGURE_FORM_ID = 'figure-form';
 
 interface FigureFormPageProps {
   /** 등록(/figures/new)인지 수정(/figures/:figureId/edit)인지 */
@@ -47,6 +45,9 @@ interface FigureFormContentProps {
 
   /** 입력이 통과했을 때. 고른 썸네일 변경 사항도 같이 넘긴다 (서버 요청은 페이지가 한다) */
   onSubmit: (values: FigureFormValues, thumbnail: ThumbnailChange) => void;
+
+  /** 취소 */
+  onCancel: () => void;
 }
 
 /**
@@ -92,6 +93,8 @@ const FigureFormPage = ({ mode }: FigureFormPageProps) => {
       : fetchDeleteThumbnail('figure', savedFigureId);
   };
 
+  const handleCancel = () => navigate(mode === 'insert' ? '/figures' : `/figures/${figureId}`);
+
   const handleSave = async (values: FigureFormValues, thumbnail: ThumbnailChange) => {
     const body = toSaveRequestBody(values);
     const res = mode === 'insert' ? await fetchCreateFigure(body) : await fetchUpdateFigure(figureId, body);
@@ -118,20 +121,7 @@ const FigureFormPage = ({ mode }: FigureFormPageProps) => {
         <PageTitle variant="h4" component="h1">
           {mode === 'insert' ? '상품 등록' : '상품 수정'}
         </PageTitle>
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          <Button
-            variant="outlined"
-            color="inherit"
-            onClick={() => navigate(mode === 'insert' ? '/figures' : `/figures/${figureId}`)}
-          >
-            취소
-          </Button>
-          {loaded && (
-            <Button type="submit" form={FIGURE_FORM_ID} variant="contained" disabled={saving}>
-              {mode === 'insert' ? '등록' : '수정'}
-            </Button>
-          )}
-        </Box>
+        <FigureFormActions mode={mode} saving={saving} showSubmit={loaded} onCancel={handleCancel} />
       </PageHeader>
 
       {failed && <ErrorView message={failed.message} onRetry={fetchAll} />}
@@ -142,6 +132,7 @@ const FigureFormPage = ({ mode }: FigureFormPageProps) => {
           options={formOptions.data!}
           saving={saving}
           onSubmit={handleSave}
+          onCancel={handleCancel}
         />
       )}
 
@@ -153,7 +144,7 @@ const FigureFormPage = ({ mode }: FigureFormPageProps) => {
 /**
  * 폼 본체. 상세 화면과 같은 틀(왼쪽 썸네일·일정·금액, 오른쪽 정보, 아래 설명)에 입력칸을 둔다.
  */
-const FigureFormContent = ({ mode, figure, options, saving, onSubmit }: FigureFormContentProps) => {
+const FigureFormContent = ({ mode, figure, options, saving, onSubmit, onCancel }: FigureFormContentProps) => {
   const form = useForm<FigureFormValues>({ mode: 'onTouched', defaultValues: toFormValues(figure) });
   const [thumbnail, setThumbnail] = useState<ThumbnailChange>({ type: 'none' });
 
@@ -173,7 +164,10 @@ const FigureFormContent = ({ mode, figure, options, saving, onSubmit }: FigureFo
         </LeftColumn>
         <FigureFormInfo form={form} options={options} showStatus={mode === 'insert'} />
       </Layout>
-      <FigureFormDescription />
+      <FigureFormDescription form={form} disabled={saving} />
+      <BottomActions>
+        <FigureFormActions mode={mode} saving={saving} showSubmit onCancel={onCancel} />
+      </BottomActions>
     </FormBody>
   );
 };
@@ -197,3 +191,9 @@ const LeftColumn = styled(Box)(({ theme }) => ({
   gridTemplateRows: 'auto 1fr',
   gap: theme.spacing(2),
 }));
+
+/* 폼 맨 아래 버튼 줄 (오른쪽 정렬) */
+const BottomActions = styled(Box)({
+  display: 'flex',
+  justifyContent: 'flex-end',
+});

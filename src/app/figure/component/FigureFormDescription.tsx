@@ -1,20 +1,32 @@
-import { Box, Typography } from '@mui/material';
+import { Controller, type UseFormReturn } from 'react-hook-form';
 import { styled } from '@mui/material/styles';
 import { SectionCard, SectionTitle } from '@/app/common/style/CommonCard.style';
+import FigureDescriptionEditor from '@/app/figure/component/FigureDescriptionEditor';
+import type { FigureFormValues } from '@/app/figure/interface/FigureFormValues';
+
+interface FigureFormDescriptionProps {
+  /** 상품 폼 */
+  form: UseFormReturn<FigureFormValues>;
+
+  /** 저장 요청 중이면 고칠 수 없다 */
+  disabled: boolean;
+}
 
 /**
- * 설명 구역. 에디터(Tiptap)는 다음 작업에서 붙이고, 그 전에는 자리만 둔다.
- * 수정할 때 기존 설명은 폼 값에 담겨 그대로 다시 저장된다.
+ * 설명 구역. 상세의 설명 구역과 같은 카드 안에서 에디터로 설명(HTML)을 쓴다.
+ * 에디터는 처음 값을 한 번만 받으므로, 수정 화면은 상세를 받은 뒤에 이 구역을 그린다.
  */
-const FigureFormDescription = () => {
+const FigureFormDescription = ({ form, disabled }: FigureFormDescriptionProps) => {
   return (
     <Card>
       <SectionTitle variant="h6" component="h3">
         설명
       </SectionTitle>
-      <Content>
-        <Typography color="text.secondary">설명 편집은 곧 추가돼요. 지금은 수정해도 기존 설명이 그대로 유지돼요.</Typography>
-      </Content>
+      <Controller
+        name="description"
+        control={form.control}
+        render={({ field }) => <FigureDescriptionEditor value={field.value} onChange={field.onChange} disabled={disabled} />}
+      />
     </Card>
   );
 };
@@ -27,12 +39,4 @@ const Card = styled(SectionCard)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   gap: theme.spacing(2),
-}));
-
-const Content = styled(Box)(({ theme }) => ({
-  minHeight: theme.spacing(15),
-  padding: theme.spacing(3),
-  backgroundColor: theme.palette.surfaceSunken,
-  border: `1px solid ${theme.palette.lineSubtle}`,
-  borderRadius: theme.shape.borderRadius,
 }));

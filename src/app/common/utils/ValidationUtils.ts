@@ -108,7 +108,7 @@ export const validateCategoryDescription = (value: string): string | undefined =
 };
 
 /**
- * [카테고리 페이지, 상품 폼]
+ * [카테고리 페이지, 상품 폼, 상품 설명 에디터]
  *
  * 썸네일 파일: 한 장, 확장자(jpg, jpeg, png, gif, webp), 5MB 이하
  * 고른 파일이나 끌어다 놓은 파일 목록을 그대로 받는다. 파일 내용(실제 이미지인지)은 서버만 검사한다.
