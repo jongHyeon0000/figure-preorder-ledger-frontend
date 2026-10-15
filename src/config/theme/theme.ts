@@ -7,6 +7,16 @@ import { createTheme } from '@mui/material/styles'
 */
 
 declare module '@mui/material/styles' {
+  interface Shape {
+    /** 카드, 띠, 입력 영역처럼 면 단위의 모서리 */
+    cardRadius: number
+    /** 알약(칩, 배지)의 모서리 */
+    pillRadius: number
+  }
+  interface ShapeOptions {
+    cardRadius?: number
+    pillRadius?: number
+  }
   interface Palette {
     /** 카드, 입력창처럼 면 위에 한 단계 올라온 면 */
     surfaceRaised: string
@@ -86,7 +96,7 @@ const theme = createTheme({
     menuOpen: '#453c85',
     menuHover: '#4a418f',
   },
-  shape: { borderRadius: 8 },
+  shape: { borderRadius: 8, cardRadius: 12, pillRadius: 999 },
   typography: {
     fontFamily: FONT_BODY,
     h1: { fontFamily: FONT_DISPLAY, fontWeight: 400 },

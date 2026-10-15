@@ -12,7 +12,7 @@ export const InfoGroup = styled(Box)(({ theme }) => ({
   gap: theme.spacing(1.25),
   padding: theme.spacing(1.5, 2),
   backgroundColor: theme.palette.surfaceRaised,
-  borderRadius: 12,
+  borderRadius: theme.shape.cardRadius,
 }));
 
 export const InfoRow = styled(Box)(({ theme }) => ({

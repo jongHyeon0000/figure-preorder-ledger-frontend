@@ -1,6 +1,6 @@
 import { Button, Typography } from '@mui/material';
+import { StateIcon } from '@/app/common/style/CommonMedia.style';
 import { StateStack } from '@/app/common/style/CommonState.style';
-import { styled } from '@mui/material/styles';
 import ErrorOutlinedIcon from '@mui/icons-material/ErrorOutlined';
 
 interface ErrorViewProps {
@@ -17,7 +17,9 @@ interface ErrorViewProps {
 const ErrorView = ({ message, onRetry }: ErrorViewProps) => {
   return (
     <StateStack>
-      <ErrorIcon color="error" />
+      <StateIcon>
+        <ErrorOutlinedIcon fontSize="inherit" color="error" />
+      </StateIcon>
       <Typography color="text.secondary">{message}</Typography>
       {onRetry && (
         <Button variant="outlined" onClick={onRetry}>
@@ -29,9 +31,3 @@ const ErrorView = ({ message, onRetry }: ErrorViewProps) => {
 };
 
 export default ErrorView;
-
-/* ───────── styles ───────── */
-
-const ErrorIcon = styled(ErrorOutlinedIcon)({
-  fontSize: '3rem',
-});

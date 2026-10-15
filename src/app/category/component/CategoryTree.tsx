@@ -140,7 +140,7 @@ const TreeLayout = styled(Box)(({ theme }) => ({
 const Panel = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   border: `1px solid ${theme.palette.divider}`,
-  borderRadius: 12,
+  borderRadius: theme.shape.cardRadius,
   overflow: 'hidden',
 }));
 

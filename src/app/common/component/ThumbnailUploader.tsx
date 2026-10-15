@@ -158,7 +158,7 @@ const DropZone = styled(Box, { shouldForwardProp: (prop) => prop !== 'dragging' 
     cursor: 'pointer',
     backgroundColor: dragging ? alpha(theme.palette.primary.main, 0.12) : theme.palette.surfaceRaised,
     border: `1px ${dragging ? 'dashed' : 'solid'} ${dragging ? theme.palette.primary.main : theme.palette.divider}`,
-    borderRadius: 12,
+    borderRadius: theme.shape.cardRadius,
     '&:hover': { borderColor: theme.palette.primary.main },
   }),
 );

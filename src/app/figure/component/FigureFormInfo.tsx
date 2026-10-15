@@ -240,6 +240,6 @@ const LinkBar = styled('div')(({ theme }) => ({
   marginTop: 'auto',
   padding: theme.spacing(0.5, 2),
   border: `1px dashed ${theme.palette.divider}`,
-  borderRadius: 12,
+  borderRadius: theme.shape.cardRadius,
   '&:focus-within': { borderColor: theme.palette.primary.main },
 }));

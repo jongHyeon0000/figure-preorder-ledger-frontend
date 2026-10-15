@@ -157,7 +157,7 @@ const Ticket = styled(Box, { shouldForwardProp: (prop) => prop !== 'checked' && 
   cursor: clickable ? 'pointer' : 'default',
   backgroundColor: theme.palette.background.paper,
   border: `1px solid ${checked ? theme.palette.primary.main : theme.palette.lineSubtle}`,
-  borderRadius: 12,
+  borderRadius: theme.shape.cardRadius,
   transition: 'transform 0.15s ease, border-color 0.15s ease',
   ...(clickable && {
     '&:hover, &:focus-visible': {

@@ -1,7 +1,9 @@
 import CloseIcon from '@mui/icons-material/Close';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import { imageUrl } from '@/app/common/utils/CommonUtils';
-import { Avatar, IconButton } from '@mui/material';
+import { IconButton } from '@mui/material';
+import { Pill } from '@/app/common/style/CommonCard.style';
+import { ThumbAvatar } from '@/app/common/style/CommonMedia.style';
 import { styled } from '@mui/material/styles';
 
 interface FigureCategoryChipProps {
@@ -24,9 +26,9 @@ interface FigureCategoryChipProps {
 const FigureCategoryChip = ({ name, groupName, thumbnailUrl, onDelete }: FigureCategoryChipProps) => {
   return (
     <Chip>
-      <ChipImage src={imageUrl(thumbnailUrl)}>
+      <ThumbAvatar size="sm" src={imageUrl(thumbnailUrl)}>
         <ImageOutlinedIcon fontSize="small" />
-      </ChipImage>
+      </ThumbAvatar>
       {groupName && <GroupName>{groupName} ›</GroupName>}
       {name}
       {onDelete && (
@@ -42,21 +44,11 @@ export default FigureCategoryChip;
 
 /* ───────── styles ───────── */
 
-const Chip = styled('span')(({ theme }) => ({
-  display: 'inline-flex',
-  alignItems: 'center',
+const Chip = styled(Pill)(({ theme }) => ({
   gap: theme.spacing(1.25),
   padding: theme.spacing(0.625, 2, 0.625, 0.625),
   backgroundColor: theme.palette.background.paper,
   border: `1px solid ${theme.palette.divider}`,
-  borderRadius: 999,
-}));
-
-const ChipImage = styled(Avatar)(({ theme }) => ({
-  width: theme.spacing(4),
-  height: theme.spacing(4),
-  color: theme.palette.text.secondary,
-  backgroundColor: theme.palette.menuSurfaceSub,
 }));
 
 const GroupName = styled('span')(({ theme }) => ({

@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Avatar, Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 /*
@@ -29,3 +29,26 @@ export const ThumbFrame = styled(SquareFrame)(({ theme }) => ({
   backgroundColor: theme.palette.surfaceRaised,
   borderRadius: theme.shape.borderRadius,
 }));
+
+/*
+* 안내 화면(비었을 때, 실패, 이미지 없음)의 큰 아이콘 칸. 안에 fontSize="inherit" 아이콘을 둔다. 글자색은 보조색이고, 아이콘의 color 로 바꿀 수 있다
+* */
+export const StateIcon = styled('span', { shouldForwardProp: (prop) => prop !== 'size' })<{ size?: 'md' | 'lg' }>(
+  ({ theme, size = 'md' }) => ({
+    display: 'inline-flex',
+    fontSize: size === 'md' ? '3rem' : '4rem',
+    color: theme.palette.text.secondary,
+  }),
+);
+
+/*
+* 동그란 썸네일 (이미지가 없으면 안의 아이콘을 보여 준다)
+* */
+export const ThumbAvatar = styled(Avatar, { shouldForwardProp: (prop) => prop !== 'size' })<{ size: 'sm' | 'lg' }>(
+  ({ theme, size }) => ({
+    width: theme.spacing(size === 'sm' ? 4 : 7),
+    height: theme.spacing(size === 'sm' ? 4 : 7),
+    color: theme.palette.text.secondary,
+    backgroundColor: theme.palette.menuSurfaceSub,
+  }),
+);

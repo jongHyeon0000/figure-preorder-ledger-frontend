@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Typography } from '@mui/material';
+import { StateIcon } from '@/app/common/style/CommonMedia.style';
 import { StateStack } from '@/app/common/style/CommonState.style';
-import { styled } from '@mui/material/styles';
 import InboxOutlinedIcon from '@mui/icons-material/InboxOutlined';
 
 interface EmptyViewProps {
@@ -18,7 +18,9 @@ interface EmptyViewProps {
 const EmptyView = ({ message, action }: EmptyViewProps) => {
   return (
     <StateStack>
-      <EmptyIcon />
+      <StateIcon>
+        <InboxOutlinedIcon fontSize="inherit" />
+      </StateIcon>
       <Typography color="text.secondary">{message}</Typography>
       {action}
     </StateStack>
@@ -26,10 +28,3 @@ const EmptyView = ({ message, action }: EmptyViewProps) => {
 };
 
 export default EmptyView;
-
-/* ───────── styles ───────── */
-
-const EmptyIcon = styled(InboxOutlinedIcon)(({ theme }) => ({
-  fontSize: '3rem',
-  color: theme.palette.text.secondary,
-}));

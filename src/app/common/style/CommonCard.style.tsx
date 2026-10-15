@@ -8,7 +8,7 @@ const SectionCard = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
   backgroundColor: theme.palette.background.paper,
   border: `1px solid ${theme.palette.lineSubtle}`,
-  borderRadius: 12,
+  borderRadius: theme.shape.cardRadius,
 }));
 
 /*
@@ -42,4 +42,13 @@ export const SpreadCard = styled(SectionCard)(({ theme }) => ({
 * */
 export const MediaCard = styled(SectionCard)(({ theme }) => ({
   padding: theme.spacing(2.5),
+}));
+
+/*
+* 알약 모양 칸 (칩, 배지). 색과 안쪽 여백은 쓰는 쪽에서 정한다
+* */
+export const Pill = styled('span')(({ theme }) => ({
+  display: 'inline-flex',
+  alignItems: 'center',
+  borderRadius: theme.shape.pillRadius,
 }));

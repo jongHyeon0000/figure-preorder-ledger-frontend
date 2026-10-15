@@ -1,11 +1,12 @@
 import { useState, type ChangeEvent } from 'react';
-import { Avatar, Box, Button, ButtonBase, Chip, Dialog, DialogContent, DialogTitle, Pagination, TextField, Typography } from '@mui/material';
+import { Box, Button, ButtonBase, Chip, Dialog, DialogContent, DialogTitle, Pagination, TextField, Typography } from '@mui/material';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import { TonalButton } from '@/app/common/style/CommonButton.style';
 import { imageUrl } from '@/app/common/utils/CommonUtils';
 import { PICK_PAGE_SIZE } from '@/app/figure/constant/figurePick';
 import type { FigurePickItem } from '@/app/figure/interface/FigurePickItem';
 import { collectPickGroups, getPickPage, searchPickItems } from '@/app/figure/utils/FigureUtils';
+import { ThumbAvatar } from '@/app/common/style/CommonMedia.style';
 import { DialogFieldStack, FormActions } from '@/app/common/style/CommonForm.style';
 import { alpha, styled } from '@mui/material/styles';
 import CheckIcon from '@mui/icons-material/Check';
@@ -94,9 +95,9 @@ const FigurePickDialog = ({ title, items, selectedIds, multiple, onSelect, onClo
                 return (
                   <Card key={item.id} selected={checked} onClick={() => handleCard(item.id)}>
                     {checked && <CheckMark fontSize="small" />}
-                    <CardImage src={imageUrl(item.thumbnailUrl)}>
+                    <ThumbAvatar size="lg" src={imageUrl(item.thumbnailUrl)}>
                       <ImageOutlinedIcon />
-                    </CardImage>
+                    </ThumbAvatar>
                     <span>{item.name}</span>
                   </Card>
                 );
@@ -153,16 +154,9 @@ const Card = styled(ButtonBase, { shouldForwardProp: (prop) => prop !== 'selecte
     textAlign: 'center',
     backgroundColor: selected ? alpha(theme.palette.primary.main, 0.14) : theme.palette.surfaceRaised,
     border: `1px solid ${selected ? theme.palette.primary.main : theme.palette.lineSubtle}`,
-    borderRadius: 12,
+    borderRadius: theme.shape.cardRadius,
   }),
 );
-
-const CardImage = styled(Avatar)(({ theme }) => ({
-  width: theme.spacing(7),
-  height: theme.spacing(7),
-  color: theme.palette.text.secondary,
-  backgroundColor: theme.palette.menuSurfaceSub,
-}));
 
 const CheckMark = styled(CheckIcon)(({ theme }) => ({
   position: 'absolute',

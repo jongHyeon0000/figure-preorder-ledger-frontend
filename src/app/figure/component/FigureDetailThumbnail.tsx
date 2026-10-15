@@ -1,8 +1,8 @@
 import { imageUrl } from '@/app/common/utils/CommonUtils';
 import { FIGURE_STATUS_LABELS } from '@/app/figure/constant/figureStatus';
 import type { FigureDetail } from '@/app/figure/interface/FigureDetail';
-import { FillImage, ThumbFrame } from '@/app/common/style/CommonMedia.style';
-import { MediaCard } from '@/app/common/style/CommonCard.style';
+import { FillImage, StateIcon, ThumbFrame } from '@/app/common/style/CommonMedia.style';
+import { MediaCard, Pill } from '@/app/common/style/CommonCard.style';
 import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
@@ -22,7 +22,9 @@ const FigureDetailThumbnail = ({ figure }: FigureDetailThumbnailProps) => {
         {figure.thumbnailUrl ? (
           <FillImage src={imageUrl(figure.thumbnailUrl)} alt={figure.name} />
         ) : (
-          <PlaceholderIcon color="disabled" />
+          <StateIcon size="lg">
+            <ImageOutlinedIcon fontSize="inherit" color="disabled" />
+          </StateIcon>
         )}
         <Badges>
           <StatusBadge>{FIGURE_STATUS_LABELS[figure.status]}</StatusBadge>
@@ -47,20 +49,15 @@ const Badges = styled(Box)(({ theme }) => ({
   gap: theme.spacing(0.5),
 }));
 
-const StatusBadge = styled('span')(({ theme }) => ({
+const StatusBadge = styled(Pill)(({ theme }) => ({
   padding: theme.spacing(0.125, 1),
   color: theme.palette.primary.contrastText,
   fontSize: '0.75rem',
   fontWeight: 700,
   backgroundColor: theme.palette.primary.main,
-  borderRadius: 999,
 }));
 
 const PaymentBadge = styled(StatusBadge)(({ theme }) => ({
   color: theme.palette.secondary.contrastText,
   backgroundColor: theme.palette.secondary.main,
 }));
-
-const PlaceholderIcon = styled(ImageOutlinedIcon)({
-  fontSize: '4rem',
-});

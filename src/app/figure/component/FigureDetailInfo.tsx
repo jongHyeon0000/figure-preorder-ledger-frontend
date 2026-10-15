@@ -137,7 +137,7 @@ const PurchaseLink = styled('a')(({ theme }) => ({
   color: theme.palette.text.secondary,
   textDecoration: 'none',
   border: `1px dashed ${theme.palette.divider}`,
-  borderRadius: 12,
+  borderRadius: theme.shape.cardRadius,
   '&:hover': { borderColor: theme.palette.primary.main },
 }));
 
