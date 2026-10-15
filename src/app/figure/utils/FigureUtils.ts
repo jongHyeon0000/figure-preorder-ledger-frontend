@@ -44,8 +44,8 @@ export const formatDeliveryMonth = (deliveryMonth: string): string => {
   return toMonthKey(deliveryMonth).replace('-', '.');
 };
 
-/** 마감일 표시 (예: "2026-12-15" -> "26.12.15") */
-export const formatDeadline = (date: string): string => date.slice(2, 10).replaceAll('-', '.');
+/** 날짜 표시 (예: "2026-12-15" -> "2026.12.15"). 배송예정월(2026.12)과 연도 자릿수를 맞춘다 */
+export const formatDeadline = (date: string): string => date.slice(0, 10).replaceAll('-', '.');
 
 /* 같은 상위끼리 묶어서 상위 목록과 하위 목록을 만든다. 이름은 가나다순 */
 const collectGroups = (refs: FigureCategoryRef[]): FigureFilterOptionGroup[] => {

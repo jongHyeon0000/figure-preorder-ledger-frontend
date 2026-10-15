@@ -10,7 +10,7 @@ interface FigureDeadlineTextProps {
 }
 
 /**
- * 마감일 값 (예: 26.12.15). 앞의 이름표(예약마감일, 잔금 기한)는 부르는 쪽이 붙인다.
+ * 마감일 값 (예: 2026.12.15). 앞의 이름표(예약마감일, 잔금 기한)는 부르는 쪽이 붙인다.
  */
 const FigureDeadlineText = ({ date, passed = false }: FigureDeadlineTextProps) => {
   return <DateText passed={passed}>{formatDeadline(date)}</DateText>;

@@ -75,22 +75,21 @@ const Card = styled(SectionCard)({
   justifyContent: 'space-between',
 });
 
+/* 이름표, 값, 이름표, 값 네 칸. 값이 같은 세로선에서 시작하도록 줄들이 칸을 같이 쓴다(DateRow 는 칸만 거든다) */
 const Dates = styled(Box)(({ theme }) => ({
-  display: 'grid',
-  gridTemplateColumns: '1fr 1fr',
-  columnGap: theme.spacing(3.5),
-  rowGap: theme.spacing(0.75),
-  marginBottom: theme.spacing(2.5),
-}));
-
-const DateRow = styled(Box)(({ theme }) => ({
   ...theme.typography.mono,
-  display: 'flex',
+  display: 'grid',
+  gridTemplateColumns: 'auto 1fr auto 1fr',
+  columnGap: theme.spacing(1.5),
+  rowGap: theme.spacing(0.75),
   alignItems: 'baseline',
-  justifyContent: 'space-between',
-  gap: theme.spacing(1),
+  marginBottom: theme.spacing(2.5),
   fontWeight: 500,
 }));
+
+const DateRow = styled(Box)({
+  display: 'contents',
+});
 
 const Label = styled('span')(({ theme }) => ({
   color: theme.palette.text.secondary,

@@ -33,8 +33,8 @@ export const FIGURE_TABS: readonly FigureTabConfig[] = [
   { key: 'DELIVERED', label: FIGURE_STATUS_LABELS.DELIVERED, separated: false },
 ];
 
-/** 처음 열었을 때 선택되는 탭. 핵심 알림(예약마감 임박)이 미구매에 묶여 있어서 미구매로 둔다 */
-export const DEFAULT_FIGURE_TAB: FigureTabKey = 'UNPURCHASED';
+/** 처음 열었을 때(새로고침 포함) 선택되는 탭 */
+export const DEFAULT_FIGURE_TAB: FigureTabKey = 'ALL';
 
 /** 등록 때 고를 수 있는 상태 (수정에서는 서버가 무시한다) */
 export const FIGURE_REGISTER_STATUSES = ['CART', 'UNPURCHASED'] as const;

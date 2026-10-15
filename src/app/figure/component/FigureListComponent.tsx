@@ -218,17 +218,17 @@ const Stub = styled(Box)(({ theme }) => ({
   '&::after': { bottom: -7 },
 }));
 
+/* 이름표와 날짜가 두 줄로 선 칸. 값이 같은 세로선에서 시작하도록 이름표 칸 폭을 같이 쓴다(StubRow 는 칸만 거든다) */
 const Dates = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: theme.spacing(0.5),
+  display: 'grid',
+  gridTemplateColumns: 'auto 1fr',
+  columnGap: theme.spacing(1.5),
+  rowGap: theme.spacing(0.5),
 }));
 
-const StubRow = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  justifyContent: 'space-between',
-  gap: theme.spacing(1.5),
-}));
+const StubRow = styled(Box)({
+  display: 'contents',
+});
 
 const PriceBox = styled(Box)(({ theme }) => ({
   display: 'flex',
