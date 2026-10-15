@@ -1,9 +1,9 @@
-import { Box, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import LinkOutlinedIcon from '@mui/icons-material/LinkOutlined';
 import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
-import { SectionCard } from '@/app/common/style/CommonCard.style';
 import FigureCategoryChip from '@/app/figure/component/FigureCategoryChip';
+import { InfoCard, InfoChips, InfoGroup, InfoLabel, InfoRow } from '@/app/figure/component/FigureInfo.style';
 import type { FigureDetail } from '@/app/figure/interface/FigureDetail';
 import type { FigureFormOptions } from '@/app/figure/interface/FigureFormOptions';
 import { findItemThumbnail } from '@/app/figure/utils/FigureUtils';
@@ -24,21 +24,21 @@ const FigureDetailInfo = ({ figure, options }: FigureDetailInfoProps) => {
   const genre = options.genres.find((group) => group.id === figure.characters[0].groupId)!;
 
   return (
-    <Card>
+    <InfoCard>
       <FigureName variant="h5" component="h2">
         {figure.name}
       </FigureName>
 
-      <Group>
-        <Row>
-          <Label>장르</Label>
-          <Chips>
+      <InfoGroup>
+        <InfoRow>
+          <InfoLabel>장르</InfoLabel>
+          <InfoChips>
             <FigureCategoryChip name={genre.name} thumbnailUrl={genre.thumbnailUrl} />
-          </Chips>
-        </Row>
-        <Row>
-          <Label>캐릭터</Label>
-          <Chips>
+          </InfoChips>
+        </InfoRow>
+        <InfoRow>
+          <InfoLabel>캐릭터</InfoLabel>
+          <InfoChips>
             {figure.characters.map((character) => (
               <FigureCategoryChip
                 key={character.id}
@@ -46,52 +46,52 @@ const FigureDetailInfo = ({ figure, options }: FigureDetailInfoProps) => {
                 thumbnailUrl={findItemThumbnail(options.genres, character.id)}
               />
             ))}
-          </Chips>
-        </Row>
-      </Group>
+          </InfoChips>
+        </InfoRow>
+      </InfoGroup>
 
-      <Group>
-        <Row>
-          <Label>형태</Label>
-          <Chips>
+      <InfoGroup>
+        <InfoRow>
+          <InfoLabel>형태</InfoLabel>
+          <InfoChips>
             <FigureCategoryChip
               name={figure.figureType.name}
               groupName={figure.figureType.groupName}
               thumbnailUrl={findItemThumbnail(options.types, figure.figureType.id)}
             />
-          </Chips>
-        </Row>
-      </Group>
+          </InfoChips>
+        </InfoRow>
+      </InfoGroup>
 
-      <Group>
-        <Row>
-          <Label>판매처</Label>
-          <Chips>
+      <InfoGroup>
+        <InfoRow>
+          <InfoLabel>판매처</InfoLabel>
+          <InfoChips>
             <FigureCategoryChip
               name={figure.shop.name}
               groupName={figure.shop.groupName}
               thumbnailUrl={findItemThumbnail(options.shops, figure.shop.id)}
             />
-          </Chips>
-        </Row>
-      </Group>
+          </InfoChips>
+        </InfoRow>
+      </InfoGroup>
 
-      <Group>
-        <Row>
-          <Label>제조사</Label>
-          <Chips>
+      <InfoGroup>
+        <InfoRow>
+          <InfoLabel>제조사</InfoLabel>
+          <InfoChips>
             <FigureCategoryChip
               name={figure.maker.name}
               thumbnailUrl={options.makers.find((maker) => maker.id === figure.maker.id)!.thumbnailUrl}
             />
-          </Chips>
-        </Row>
-      </Group>
+          </InfoChips>
+        </InfoRow>
+      </InfoGroup>
 
-      <Group>
-        <Row>
-          <Label>시리즈</Label>
-          <Chips>
+      <InfoGroup>
+        <InfoRow>
+          <InfoLabel>시리즈</InfoLabel>
+          <InfoChips>
             {figure.series.map((series) => (
               <FigureCategoryChip
                 key={series.id}
@@ -99,9 +99,9 @@ const FigureDetailInfo = ({ figure, options }: FigureDetailInfoProps) => {
                 thumbnailUrl={findItemThumbnail(options.series, series.id)}
               />
             ))}
-          </Chips>
-        </Row>
-      </Group>
+          </InfoChips>
+        </InfoRow>
+      </InfoGroup>
 
       <PurchaseLink href={figure.purchaseLink} target="_blank" rel="noopener noreferrer">
         <LinkOutlinedIcon fontSize="small" color="disabled" />
@@ -113,7 +113,7 @@ const FigureDetailInfo = ({ figure, options }: FigureDetailInfoProps) => {
           <OpenInNewOutlinedIcon fontSize="inherit" />
         </LinkAction>
       </PurchaseLink>
-    </Card>
+    </InfoCard>
   );
 };
 
@@ -121,42 +121,9 @@ export default FigureDetailInfo;
 
 /* ───────── styles ───────── */
 
-const Card = styled(SectionCard)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: theme.spacing(2),
-}));
-
 const FigureName = styled(Typography)({
   fontSize: '1.625rem',
 }) as typeof Typography;
-
-/* 묶음 하나(한 단계 밝은 면). 안의 줄들이 같은 묶음이다 */
-const Group = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: theme.spacing(1.25),
-  padding: theme.spacing(1.5, 2),
-  backgroundColor: theme.palette.surfaceRaised,
-  borderRadius: 12,
-}));
-
-const Row = styled(Box)(({ theme }) => ({
-  display: 'grid',
-  gridTemplateColumns: `${theme.spacing(9)} 1fr`,
-  alignItems: 'center',
-  columnGap: theme.spacing(1.5),
-}));
-
-const Label = styled('span')(({ theme }) => ({
-  color: theme.palette.text.secondary,
-}));
-
-const Chips = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexWrap: 'wrap',
-  gap: theme.spacing(1),
-}));
 
 /* 구매 링크 띠. 카드가 길어져도 맨 아래에 붙는다 */
 const PurchaseLink = styled('a')(({ theme }) => ({

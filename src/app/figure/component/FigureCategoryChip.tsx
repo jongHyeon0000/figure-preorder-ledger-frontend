@@ -1,5 +1,6 @@
-import { Avatar } from '@mui/material';
+import { Avatar, IconButton } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import CloseIcon from '@mui/icons-material/Close';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import { imageUrl } from '@/app/common/utils/CommonUtils';
 
@@ -12,12 +13,15 @@ interface FigureCategoryChipProps {
 
   /** 분류 썸네일 주소. 없으면 이미지 아이콘 */
   thumbnailUrl?: string;
+
+  /** 있으면 오른쪽에 지우기 버튼을 보여 준다 (폼에서 고른 값을 뺄 때) */
+  onDelete?: () => void;
 }
 
 /**
  * 분류 한 건을 동그란 썸네일과 이름으로 보여 주는 알약 (표시 전용)
  */
-const FigureCategoryChip = ({ name, groupName, thumbnailUrl }: FigureCategoryChipProps) => {
+const FigureCategoryChip = ({ name, groupName, thumbnailUrl, onDelete }: FigureCategoryChipProps) => {
   return (
     <Chip>
       <ChipImage src={imageUrl(thumbnailUrl)}>
@@ -25,6 +29,11 @@ const FigureCategoryChip = ({ name, groupName, thumbnailUrl }: FigureCategoryChi
       </ChipImage>
       {groupName && <GroupName>{groupName} ›</GroupName>}
       {name}
+      {onDelete && (
+        <ChipDelete size="small" aria-label={`${name} 지우기`} onClick={onDelete}>
+          <CloseIcon fontSize="inherit" />
+        </ChipDelete>
+      )}
     </Chip>
   );
 };
@@ -52,5 +61,11 @@ const ChipImage = styled(Avatar)(({ theme }) => ({
 
 const GroupName = styled('span')(({ theme }) => ({
   marginRight: theme.spacing(-0.5),
+  color: theme.palette.text.secondary,
+}));
+
+const ChipDelete = styled(IconButton)(({ theme }) => ({
+  marginRight: theme.spacing(-1.5),
+  marginLeft: theme.spacing(-0.5),
   color: theme.palette.text.secondary,
 }));

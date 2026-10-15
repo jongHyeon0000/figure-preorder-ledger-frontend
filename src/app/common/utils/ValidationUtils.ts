@@ -122,3 +122,57 @@ export const validateThumbnailFiles = (files: ArrayLike<File>): string | undefin
   if (file.size > THUMBNAIL_MAX_BYTES) return '5MB 이하의 이미지만 올릴 수 있어요.';
   return undefined;
 };
+
+/**
+ * [상품 폼]
+ *
+ * 상품명: 앞뒤 공백을 뺀 1~255자
+ */
+export const validateFigureName = (value: string): string | undefined => {
+  const trimmed = value.trim();
+  if (trimmed === '') return '상품명을 입력해 주세요.';
+  if (trimmed.length > 255) return '상품명은 255자 이하로 입력해 주세요.';
+  return undefined;
+};
+
+/**
+ * [상품 폼]
+ *
+ * 개당 가격: 0 이상의 정수
+ */
+export const validateFigurePrice = (value: string): string | undefined => {
+  if (value.trim() === '') return '가격을 입력해 주세요.';
+  if (!/^\d+$/.test(value.trim()) || Number(value) > 2147483647) return '가격은 0 이상의 숫자로 입력해 주세요.';
+  return undefined;
+};
+
+/**
+ * [상품 폼]
+ *
+ * 수량: 1 이상의 정수
+ */
+export const validateFigureQuantity = (value: string): string | undefined => {
+  if (value.trim() === '') return '수량을 입력해 주세요.';
+  if (!/^\d+$/.test(value.trim()) || Number(value) < 1 || Number(value) > 2147483647) return '수량은 1 이상의 숫자로 입력해 주세요.';
+  return undefined;
+};
+
+/**
+ * [상품 폼]
+ *
+ * 한 개 고르는 분류(장르, 형태, 판매처, 제조사): 비어 있으면 안 된다
+ */
+export const validateFigureSelection = (value: number | null): string | undefined => {
+  if (value === null) return '선택해 주세요.';
+  return undefined;
+};
+
+/**
+ * [상품 폼]
+ *
+ * 여러 개 고르는 분류(캐릭터, 시리즈): 1개 이상
+ */
+export const validateFigureMultiSelection = (value: number[]): string | undefined => {
+  if (value.length === 0) return '1개 이상 선택해 주세요.';
+  return undefined;
+};

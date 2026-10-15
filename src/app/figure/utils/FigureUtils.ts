@@ -1,10 +1,16 @@
+import dayjs from 'dayjs';
 import type { CategoryGroup } from '@/app/category/interface/CategoryGroup';
+import type { CategoryItem } from '@/app/category/interface/CategoryItem';
 import type { FigureSortKey } from '@/app/figure/constant/figureSortOptions';
 import type { FigureTabKey } from '@/app/figure/constant/figureStatus';
 import { FIGURE_TABS } from '@/app/figure/constant/figureStatus';
+import type { FigureDetail } from '@/app/figure/interface/FigureDetail';
 import type { FigureCategoryRef } from '@/app/figure/interface/FigureCategoryRef';
 import type { FigureFilterOptionGroup } from '@/app/figure/interface/FigureFilterOptionGroup';
 import type { FigureFilterOptionItem } from '@/app/figure/interface/FigureFilterOptionItem';
+import type { FigureFormValues } from '@/app/figure/interface/FigureFormValues';
+import type { FigurePickItem } from '@/app/figure/interface/FigurePickItem';
+import type { FigureSaveRequestBody } from '@/app/figure/interface/FigureSaveRequestBody';
 import type { FigureMakerRef } from '@/app/figure/interface/FigureMakerRef';
 import type { FigureFilterOptions } from '@/app/figure/interface/FigureFilterOptions';
 import type { FigureFilterValue } from '@/app/figure/interface/FigureFilterValue';
@@ -187,4 +193,83 @@ export const getFilterValueText = (key: FigureFilterKey, value: FigureFilterValu
 /** 하위 분류 한 건의 썸네일 주소. 상품이 쓰는 분류는 선택지에 반드시 있고, 이미지가 없으면 undefined */
 export const findItemThumbnail = (groups: CategoryGroup[], itemId: number): string | undefined => {
   return groups.flatMap((group) => group.children).find((item) => item.id === itemId)!.thumbnailUrl;
+};
+
+/** 상위 아래의 하위들을 선택 창 항목으로 (상위 이름을 붙인다) */
+export const toPickItems = (groups: CategoryGroup[]): FigurePickItem[] => {
+  return groups.flatMap((group) =>
+    group.children.map((item) => ({
+      id: item.id,
+      name: item.name,
+      groupId: group.id,
+      groupName: group.name,
+      thumbnailUrl: item.thumbnailUrl,
+    })),
+  );
+};
+
+/** 상위 자체를 선택 창 항목으로 (장르 고르기) */
+export const toGroupPickItems = (groups: CategoryItem[]): FigurePickItem[] => {
+  return groups.map((group) => ({ id: group.id, name: group.name, thumbnailUrl: group.thumbnailUrl }));
+};
+
+/** 선택 창 항목에서 상위(탭)를 순서대로 중복 없이 뽑는다. 상위가 없는 항목이면 빈 목록 */
+export const collectPickGroups = (items: FigurePickItem[]): { id: number; name: string }[] => {
+  const groups = new Map<number, string>();
+  items.forEach((item) => {
+    if (item.groupId !== undefined) groups.set(item.groupId, item.groupName!);
+  });
+  return [...groups].map(([id, name]) => ({ id, name }));
+};
+
+/** 이름 검색과 상위 탭으로 걸러 낸다 */
+export const searchPickItems = (items: FigurePickItem[], keyword: string, groupId: number | null): FigurePickItem[] => {
+  const word = keyword.trim().toLowerCase();
+  return items.filter(
+    (item) => (groupId === null || item.groupId === groupId) && item.name.toLowerCase().includes(word),
+  );
+};
+
+/** 한 쪽 분량 (page 는 1부터) */
+export const getPickPage = (items: FigurePickItem[], page: number, pageSize: number): FigurePickItem[] => {
+  return items.slice((page - 1) * pageSize, page * pageSize);
+};
+
+/** 등록은 빈 폼, 수정은 상세 값으로 채운 폼 값 */
+export const toFormValues = (figure?: FigureDetail): FigureFormValues => {
+  return {
+    status: 'CART',
+    name: figure?.name ?? '',
+    deliveryMonth: figure?.deliveryMonth ? dayjs(figure.deliveryMonth) : null,
+    reservationDeadline: figure?.reservationDeadline ? dayjs(figure.reservationDeadline) : null,
+    price: figure ? String(figure.price) : '',
+    quantity: figure ? String(figure.quantity) : '1',
+    purchaseLink: figure?.purchaseLink ?? '',
+    genreId: figure ? figure.characters[0].groupId : null,
+    characterIds: figure?.characters.map((character) => character.id) ?? [],
+    figureTypeId: figure?.figureType.id ?? null,
+    shopId: figure?.shop.id ?? null,
+    makerId: figure?.maker.id ?? null,
+    seriesIds: figure?.series.map((series) => series.id) ?? [],
+    description: figure?.description ?? '',
+  };
+};
+
+/** 폼 값을 서버 요청으로 (검증을 통과한 값이라 null 이 없다) */
+export const toSaveRequestBody = (values: FigureFormValues): FigureSaveRequestBody => {
+  return {
+    status: values.status,
+    name: values.name.trim(),
+    deliveryMonth: values.deliveryMonth?.format('YYYY-MM-01'),
+    reservationDeadline: values.reservationDeadline?.format('YYYY-MM-DD'),
+    price: Number(values.price),
+    quantity: Number(values.quantity),
+    figureTypeId: values.figureTypeId!,
+    shopId: values.shopId!,
+    makerId: values.makerId!,
+    purchaseLink: values.purchaseLink.trim() || undefined,
+    description: values.description || undefined,
+    seriesIds: values.seriesIds,
+    characterIds: values.characterIds,
+  };
 };
