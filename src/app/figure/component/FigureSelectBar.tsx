@@ -14,15 +14,12 @@ interface FigureSelectBarProps {
 
   /** 삭제를 눌렀을 때 */
   onDelete: () => void;
-
-  /** 선택 모드를 끝낸다 */
-  onCancel: () => void;
 }
 
 /**
- * 선택 모드 도구줄 (N개 선택 · 전체 선택 · 삭제 · 취소). 탭 줄 오른쪽에서 결과 요약 자리를 대신한다(표시 전용).
+ * 선택 모드 도구줄 (N개 선택 · 전체 선택 · 삭제). 헤더에서 버튼 묶음의 왼쪽에 놓인다(표시 전용).
  */
-const FigureSelectBar = ({ checkedCount, shownCount, onToggleAll, onDelete, onCancel }: FigureSelectBarProps) => {
+const FigureSelectBar = ({ checkedCount, shownCount, onToggleAll, onDelete }: FigureSelectBarProps) => {
   const allChecked = shownCount > 0 && checkedCount === shownCount;
 
   return (
@@ -36,9 +33,6 @@ const FigureSelectBar = ({ checkedCount, shownCount, onToggleAll, onDelete, onCa
       <TonalDangerButton onClick={onDelete} disabled={checkedCount === 0}>
         삭제
       </TonalDangerButton>
-      <Button color="inherit" onClick={onCancel}>
-        취소
-      </Button>
     </Bar>
   );
 };
@@ -49,10 +43,8 @@ export default FigureSelectBar;
 
 const Bar = styled('div')(({ theme }) => ({
   display: 'flex',
-  flexShrink: 0,
   alignItems: 'center',
   gap: theme.spacing(1),
-  paddingBottom: theme.spacing(0.75),
   whiteSpace: 'nowrap',
 }));
 

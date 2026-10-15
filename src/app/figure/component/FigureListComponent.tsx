@@ -1,7 +1,9 @@
 import type { KeyboardEvent } from 'react';
 import { Box, Checkbox, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { motion } from 'motion/react';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
+import { cardEnterVariants } from '@/app/common/style/CommonMotion.style';
 import { formatPrice, imageUrl, todayString } from '@/app/common/utils/CommonUtils';
 import FigureDeadlineText from '@/app/figure/component/FigureDeadlineText';
 import type { FigureSummary } from '@/app/figure/interface/FigureSummary';
@@ -41,75 +43,76 @@ const FigureListComponent = ({ figures, onOpenDetail, selectMode, checkedIds, on
 
   return (
     <ListBox>
-      {figures.map((figure) => {
+      {figures.map((figure, index) => {
         const genre = figure.characters[0].groupName;
         const checked = checkedIds.includes(figure.figureId);
 
         return (
-          <Ticket
-            key={figure.figureId}
-            checked={selectMode && checked}
-            role="button"
-            tabIndex={0}
-            onClick={() => handleTicketClick(figure.figureId)}
-            onKeyDown={(e) => handleTicketKeyDown(e, figure.figureId)}
-          >
-            {selectMode && (
-              <Check checked={checked} tabIndex={-1} disableRipple slotProps={{ input: { 'aria-label': `${figure.name} 선택` } }} />
-            )}
-            <Thumb>
-              {figure.thumbnailUrl ? (
-                <ThumbImage src={imageUrl(figure.thumbnailUrl)} alt={figure.name} />
-              ) : (
-                <ImageOutlinedIcon color="disabled" fontSize="large" />
+          <motion.div key={figure.figureId} variants={cardEnterVariants} initial="hidden" animate="visible" custom={index}>
+            <Ticket
+              checked={selectMode && checked}
+              role="button"
+              tabIndex={0}
+              onClick={() => handleTicketClick(figure.figureId)}
+              onKeyDown={(e) => handleTicketKeyDown(e, figure.figureId)}
+            >
+              {selectMode && (
+                <Check checked={checked} tabIndex={-1} disableRipple slotProps={{ input: { 'aria-label': `${figure.name} 선택` } }} />
               )}
-            </Thumb>
+              <Thumb>
+                {figure.thumbnailUrl ? (
+                  <ThumbImage src={imageUrl(figure.thumbnailUrl)} alt={figure.name} />
+                ) : (
+                  <ImageOutlinedIcon color="disabled" fontSize="large" />
+                )}
+              </Thumb>
 
-            <Main>
-              <Names>
-                <FigureName variant="h6" component="div">
-                  {figure.name}
-                </FigureName>
-                <Rows>
-                  <Label>장르</Label>
-                  <Value>{genre}</Value>
-                  <Label>형태</Label>
-                  <Value>
-                    {figure.figureType.groupName} › {figure.figureType.name}
-                  </Value>
-                </Rows>
-              </Names>
-            </Main>
+              <Main>
+                <Names>
+                  <FigureName variant="h6" component="div">
+                    {figure.name}
+                  </FigureName>
+                  <Rows>
+                    <Label>장르</Label>
+                    <Value>{genre}</Value>
+                    <Label>형태</Label>
+                    <Value>
+                      {figure.figureType.groupName} › {figure.figureType.name}
+                    </Value>
+                  </Rows>
+                </Names>
+              </Main>
 
-            <Stub>
-              <Dates>
-                {(figure.status === 'CART' || figure.status === 'UNPURCHASED') && figure.reservationDeadline !== '' && (
+              <Stub>
+                <Dates>
+                  {(figure.status === 'CART' || figure.status === 'UNPURCHASED') && figure.reservationDeadline !== '' && (
+                    <StubRow>
+                      <Label>예약마감일</Label>
+                      <FigureDeadlineText date={figure.reservationDeadline} passed={isDeadlinePassed(figure, today)} />
+                    </StubRow>
+                  )}
+                  {figure.status === 'RESERVED' && figure.balanceDueDate !== null && (
+                    <StubRow>
+                      <Label>잔금 기한</Label>
+                      <FigureDeadlineText date={figure.balanceDueDate} />
+                    </StubRow>
+                  )}
                   <StubRow>
-                    <Label>예약마감일</Label>
-                    <FigureDeadlineText date={figure.reservationDeadline} passed={isDeadlinePassed(figure, today)} />
+                    <Label>배송예정월</Label>
+                    <Value>{formatDeliveryMonth(figure.deliveryMonth)}</Value>
                   </StubRow>
-                )}
-                {figure.status === 'RESERVED' && figure.balanceDueDate !== null && (
-                  <StubRow>
-                    <Label>잔금 기한</Label>
-                    <FigureDeadlineText date={figure.balanceDueDate} />
-                  </StubRow>
-                )}
-                <StubRow>
-                  <Label>배송예정월</Label>
-                  <Value>{formatDeliveryMonth(figure.deliveryMonth)}</Value>
-                </StubRow>
-              </Dates>
-              <PriceBox>
-                <Price>{formatPrice(getTotalPrice(figure))}</Price>
-                {figure.quantity > 1 && (
-                  <Quantity variant="mono" color="text.secondary" noWrap>
-                    {formatPrice(figure.price)} × {figure.quantity}
-                  </Quantity>
-                )}
-              </PriceBox>
-            </Stub>
-          </Ticket>
+                </Dates>
+                <PriceBox>
+                  <Price>{formatPrice(getTotalPrice(figure))}</Price>
+                  {figure.quantity > 1 && (
+                    <Quantity variant="mono" color="text.secondary" noWrap>
+                      {formatPrice(figure.price)} × {figure.quantity}
+                    </Quantity>
+                  )}
+                </PriceBox>
+              </Stub>
+            </Ticket>
+          </motion.div>
         );
       })}
     </ListBox>

@@ -56,6 +56,9 @@ const FigureListPage = () => {
 
   const selection = useFigureSelection(shownFigures);
 
+  /* 이 값이 바뀌면 목록을 새로 그려 카드 진입 애니메이션이 다시 재생된다(탭, 상품 관리 모드, 필터, 배송월, 정렬) */
+  const listKey = JSON.stringify([tab, selection.selectMode, active.filters, active.month, sort]);
+
   const handleOpenDetail = (figureId: number) => navigate(`/figures/${figureId}`);
 
   const handleCheckedDelete = async () => {
@@ -83,11 +86,22 @@ const FigureListPage = () => {
           상품
         </PageTitle>
         <Actions>
-          {!selection.selectMode && (
-            <Button variant="outlined" color="inherit" disabled={figures.length === 0} onClick={selection.startSelectMode}>
-              상품 관리
-            </Button>
+          {selection.selectMode && (
+            <FigureSelectBar
+              checkedCount={selection.checkedIds.length}
+              shownCount={shownFigures.length}
+              onToggleAll={selection.toggleAllFigures}
+              onDelete={handleCheckedDelete}
+            />
           )}
+          <Button
+            variant="outlined"
+            color="inherit"
+            disabled={!selection.selectMode && figures.length === 0}
+            onClick={selection.selectMode ? selection.cancelSelectMode : selection.startSelectMode}
+          >
+            {selection.selectMode ? '나가기' : '상품 관리'}
+          </Button>
           <Button variant="contained" startIcon={<AddOutlinedIcon />} onClick={() => navigate('/figures/new')}>
             상품 등록
           </Button>
@@ -100,21 +114,11 @@ const FigureListPage = () => {
         <>
           <TabRow>
             <FigureStatusTabs tab={tab} counts={countByTab(figures)} onChange={setTab} />
-            {selection.selectMode ? (
-              <FigureSelectBar
-                checkedCount={selection.checkedIds.length}
-                shownCount={shownFigures.length}
-                onToggleAll={selection.toggleAllFigures}
-                onDelete={handleCheckedDelete}
-                onCancel={selection.cancelSelectMode}
-              />
-            ) : (
-              <FigureResultSummary
-                count={shownFigures.length}
-                totalPrice={sumTotalPrice(shownFigures)}
-                paidAmount={sumPaidAmount(shownFigures)}
-              />
-            )}
+            <FigureResultSummary
+              count={shownFigures.length}
+              totalPrice={sumTotalPrice(shownFigures)}
+              paidAmount={sumPaidAmount(shownFigures)}
+            />
           </TabRow>
           <Conditions>
             <FigureFilterBar
@@ -148,6 +152,7 @@ const FigureListPage = () => {
           )}
           {shownFigures.length > 0 && (
             <FigureListComponent
+              key={listKey}
               figures={shownFigures}
               onOpenDetail={handleOpenDetail}
               selectMode={selection.selectMode}
