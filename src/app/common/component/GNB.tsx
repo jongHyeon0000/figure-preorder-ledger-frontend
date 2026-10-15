@@ -62,7 +62,7 @@ const GNB = () => {
               <AccountCircleOutlinedIcon />
             </IconButton>
             <Menu anchorEl={anchorEl} open={anchorEl !== null} onClose={handleCloseMenu}>
-              <MenuName variant="subtitle2">{user?.name}</MenuName>
+              <MenuName variant="subtitle2">{user!.name}</MenuName>
               <Divider />
               <MenuItem onClick={handleMyPage}>
                 <ListItemIcon>

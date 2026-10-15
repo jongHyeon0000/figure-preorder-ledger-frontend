@@ -175,11 +175,10 @@ export const isDeadlinePassed = (figure: FigureSummary, today: string): boolean 
  * 하위를 골랐으면 "상위 > 하위", 상위만 골랐으면 "상위 전체", 제조사는 이름만.
  */
 export const getFilterValueText = (key: FigureFilterKey, value: FigureFilterValue, options: FigureFilterOptions): string => {
-  if (key === 'maker') return options.maker.find((item) => item.id === value.itemId)?.name ?? '';
+  if (key === 'maker') return options.maker.find((item) => item.id === value.itemId)!.name;
 
-  const group = options[key].find((candidate) => candidate.groupId === value.groupId);
-  const groupName = group?.groupName ?? '';
-  if (value.itemId === null) return `${groupName} 전체`;
+  const group = options[key].find((candidate) => candidate.groupId === value.groupId)!;
+  if (value.itemId === null) return `${group.groupName} 전체`;
 
-  return `${groupName} > ${group?.items.find((item) => item.id === value.itemId)?.name ?? ''}`;
+  return `${group.groupName} > ${group.items.find((item) => item.id === value.itemId)!.name}`;
 };

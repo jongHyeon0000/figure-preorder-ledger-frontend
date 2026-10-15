@@ -40,6 +40,31 @@ interface CategoryContentProps {
 }
 
 /**
+ * 카테고리 관리 화면 (/categories)
+ * 축(판매처, 형태, 시리즈, 장르·캐릭터, 제조사)은 주소의 ?axis= 로 바꾼다.
+ */
+const CategoryPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const axisParam = searchParams.get('axis');
+  const axis: CategoryAxisKey = isCategoryAxisKey(axisParam) ? axisParam : DEFAULT_CATEGORY_AXIS;
+
+  return (
+      <PageContainer>
+        <PageHeader>
+          <PageTitle variant="h4" component="h1">
+            카테고리 관리
+          </PageTitle>
+        </PageHeader>
+
+        <CategoryAxisTabs axis={axis} onChange={(nextAxis) => setSearchParams({ axis: nextAxis })} />
+
+        <CategoryContent key={axis} axis={axis} />
+      </PageContainer>
+  );
+};
+
+/**
  * 한 축의 분류 목록과 추가, 수정, 삭제. 상태(조회 결과, 고른 상위, 열린 창)는 이 컴포넌트가 들고 있고,
  * 축이 바뀌면 CategoryPage 가 key 로 이 컴포넌트를 새로 만들어서 이전 축의 값이 남지 않는다.
  * 추가, 수정, 삭제가 성공하면 목록을 다시 불러온다(수정, 삭제 응답에는 data 가 없다).
@@ -75,9 +100,7 @@ const CategoryContent = ({ axis }: CategoryContentProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [axis]);
 
-  const handleSave = async (body: CategorySaveRequestBody, thumbnail: ThumbnailChange) => {
-    if (dialog === null) return;
-
+  const handleSave = async (dialog: CategoryDialogState, body: CategorySaveRequestBody, thumbnail: ThumbnailChange) => {
     const res =
       dialog.mode === 'insert'
         ? await fetchCreateCategory(axis, dialog.level, body, dialog.parentId)
@@ -89,7 +112,7 @@ const CategoryContent = ({ axis }: CategoryContentProps) => {
     }
 
     /* 썸네일은 분류를 저장해 id 를 받은 뒤에 올린다(추가는 응답의 새 id, 수정은 원래 id) */
-    const targetId = dialog.mode === 'insert' ? res.data?.id : dialog.target.id;
+    const targetId = dialog.mode === 'insert' ? res.data!.id : dialog.target.id;
     const thumbnailRes = await saveThumbnail(dialog.level, targetId, thumbnail);
 
     if (thumbnailRes !== null && thumbnailRes.code !== 'OK') {
@@ -100,15 +123,15 @@ const CategoryContent = ({ axis }: CategoryContentProps) => {
     setDialog(null);
 
     /* 새로 만든 상위는 바로 오른쪽에 펼쳐 보여 준다 */
-    if (dialog.mode === 'insert' && dialog.level === 'group' && res.data !== null) {
-      setSelectedGroupId(res.data.id);
+    if (dialog.mode === 'insert' && dialog.level === 'group') {
+      setSelectedGroupId(targetId);
     }
     await fetchReadCategoryList(axis);
   };
 
   /* 고른 썸네일 변경 사항을 서버에 보낸다. 보낼 것이 없으면 null */
-  const saveThumbnail = async (level: CategoryLevel, targetId: number | undefined, thumbnail: ThumbnailChange) => {
-    if (targetId === undefined || thumbnail.type === 'none') return null;
+  const saveThumbnail = async (level: CategoryLevel, targetId: number, thumbnail: ThumbnailChange) => {
+    if (thumbnail.type === 'none') return null;
 
     const { thumbnailTarget } = getLevelConfig(axis, level);
     return thumbnail.type === 'upload'
@@ -118,15 +141,15 @@ const CategoryContent = ({ axis }: CategoryContentProps) => {
 
   const handleDelete = async (level: CategoryLevel, target: CategoryItem) => {
     const usageRes = await fetchReadCategoryUsage(axis, level, target.id);
-    if (usageRes.code !== 'OK' || usageRes.data === null) {
+    if (usageRes.code !== 'OK') {
       showSnackbar(usageRes.message, 'error');
       return;
     }
 
     const usageText =
-      usageRes.data.count === 0
+      usageRes.data!.count === 0
         ? '이 분류를 쓰는 상품은 없어요.'
-        : `이 분류를 쓰는 상품 ${usageRes.data.count}개는 '기타'로 옮겨져요.`;
+        : `이 분류를 쓰는 상품 ${usageRes.data!.count}개는 '기타'로 옮겨져요.`;
     const groupText = level === 'group' && CATEGORY_AXES[axis].child !== null ? ' 하위 분류도 함께 \'기타\'로 옮겨져요.' : '';
 
     const confirmed = await showConfirmAlert({
@@ -182,38 +205,13 @@ const CategoryContent = ({ axis }: CategoryContentProps) => {
           levelName={dialog.level === 'group' ? groupLabel : '하위'}
           target={dialog.mode === 'edit' ? dialog.target : undefined}
           loading={createCategoryLoading || updateCategoryLoading || uploadThumbnailLoading || deleteThumbnailLoading}
-          onSubmit={handleSave}
+          onSubmit={(body, thumbnail) => handleSave(dialog, body, thumbnail)}
           onClose={() => setDialog(null)}
         />
       )}
 
       <LoadingOverlay open={isBusy} />
     </>
-  );
-};
-
-/**
- * 카테고리 관리 화면 (/categories)
- * 축(판매처, 형태, 시리즈, 장르·캐릭터, 제조사)은 주소의 ?axis= 로 바꾼다.
- */
-const CategoryPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const axisParam = searchParams.get('axis');
-  const axis: CategoryAxisKey = isCategoryAxisKey(axisParam) ? axisParam : DEFAULT_CATEGORY_AXIS;
-
-  return (
-    <PageContainer>
-      <PageHeader>
-        <PageTitle variant="h4" component="h1">
-          카테고리 관리
-        </PageTitle>
-      </PageHeader>
-
-      <CategoryAxisTabs axis={axis} onChange={(nextAxis) => setSearchParams({ axis: nextAxis })} />
-
-      <CategoryContent key={axis} axis={axis} />
-    </PageContainer>
   );
 };
 

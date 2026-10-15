@@ -7,12 +7,10 @@ import {
 import type { CategorySaveRequestBody } from '@/app/category/interface/CategorySaveRequestBody';
 
 /**
- * 축과 단계로 서버 연결 정보를 찾는다. 하위가 없는 축에서 하위를 찾으면 호출한 쪽의 실수라서 에러를 던진다.
+ * 축과 단계로 서버 연결 정보를 찾는다. 하위가 없는 축(제조사)에서는 하위를 찾지 않는다.
  */
 export const getLevelConfig = (axis: CategoryAxisKey, level: CategoryLevel): CategoryLevelConfig => {
-  const config = CATEGORY_AXES[axis][level];
-  if (config === null) throw new Error(`${axis} 축에는 ${level} 단계가 없습니다.`);
-  return config;
+  return CATEGORY_AXES[axis][level]!;
 };
 
 /**

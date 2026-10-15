@@ -2,7 +2,7 @@ import { Box, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import FigureCategoryFilter from '@/app/figure/component/FigureCategoryFilter';
 import FigureFlatFilter from '@/app/figure/component/FigureFlatFilter';
-import { FIGURE_SORT_OPTIONS, isFigureSortKey, type FigureSortKey } from '@/app/figure/constant/figureSortOptions';
+import { FIGURE_SORT_OPTIONS, type FigureSortKey } from '@/app/figure/constant/figureSortOptions';
 import type { FigureFilterOptions } from '@/app/figure/interface/FigureFilterOptions';
 import type { FigureFilterValue } from '@/app/figure/interface/FigureFilterValue';
 import type { FigureFilterKey, FigureFilters } from '@/app/figure/interface/FigureFilters';
@@ -94,7 +94,7 @@ const FigureFilterBar = ({
         <FigureFlatFilter
           options={SORT_OPTIONS}
           value={sort}
-          onChange={(value) => value !== null && isFigureSortKey(value) && onSortChange(value)}
+          onChange={(value) => onSortChange(value as FigureSortKey)}
         />
         <ResetButton variant="outlined" color="inherit" onClick={onReset}>
           필터 초기화
