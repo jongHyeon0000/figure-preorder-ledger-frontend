@@ -27,17 +27,12 @@ interface ProfileViewProps {
 }
 
 /**
- * 내 정보 탭. 왼쪽은 프로필 이미지 카드(고르면 저장 버튼으로 올린다), 오른쪽은 아이디, 이메일, 닉네임, 가입일(표시 전용).
- * 상품 상세와 같은 1:2 배치이고, 저장 버튼은 오른쪽 카드의 맨 아래 오른쪽이다.
+ * 내 정보 탭. 왼쪽은 아이디, 이메일, 닉네임, 가입일(표시 전용), 오른쪽은 프로필 이미지 카드(고르면 저장 버튼으로 올린다).
+ * 상품 상세와 같은 2:1 배치이고, 저장 버튼은 정보 카드의 맨 아래 오른쪽이다.
  */
 const ProfileView = ({ user, thumbnail, onThumbnailChange, loading, onSave }: ProfileViewProps) => {
   return (
     <SplitLayout>
-      <MediaCard>
-        <SquareFrame>
-          <ThumbnailUploader currentUrl={user.thumbnailUrl} value={thumbnail} onChange={onThumbnailChange} disabled={loading} />
-        </SquareFrame>
-      </MediaCard>
       <ColumnCard>
         <Info>
           <LabelValueRow>
@@ -63,6 +58,11 @@ const ProfileView = ({ user, thumbnail, onThumbnailChange, loading, onSave }: Pr
           </Button>
         </ButtonRow>
       </ColumnCard>
+      <MediaCard>
+        <SquareFrame>
+          <ThumbnailUploader currentUrl={user.thumbnailUrl} value={thumbnail} onChange={onThumbnailChange} disabled={loading} />
+        </SquareFrame>
+      </MediaCard>
     </SplitLayout>
   );
 };

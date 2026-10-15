@@ -152,6 +152,7 @@ const FigureFormContent = ({ mode, figure, options, saving, onSubmit, onCancel }
   return (
     <FormBody id={FIGURE_FORM_ID} noValidate onSubmit={form.handleSubmit(handleValid)}>
       <SplitLayout>
+        <FigureFormInfo form={form} options={options} showStatus={mode === 'insert'} />
         <SideColumn>
           <FigureFormThumbnail
             currentUrl={figure?.thumbnailUrl}
@@ -161,7 +162,6 @@ const FigureFormContent = ({ mode, figure, options, saving, onSubmit, onCancel }
           />
           <FigureFormSchedule form={form} />
         </SideColumn>
-        <FigureFormInfo form={form} options={options} showStatus={mode === 'insert'} />
       </SplitLayout>
       <FigureFormDescription form={form} disabled={saving} />
       <EndRow>

@@ -29,19 +29,19 @@ export const EndRow = styled(Box)({
 });
 
 /*
-* 왼쪽 1 : 오른쪽 2 두 열 배치 (좁은 화면에서는 한 열). 상세와 폼이 같이 쓴다
+* 왼쪽 2 : 오른쪽 1 두 열 배치 (좁은 화면에서는 한 열). 상세, 폼, 마이페이지가 같이 쓴다. 왼쪽은 정보, 오른쪽은 썸네일 쪽
 * */
 export const SplitLayout = styled(Box)(({ theme }) => ({
   display: 'grid',
   gridTemplateColumns: '1fr',
   gap: theme.spacing(2),
   [theme.breakpoints.up('md')]: {
-    gridTemplateColumns: '1fr 2fr',
+    gridTemplateColumns: '2fr 1fr',
   },
 }));
 
 /*
-* SplitLayout 의 왼쪽 열 (위 칸은 내용 높이, 아래 칸은 남는 높이를 채운다)
+* SplitLayout 의 오른쪽 열 (위 칸은 내용 높이, 아래 칸은 남는 높이를 채운다)
 * */
 export const SideColumn = styled(Box)(({ theme }) => ({
   display: 'grid',

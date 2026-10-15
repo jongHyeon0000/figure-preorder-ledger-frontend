@@ -106,11 +106,11 @@ const FigureDetailPage = () => {
       {loaded && (
         <>
           <Layout>
+            <FigureDetailInfo figure={figure.data!} options={formOptions.data!} />
             <SideColumn>
               <FigureDetailThumbnail figure={figure.data!} />
               <FigureDetailSchedule figure={figure.data!} />
             </SideColumn>
-            <FigureDetailInfo figure={figure.data!} options={formOptions.data!} />
           </Layout>
           <FigureDetailDescription figure={figure.data!} />
         </>
@@ -136,7 +136,6 @@ export default FigureDetailPage;
 
 /* ───────── styles ───────── */
 
-/* 왼쪽(썸네일, 일정·금액) 1 : 오른쪽(정보) 2 */
 const Layout = styled(SplitLayout)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
