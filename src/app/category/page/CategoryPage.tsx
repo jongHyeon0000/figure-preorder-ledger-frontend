@@ -34,13 +34,17 @@ type CategoryDialogState =
   | { mode: 'insert'; level: CategoryLevel; parentId?: number }
   | { mode: 'edit'; level: CategoryLevel; target: CategoryItem };
 
+interface CategoryContentProps {
+  /** 지금 보고 있는 축 */
+  axis: CategoryAxisKey;
+}
+
 /**
- * 카테고리 관리 화면 (/categories)
- * 축(판매처, 형태, 시리즈, 장르·캐릭터, 제조사)은 주소의 ?axis= 로 바꾼다.
+ * 한 축의 분류 목록과 추가, 수정, 삭제. 상태(조회 결과, 고른 상위, 열린 창)는 이 컴포넌트가 들고 있고,
+ * 축이 바뀌면 CategoryPage 가 key 로 이 컴포넌트를 새로 만들어서 이전 축의 값이 남지 않는다.
  * 추가, 수정, 삭제가 성공하면 목록을 다시 불러온다(수정, 삭제 응답에는 data 가 없다).
  */
-const CategoryPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+const CategoryContent = ({ axis }: CategoryContentProps) => {
   const showSnackbar = useUiStore((state) => state.showSnackbar);
 
   const { categoryList, categoryListLoading, fetchReadCategoryList } = useReadCategoryList();
@@ -54,8 +58,6 @@ const CategoryPage = () => {
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
   const [dialog, setDialog] = useState<CategoryDialogState | null>(null);
 
-  const axisParam = searchParams.get('axis');
-  const axis: CategoryAxisKey = isCategoryAxisKey(axisParam) ? axisParam : DEFAULT_CATEGORY_AXIS;
   /* 상위 이름: 하위가 없는 축(제조사)은 상위가 곧 분류라서 축 이름을 쓰고, 나머지는 "그룹" */
   const groupLabel = CATEGORY_AXES[axis].child === null ? CATEGORY_AXES[axis].nameKr : '그룹';
   const groups = categoryList?.data ?? [];
@@ -72,11 +74,6 @@ const CategoryPage = () => {
     fetchReadCategoryList(axis);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [axis]);
-
-  const handleAxisChange = (nextAxis: CategoryAxisKey) => {
-    setSelectedGroupId(null);
-    setSearchParams({ axis: nextAxis });
-  };
 
   const handleSave = async (body: CategorySaveRequestBody, thumbnail: ThumbnailChange) => {
     if (dialog === null) return;
@@ -153,15 +150,7 @@ const CategoryPage = () => {
   };
 
   return (
-    <PageContainer>
-      <PageHeader>
-        <PageTitle variant="h4" component="h1">
-          카테고리 관리
-        </PageTitle>
-      </PageHeader>
-
-      <CategoryAxisTabs axis={axis} onChange={handleAxisChange} />
-
+    <>
       {categoryList && categoryList.code !== 'OK' && (
         <ErrorView message={categoryList.message} onRetry={() => fetchReadCategoryList(axis)} />
       )}
@@ -199,6 +188,31 @@ const CategoryPage = () => {
       )}
 
       <LoadingOverlay open={isBusy} />
+    </>
+  );
+};
+
+/**
+ * 카테고리 관리 화면 (/categories)
+ * 축(판매처, 형태, 시리즈, 장르·캐릭터, 제조사)은 주소의 ?axis= 로 바꾼다.
+ */
+const CategoryPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const axisParam = searchParams.get('axis');
+  const axis: CategoryAxisKey = isCategoryAxisKey(axisParam) ? axisParam : DEFAULT_CATEGORY_AXIS;
+
+  return (
+    <PageContainer>
+      <PageHeader>
+        <PageTitle variant="h4" component="h1">
+          카테고리 관리
+        </PageTitle>
+      </PageHeader>
+
+      <CategoryAxisTabs axis={axis} onChange={(nextAxis) => setSearchParams({ axis: nextAxis })} />
+
+      <CategoryContent key={axis} axis={axis} />
     </PageContainer>
   );
 };
