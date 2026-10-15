@@ -3,7 +3,7 @@ import { Box, Button, FormHelperText } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import FigureCategoryChip from '@/app/figure/component/FigureCategoryChip';
 import FigurePickDialog from '@/app/figure/component/FigurePickDialog';
-import { InfoChips, InfoRow } from '@/app/figure/component/FigureInfo.style';
+import { InfoChips, InfoRow } from '@/app/figure/style/FigureInfo.style';
 import type { FigurePickItem } from '@/app/figure/interface/FigurePickItem';
 import { LabelText } from '@/app/common/style/CommonText.style';
 

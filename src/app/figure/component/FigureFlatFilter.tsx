@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { List, ListItemText } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { FilterButton, FilterColumn, FilterItem, FilterPopover } from '@/app/figure/component/FigureFilter.style';
+import { FilterButton, FilterColumn, FilterItem, FilterPopover } from '@/app/figure/style/FigureFilter.style';
 
 interface FigureFlatFilterOption {
   value: string;

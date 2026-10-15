@@ -2,7 +2,7 @@ import { Controller, useWatch, type UseFormReturn } from 'react-hook-form';
 import { Box, FormHelperText, InputBase, TextField, ToggleButton } from '@mui/material';
 import LinkOutlinedIcon from '@mui/icons-material/LinkOutlined';
 import { validateFigureMultiSelection, validateFigureName, validateFigureSelection } from '@/app/common/utils/ValidationUtils';
-import { InfoGroup } from '@/app/figure/component/FigureInfo.style';
+import { InfoGroup } from '@/app/figure/style/FigureInfo.style';
 import FigurePickField from '@/app/figure/component/FigurePickField';
 import { FIGURE_REGISTER_STATUSES, FIGURE_STATUS_LABELS } from '@/app/figure/constant/figureStatus';
 import type { FigureFormOptions } from '@/app/figure/interface/FigureFormOptions';

@@ -1,7 +1,7 @@
 import LinkOutlinedIcon from '@mui/icons-material/LinkOutlined';
 import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
 import FigureCategoryChip from '@/app/figure/component/FigureCategoryChip';
-import { InfoChips, InfoGroup, InfoRow } from '@/app/figure/component/FigureInfo.style';
+import { InfoChips, InfoGroup, InfoRow } from '@/app/figure/style/FigureInfo.style';
 import type { FigureDetail } from '@/app/figure/interface/FigureDetail';
 import type { FigureFormOptions } from '@/app/figure/interface/FigureFormOptions';
 import { findItemThumbnail } from '@/app/figure/utils/FigureUtils';
