@@ -1,8 +1,5 @@
 import { create } from 'zustand';
 
-/** 스낵바 종류 */
-export type SnackbarSeverity = 'success' | 'error' | 'warning' | 'info';
-
 /**
  * 화면 알림 상태 관리 Store (Zustand)
  * 페이지는 showSnackbar(메시지, 종류)만 호출하고, 그리는 일은 루트의 GlobalSnackbar 가 한다.
@@ -15,10 +12,10 @@ interface UiStore {
   snackbarMessage: string;
 
   /** 스낵바 종류 */
-  snackbarSeverity: SnackbarSeverity;
+  snackbarSeverity: 'success' | 'error' | 'warning' | 'info';
 
   /** 스낵바 띄우기 */
-  showSnackbar: (message: string, severity?: SnackbarSeverity) => void;
+  showSnackbar: (message: string, severity?: 'success' | 'error' | 'warning' | 'info') => void;
 
   /** 스낵바 닫기 */
   closeSnackbar: () => void;
