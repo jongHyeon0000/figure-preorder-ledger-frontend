@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import EmptyView from '@/app/common/component/EmptyView';
 import ErrorView from '@/app/common/component/ErrorView';
 import LoadingOverlay from '@/app/common/component/loading/LoadingOverlay';
 import { PageContainer, PageHeader, PageTitle } from '@/app/common/style/CommonPage.style';
 import FigureFilterBar from '@/app/figure/component/FigureFilterBar';
+import FigureFilterChips from '@/app/figure/component/FigureFilterChips';
 import FigureListComponent from '@/app/figure/component/FigureListComponent';
 import FigureResultSummary from '@/app/figure/component/FigureResultSummary';
 import FigureStatusTabs from '@/app/figure/component/FigureStatusTabs';
@@ -48,7 +50,7 @@ const FigureListPage = () => {
 
   return (
     <PageContainer>
-      <PageHeader>
+      <PageHeader sx={{ mb: 1 }}>
         <PageTitle variant="h4" component="h1">
           상품
         </PageTitle>
@@ -61,22 +63,27 @@ const FigureListPage = () => {
 
       {figureList?.code === 'OK' && (
         <>
-          <FigureStatusTabs tab={tab} counts={countByTab(figures)} onChange={setTab} />
-          <FigureFilterBar
-            options={options}
-            filters={active.filters}
-            month={active.month}
-            sort={sort}
-            onFilterChange={setFilter}
-            onMonthChange={setMonth}
-            onSortChange={setSort}
-            onReset={resetFilters}
-          />
-          <FigureResultSummary
-            count={shownFigures.length}
-            totalPrice={sumTotalPrice(shownFigures)}
-            paidAmount={sumPaidAmount(shownFigures)}
-          />
+          <TabRow>
+            <FigureStatusTabs tab={tab} counts={countByTab(figures)} onChange={setTab} />
+            <FigureResultSummary
+              count={shownFigures.length}
+              totalPrice={sumTotalPrice(shownFigures)}
+              paidAmount={sumPaidAmount(shownFigures)}
+            />
+          </TabRow>
+          <Conditions>
+            <FigureFilterBar
+              options={options}
+              filters={active.filters}
+              month={active.month}
+              sort={sort}
+              onFilterChange={setFilter}
+              onMonthChange={setMonth}
+              onSortChange={setSort}
+              onReset={resetFilters}
+            />
+            <FigureFilterChips filters={active.filters} options={options} onClear={(key) => setFilter(key, null)} />
+          </Conditions>
 
           {figures.length === 0 && (
             <EmptyView
@@ -106,3 +113,20 @@ const FigureListPage = () => {
 };
 
 export default FigureListPage;
+
+/* ───────── styles ───────── */
+
+/* 탭(왼쪽)과 결과 요약(오른쪽 끝)을 한 줄에 두고 아래에 선을 긋는다 */
+const TabRow = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'flex-end',
+  justifyContent: 'space-between',
+  gap: theme.spacing(2),
+  marginBottom: theme.spacing(2.25),
+  borderBottom: `1px solid ${theme.palette.divider}`,
+}));
+
+/* 필터 줄과 고른 필터 칩. 아래 카드 목록과는 크게 띄운다 */
+const Conditions = styled(Box)(({ theme }) => ({
+  marginBottom: theme.spacing(4.5),
+}));

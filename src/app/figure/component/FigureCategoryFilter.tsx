@@ -1,8 +1,9 @@
-import { useState, type MouseEvent } from 'react';
-import { Box, Button, List, ListItemButton, ListItemText, Popover } from '@mui/material';
+import { useRef, useState, type MouseEvent } from 'react';
+import { Box, List, ListItemText } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { FilterButton, FilterColumn, FilterDot, FilterItem, FilterPopover, FilterSubColumn, FilterSubWrap } from '@/app/figure/component/FigureFilter.style';
 import type { FigureFilterOptionGroup } from '@/app/figure/interface/FigureFilterOptionGroup';
 import type { FigureFilterOptionItem } from '@/app/figure/interface/FigureFilterOptionItem';
 import type { FigureFilterValue } from '@/app/figure/interface/FigureFilterValue';
@@ -25,30 +26,28 @@ interface FigureCategoryFilterProps {
 }
 
 /**
- * 분류 필터 칸. 누르면 목록이 뜬다.
- * 하위가 있는 분류는 상위에 마우스를 올리면 오른쪽에 하위가 펼쳐진다.
+ * 분류 필터 칸. 누르면 목록이 뜬다. 값을 골랐으면 금색 점이 붙고, 고른 값은 필터 줄 아래의 칩(FigureFilterChips)에 보인다.
+ * 하위가 있는 분류는 상위에 마우스를 올리는 동안만, 그 행과 같은 높이의 오른쪽에 하위 목록 카드가 따로 뜨고 마우스가 벗어나면 접힌다.
  * 상위를 누르면 그 상위의 하위 전부, 하위를 누르면 그 하위 하나로 거른다.
  */
 const FigureCategoryFilter = ({ label, groups = [], items = [], value, onChange }: FigureCategoryFilterProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [hoverGroupId, setHoverGroupId] = useState<number | null>(null);
+  const [hoverTop, setHoverTop] = useState<number>(0);
+  const columnsRef = useRef<HTMLDivElement>(null);
 
   const isFlat = groups.length === 0;
   const hoverGroup = groups.find((group) => group.groupId === hoverGroupId);
 
-  /* 버튼에 보여 줄 이름: 판매처, 판매처: 네이버 스토어, 판매처: 네이버 스토어 / 굿스마일 PW */
-  const buttonText = (): string => {
-    if (value === null) return `${label} 전체`;
-    if (isFlat) return `${label}: ${items.find((item) => item.id === value.itemId)?.name ?? ''}`;
-
-    const group = groups.find((candidate) => candidate.groupId === value.groupId);
-    const item = group?.items.find((candidate) => candidate.id === value.itemId);
-    return `${label}: ${[group?.groupName, item?.name].filter(Boolean).join(' / ')}`;
+  const handleOpen = (e: MouseEvent<HTMLElement>) => {
+    setHoverGroupId(null);
+    setAnchorEl(e.currentTarget);
   };
 
-  const handleOpen = (e: MouseEvent<HTMLElement>) => {
-    setHoverGroupId(value?.groupId ?? null);
-    setAnchorEl(e.currentTarget);
+  /* 올린 상위 행을 기억하고, 하위 목록 카드가 그 행과 같은 높이에서 시작하도록 위치를 잰다 */
+  const handleHoverGroup = (e: MouseEvent<HTMLElement>, groupId: number) => {
+    setHoverGroupId(groupId);
+    setHoverTop(e.currentTarget.getBoundingClientRect().top - (columnsRef.current?.getBoundingClientRect().top ?? 0));
   };
 
   const handleSelect = (next: FigureFilterValue | null) => {
@@ -61,69 +60,72 @@ const FigureCategoryFilter = ({ label, groups = [], items = [], value, onChange 
       <FilterButton
         variant="outlined"
         color="inherit"
-        size="small"
         filled={value !== null}
         endIcon={<ArrowDropDownIcon />}
         onClick={handleOpen}
       >
-        {buttonText()}
+        {value === null ? `${label} 전체` : label}
+        {value !== null && <FilterDot />}
       </FilterButton>
 
-      <Popover
+      <FilterPopover
         open={anchorEl !== null}
         anchorEl={anchorEl}
         onClose={() => setAnchorEl(null)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       >
-        <Columns>
-          <Column>
+        <Columns ref={columnsRef} onMouseLeave={() => setHoverGroupId(null)}>
+          <FilterColumn>
             <List disablePadding>
-              <ListItemButton selected={value === null} onClick={() => handleSelect(null)}>
+              <FilterItem selected={value === null} onMouseEnter={() => setHoverGroupId(null)} onClick={() => handleSelect(null)}>
                 <ListItemText primary={`${label} 전체`} />
-              </ListItemButton>
+              </FilterItem>
 
               {isFlat &&
                 items.map((item) => (
-                  <ListItemButton
+                  <FilterItem
                     key={item.id}
                     selected={value?.itemId === item.id}
                     onClick={() => handleSelect({ groupId: null, itemId: item.id })}
                   >
                     <ListItemText primary={item.name} />
-                  </ListItemButton>
+                  </FilterItem>
                 ))}
 
               {groups.map((group) => (
-                <ListItemButton
+                <FilterItem
                   key={group.groupId}
+                  open={hoverGroupId === group.groupId}
                   selected={value?.groupId === group.groupId && value.itemId === null}
-                  onMouseEnter={() => setHoverGroupId(group.groupId)}
+                  onMouseEnter={(e) => handleHoverGroup(e, group.groupId)}
                   onClick={() => handleSelect({ groupId: group.groupId, itemId: null })}
                 >
                   <ListItemText primary={group.groupName} />
                   <ChevronRightIcon fontSize="small" color={hoverGroupId === group.groupId ? 'primary' : 'disabled'} />
-                </ListItemButton>
+                </FilterItem>
               ))}
             </List>
-          </Column>
+          </FilterColumn>
 
           {hoverGroup && (
-            <SubColumn>
-              <List disablePadding>
-                {hoverGroup.items.map((item) => (
-                  <ListItemButton
-                    key={item.id}
-                    selected={value?.itemId === item.id}
-                    onClick={() => handleSelect({ groupId: hoverGroup.groupId, itemId: item.id })}
-                  >
-                    <ListItemText primary={item.name} />
-                  </ListItemButton>
-                ))}
-              </List>
-            </SubColumn>
+            <FilterSubWrap style={{ top: hoverTop }}>
+              <FilterSubColumn>
+                <List disablePadding>
+                  {hoverGroup.items.map((item) => (
+                    <FilterItem
+                      key={item.id}
+                      selected={value?.itemId === item.id}
+                      onClick={() => handleSelect({ groupId: hoverGroup.groupId, itemId: item.id })}
+                    >
+                      <ListItemText primary={item.name} />
+                    </FilterItem>
+                  ))}
+                </List>
+              </FilterSubColumn>
+            </FilterSubWrap>
           )}
         </Columns>
-      </Popover>
+      </FilterPopover>
     </>
   );
 };
@@ -132,29 +134,8 @@ export default FigureCategoryFilter;
 
 /* ───────── styles ───────── */
 
-/* 고른 값이 있으면 금색 테두리와 글자로 표시한다 */
-const FilterButton = styled(Button, { shouldForwardProp: (prop) => prop !== 'filled' })<{ filled: boolean }>(
-  ({ theme, filled }) => ({
-    flexShrink: 0,
-    fontWeight: 400,
-    color: filled ? theme.palette.primary.main : theme.palette.text.primary,
-    borderColor: filled ? theme.palette.primary.main : theme.palette.divider,
-    backgroundColor: theme.palette.background.paper,
-    '&:hover': { borderColor: theme.palette.primary.main },
-  }),
-);
-
+/* 상위 목록 카드가 차지하는 자리. 하위 목록 카드는 이 자리 오른쪽에 절대 위치로 뜬다 */
 const Columns = styled(Box)({
-  display: 'flex',
-  alignItems: 'flex-start',
+  position: 'relative',
 });
 
-const Column = styled(Box)(({ theme }) => ({
-  minWidth: theme.spacing(24),
-  maxHeight: theme.spacing(50),
-  overflowY: 'auto',
-}));
-
-const SubColumn = styled(Column)(({ theme }) => ({
-  borderLeft: `1px solid ${theme.palette.divider}`,
-}));

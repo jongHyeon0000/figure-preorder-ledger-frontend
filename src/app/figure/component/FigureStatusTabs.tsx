@@ -15,7 +15,7 @@ interface FigureStatusTabsProps {
 }
 
 /**
- * 상태 탭 (장바구니 | 미구매 | 예약완료 | 구매완료 | 배송완료 ··· 전체). 탭마다 상품 수가 붙는다.
+ * 상태 탭 (전체 | 장바구니 | 미구매 | 예약완료 | 구매완료 | 배송완료). 탭마다 상품 수가 붙는다.
  */
 const FigureStatusTabs = ({ tab, counts, onChange }: FigureStatusTabsProps) => {
   const handleChange = (_event: SyntheticEvent, value: FigureTabKey) => onChange(value);
@@ -46,8 +46,6 @@ export default FigureStatusTabs;
 /* ───────── styles ───────── */
 
 const StatusTabs = styled(Tabs)(({ theme }) => ({
-  marginBottom: theme.spacing(2),
-  borderBottom: `1px solid ${theme.palette.divider}`,
   /* 고른 탭의 건수 칸만 금색으로 채운다 */
   '& .Mui-selected .tab-count': {
     backgroundColor: theme.palette.primary.main,
@@ -55,10 +53,10 @@ const StatusTabs = styled(Tabs)(({ theme }) => ({
   },
 }));
 
-/* 전체 탭: 점선으로 떼어 오른쪽 끝으로 */
+/* 전체 탭: 오른쪽에 점선을 그어 뒤의 탭들과 구분한다 */
 const SeparatedTab = styled(Tab)(({ theme }) => ({
-  marginLeft: 'auto',
-  borderLeft: `1px dashed ${theme.palette.divider}`,
+  marginRight: theme.spacing(0.75),
+  borderRight: `1px dashed ${theme.palette.divider}`,
 }));
 
 const TabLabel = styled('span')(({ theme }) => ({

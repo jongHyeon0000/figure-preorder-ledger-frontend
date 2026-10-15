@@ -20,6 +20,16 @@ declare module '@mui/material/styles' {
     rowStripeAlt: string
     /** 줄무늬 목록에서 마우스를 올린 줄 */
     rowHover: string
+    /** 필터 드롭다운 카드(상위 목록). 화면 배경보다 확실히 밝다 */
+    menuSurface: string
+    /** 필터 드롭다운의 하위 목록 카드. 상위보다 한 단계 밝다 */
+    menuSurfaceSub: string
+    /** 필터 드롭다운 카드의 테두리 */
+    menuLine: string
+    /** 필터 드롭다운에서 열려 있는 상위 행 */
+    menuOpen: string
+    /** 필터 드롭다운에서 마우스를 올린 행 */
+    menuHover: string
   }
   interface PaletteOptions {
     surfaceRaised?: string
@@ -28,6 +38,11 @@ declare module '@mui/material/styles' {
     rowStripe?: string
     rowStripeAlt?: string
     rowHover?: string
+    menuSurface?: string
+    menuSurfaceSub?: string
+    menuLine?: string
+    menuOpen?: string
+    menuHover?: string
   }
   interface TypographyVariants {
     /** 가격, 날짜, 라벨처럼 숫자를 또렷하게 보여 줄 때 */
@@ -65,6 +80,11 @@ const theme = createTheme({
     rowStripe: '#272145',
     rowStripeAlt: '#1f1a38',
     rowHover: '#322b58',
+    menuSurface: '#2b2552',
+    menuSurfaceSub: '#3a3270',
+    menuLine: '#6a5fb0',
+    menuOpen: '#453c85',
+    menuHover: '#4a418f',
   },
   shape: { borderRadius: 8 },
   typography: {

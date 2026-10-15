@@ -1,6 +1,7 @@
-import { Box, Button, MenuItem, Select } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import FigureCategoryFilter from '@/app/figure/component/FigureCategoryFilter';
+import FigureFlatFilter from '@/app/figure/component/FigureFlatFilter';
 import { FIGURE_SORT_OPTIONS, isFigureSortKey, type FigureSortKey } from '@/app/figure/constant/figureSortOptions';
 import type { FigureFilterOptions } from '@/app/figure/interface/FigureFilterOptions';
 import type { FigureFilterValue } from '@/app/figure/interface/FigureFilterValue';
@@ -32,6 +33,8 @@ interface FigureFilterBarProps {
   /** 필터 초기화 */
   onReset: () => void;
 }
+
+const SORT_OPTIONS = FIGURE_SORT_OPTIONS.map((option) => ({ value: option.key, label: option.label }));
 
 /**
  * 필터 줄 (한 줄 고정). 왼쪽에 분류 필터, 오른쪽에 배송월과 정렬, 맨 오른쪽에 필터 초기화.
@@ -82,28 +85,18 @@ const FigureFilterBar = ({
       </Side>
 
       <RightSide>
-        <Select
-          size="small"
-          displayEmpty
-          value={month ?? ''}
-          onChange={(e) => onMonthChange(e.target.value === '' ? null : e.target.value)}
-          renderValue={(value) => (value === '' ? '배송월 전체' : formatDeliveryMonth(value))}
-        >
-          <MenuItem value="">배송월 전체</MenuItem>
-          {options.months.map((option) => (
-            <MenuItem key={option} value={option}>
-              {formatDeliveryMonth(option)}
-            </MenuItem>
-          ))}
-        </Select>
-        <Select size="small" value={sort} onChange={(e) => isFigureSortKey(e.target.value) && onSortChange(e.target.value)}>
-          {FIGURE_SORT_OPTIONS.map((option) => (
-            <MenuItem key={option.key} value={option.key}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </Select>
-        <ResetButton variant="outlined" color="inherit" size="small" onClick={onReset}>
+        <FigureFlatFilter
+          allLabel="배송월 전체"
+          options={options.months.map((option) => ({ value: option, label: formatDeliveryMonth(option) }))}
+          value={month}
+          onChange={onMonthChange}
+        />
+        <FigureFlatFilter
+          options={SORT_OPTIONS}
+          value={sort}
+          onChange={(value) => value !== null && isFigureSortKey(value) && onSortChange(value)}
+        />
+        <ResetButton variant="outlined" color="inherit" onClick={onReset}>
           필터 초기화
         </ResetButton>
       </RightSide>
@@ -121,7 +114,6 @@ const Bar = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'space-between',
   gap: theme.spacing(2),
-  marginBottom: theme.spacing(1.5),
 }));
 
 const Side = styled(Box)(({ theme }) => ({

@@ -7,7 +7,7 @@ import type { FigureFilterOptionItem } from '@/app/figure/interface/FigureFilter
 import type { FigureMakerRef } from '@/app/figure/interface/FigureMakerRef';
 import type { FigureFilterOptions } from '@/app/figure/interface/FigureFilterOptions';
 import type { FigureFilterValue } from '@/app/figure/interface/FigureFilterValue';
-import type { FigureFilters } from '@/app/figure/interface/FigureFilters';
+import type { FigureFilterKey, FigureFilters } from '@/app/figure/interface/FigureFilters';
 import type { FigureSummary } from '@/app/figure/interface/FigureSummary';
 
 /**
@@ -168,4 +168,18 @@ export const sortFigures = (figures: FigureSummary[], sort: FigureSortKey): Figu
 export const isDeadlinePassed = (figure: FigureSummary, today: string): boolean => {
   const beforePurchase = figure.status === 'CART' || figure.status === 'UNPURCHASED';
   return beforePurchase && figure.reservationDeadline !== '' && figure.reservationDeadline < today;
+};
+
+/**
+ * 고른 분류 필터 값을 칩에 보여 줄 글자로 바꾼다.
+ * 하위를 골랐으면 "상위 > 하위", 상위만 골랐으면 "상위 전체", 제조사는 이름만.
+ */
+export const getFilterValueText = (key: FigureFilterKey, value: FigureFilterValue, options: FigureFilterOptions): string => {
+  if (key === 'maker') return options.maker.find((item) => item.id === value.itemId)?.name ?? '';
+
+  const group = options[key].find((candidate) => candidate.groupId === value.groupId);
+  const groupName = group?.groupName ?? '';
+  if (value.itemId === null) return `${groupName} 전체`;
+
+  return `${groupName} > ${group?.items.find((item) => item.id === value.itemId)?.name ?? ''}`;
 };
