@@ -5,6 +5,7 @@ import LoginForm from '@/app/auth/component/LoginForm';
 import type { LoginRequestBody } from '@/app/auth/interface/LoginRequestBody';
 import useAuth from '@/app/auth/service/useAuth';
 import LoadingOverlay from '@/app/common/component/loading/LoadingOverlay';
+import { APP_NAME } from '@/app/common/constant/appName';
 import { useUiStore } from '@/store/uiStore';
 
 /**
@@ -30,7 +31,7 @@ const LoginPage = () => {
     <>
       <AuthCardLayout
         title="로그인"
-        description="미쿠미쿠예약시스템에 오신 것을 환영해요."
+        description={`${APP_NAME}에 오신 것을 환영해요.`}
         footer={
           <>
             아직 계정이 없으신가요?{' '}

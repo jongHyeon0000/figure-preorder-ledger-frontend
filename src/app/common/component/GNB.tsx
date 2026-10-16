@@ -5,6 +5,7 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import useAuth from '@/app/auth/service/useAuth';
+import { APP_NAME } from '@/app/common/constant/appName';
 import mainIcon from '@/assets/common/main-icon.png';
 import { ThumbAvatar } from '@/app/common/style/CommonMedia.style';
 import { imageUrl } from '@/app/common/utils/CommonUtils';
@@ -51,7 +52,7 @@ const GNB = () => {
       <Toolbar>
         <Brand variant="h6" component={Link} to="/">
           <BrandIcon src={mainIcon} alt="" />
-          미쿠미쿠예약시스템
+          {APP_NAME}
         </Brand>
 
         {isAuthenticated ? (
