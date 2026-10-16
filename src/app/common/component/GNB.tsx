@@ -5,6 +5,7 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import useAuth from '@/app/auth/service/useAuth';
+import mainIcon from '@/assets/common/main-icon.png';
 import { ThumbAvatar } from '@/app/common/style/CommonMedia.style';
 import { imageUrl } from '@/app/common/utils/CommonUtils';
 import { APP_ROUTES } from '@/config/route/RoutesConfig';
@@ -49,6 +50,7 @@ const GNB = () => {
     <GnbBar position="sticky" elevation={0}>
       <Toolbar>
         <Brand variant="h6" component={Link} to="/">
+          <BrandIcon src={mainIcon} alt="" />
           미쿠미쿠예약시스템
         </Brand>
 
@@ -107,9 +109,18 @@ const GnbBar = styled(AppBar)(({ theme }) => ({
 }));
 
 const Brand = styled(Typography)(({ theme }) => ({
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: theme.spacing(1),
   color: theme.palette.primary.main,
   textDecoration: 'none',
 })) as typeof Typography;
+
+/* 글자 높이에 가깝게 rem 으로 정한다 */
+const BrandIcon = styled('img')(({ theme }) => ({
+  height: '2rem',
+  borderRadius: theme.shape.borderRadius,
+}));
 
 const MenuName = styled(Typography)(({ theme }) => ({
   padding: theme.spacing(1, 2),
