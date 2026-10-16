@@ -4,7 +4,6 @@ import ThumbnailUploader from '@/app/common/component/ThumbnailUploader';
 import type { ThumbnailChange } from '@/app/common/interface/ThumbnailChange';
 import { ColumnCard, MediaCard } from '@/app/common/style/CommonCard.style';
 import { EndRow, SplitLayout } from '@/app/common/style/CommonLayout.style';
-import { SquareFrame } from '@/app/common/style/CommonMedia.style';
 import { LabelText, LabelValueGrid, LabelValueRow, ValueText } from '@/app/common/style/CommonText.style';
 import type { UserInfo } from '@/app/auth/interface/UserInfo';
 import { styled } from '@mui/material/styles';
@@ -59,9 +58,7 @@ const ProfileView = ({ user, thumbnail, onThumbnailChange, loading, onSave }: Pr
         </ButtonRow>
       </ColumnCard>
       <MediaCard>
-        <SquareFrame>
-          <ThumbnailUploader currentUrl={user.thumbnailUrl} value={thumbnail} onChange={onThumbnailChange} disabled={loading} />
-        </SquareFrame>
+        <ThumbnailUploader currentUrl={user.thumbnailUrl} value={thumbnail} onChange={onThumbnailChange} disabled={loading} />
       </MediaCard>
     </SplitLayout>
   );

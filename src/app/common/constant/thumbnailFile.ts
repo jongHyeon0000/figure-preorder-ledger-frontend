@@ -8,3 +8,9 @@ export const THUMBNAIL_MAX_BYTES = 5 * 1024 * 1024;
 
 /** 파일 선택 창에서 보여 줄 파일 종류 (<input accept>) */
 export const THUMBNAIL_ACCEPT = THUMBNAIL_EXTENSIONS.map((extension) => `.${extension}`).join(',');
+
+/** 위치 조정에서 늘릴 수 있는 최대 배율 (1배는 틀을 꽉 채우는 크기) */
+export const THUMBNAIL_MAX_ZOOM = 3;
+
+/** 잘라낸 썸네일의 한 변 최대 크기 (px). 용량 상한을 넘지 않게 한다 */
+export const THUMBNAIL_OUTPUT_MAX_SIDE = 1024;

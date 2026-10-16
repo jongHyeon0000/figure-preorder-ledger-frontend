@@ -1,6 +1,5 @@
 import ThumbnailUploader from '@/app/common/component/ThumbnailUploader';
 import type { ThumbnailChange } from '@/app/common/interface/ThumbnailChange';
-import { SquareFrame } from '@/app/common/style/CommonMedia.style';
 import { MediaCard } from '@/app/common/style/CommonCard.style';
 
 interface FigureFormThumbnailProps {
@@ -18,14 +17,12 @@ interface FigureFormThumbnailProps {
 }
 
 /**
- * 상품 썸네일 칸. 상세의 썸네일과 같은 정사각형 틀 안에서 이미지를 고르거나 끌어다 놓는다.
+ * 상품 썸네일 칸. 상세의 썸네일과 같은 정사각형 틀 안에서 이미지를 고르거나 끌어다 놓고, 위치를 맞춘다.
  */
 const FigureFormThumbnail = ({ currentUrl, value, onChange, disabled }: FigureFormThumbnailProps) => {
   return (
     <MediaCard>
-      <SquareFrame>
-        <ThumbnailUploader currentUrl={currentUrl} value={value} onChange={onChange} disabled={disabled} />
-      </SquareFrame>
+      <ThumbnailUploader currentUrl={currentUrl} value={value} onChange={onChange} disabled={disabled} />
     </MediaCard>
   );
 };
